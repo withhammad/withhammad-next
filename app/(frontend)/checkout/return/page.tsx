@@ -20,9 +20,10 @@ async function resolve(
   token?: string,
 ): Promise<{ ok: boolean; token?: string; productName?: string; pending?: boolean }> {
   // Stripe return — confirm the session, then finalize (idempotent).
-  if (sessionId && stripeEnabled()) {
+  if (sessionId && (await stripeEnabled())) {
     try {
-      const session = await getStripe().checkout.sessions.retrieve(sessionId);
+      const stripe = await getStripe();
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
       if (session.status === "complete" && session.payment_status === "paid") {
         const fin = await finalizeOrder({
           provider: "stripe",
