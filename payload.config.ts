@@ -1,13 +1,18 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildConfig } from "payload";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+  lexicalEditor,
+  editorConfigFactory,
+  convertMarkdownToLexical,
+} from "@payloadcms/richtext-lexical";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import sharp from "sharp";
 import { LOCAL_CASE_STUDIES } from "./lib/case-studies-data";
 import { FALLBACK_PRODUCTS } from "./lib/products";
 import { DIRECTORY_TOOLS } from "./lib/tool-directory";
+import { BLOG_SEED } from "./lib/blog-seed";
 
 const TOOL_CATEGORY_OPTIONS = [
   { label: "Writing", value: "writing" },
@@ -161,6 +166,37 @@ export default buildConfig({
       }
     } catch (err) {
       payload.logger.error({ err }, "Tools seed failed");
+    }
+
+    // ---- Blog posts ----
+    try {
+      const existing = await payload.count({ collection: "posts" });
+      if (existing.totalDocs === 0) {
+        const editorConfig = await editorConfigFactory.default({
+          config: payload.config,
+        });
+        for (const p of BLOG_SEED) {
+          const content = convertMarkdownToLexical({
+            editorConfig,
+            markdown: p.markdown,
+          });
+          await payload.create({
+            collection: "posts",
+            data: {
+              title: p.title,
+              slug: p.slug,
+              excerpt: p.excerpt,
+              category: p.category,
+              publishedDate: p.publishedDate,
+              content: content as unknown as Record<string, unknown>,
+              meta: { title: p.metaTitle, description: p.metaDescription },
+            },
+          });
+        }
+        payload.logger.info(`Seeded ${BLOG_SEED.length} blog posts into Payload.`);
+      }
+    } catch (err) {
+      payload.logger.error({ err }, "Blog seed failed");
     }
   },
   collections: [

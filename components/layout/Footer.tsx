@@ -56,10 +56,10 @@ export default function Footer() {
             Performance marketing, paid media, and AI creative — Dubai, UAE.
           </p>
           <a
-            href="mailto:hi@withhammad.com"
+            href="mailto:marketing@withhammad.com"
             className="mt-4 inline-block text-sm text-[var(--text)] hover:text-[var(--accent-amber)] transition-colors"
           >
-            hi@withhammad.com
+            marketing@withhammad.com
           </a>
         </div>
 

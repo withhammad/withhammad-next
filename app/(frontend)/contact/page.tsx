@@ -14,7 +14,7 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const EMAIL = "hi@withhammad.com";
+const EMAIL = "marketing@withhammad.com";
 
 const SOCIALS = [
   { label: "YouTube", handle: "@with.hammad", href: "https://www.youtube.com/@with.hammad" },

@@ -60,7 +60,7 @@ inquiry, the best next step is a quick call.
 Book a 30-minute call: https://calendly.com/withhammad-marketing/30min
 
 ## Contact
-- Email: hi@withhammad.com
+- Email: marketing@withhammad.com
 - YouTube: https://www.youtube.com/@with.hammad
 - LinkedIn: https://www.linkedin.com/in/hammadyousuf
 
