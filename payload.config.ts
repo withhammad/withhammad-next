@@ -168,32 +168,38 @@ export default buildConfig({
       payload.logger.error({ err }, "Tools seed failed");
     }
 
-    // ---- Blog posts ----
+    // ---- Blog posts (idempotent per-slug: adds any missing, never duplicates) ----
     try {
-      const existing = await payload.count({ collection: "posts" });
-      if (existing.totalDocs === 0) {
-        const editorConfig = await editorConfigFactory.default({
-          config: payload.config,
+      const editorConfig = await editorConfigFactory.default({
+        config: payload.config,
+      });
+      let seeded = 0;
+      for (const p of BLOG_SEED) {
+        const found = await payload.count({
+          collection: "posts",
+          where: { slug: { equals: p.slug } },
         });
-        for (const p of BLOG_SEED) {
-          const content = convertMarkdownToLexical({
-            editorConfig,
-            markdown: p.markdown,
-          });
-          await payload.create({
-            collection: "posts",
-            data: {
-              title: p.title,
-              slug: p.slug,
-              excerpt: p.excerpt,
-              category: p.category,
-              publishedDate: p.publishedDate,
-              content: content as unknown as Record<string, unknown>,
-              meta: { title: p.metaTitle, description: p.metaDescription },
-            },
-          });
-        }
-        payload.logger.info(`Seeded ${BLOG_SEED.length} blog posts into Payload.`);
+        if (found.totalDocs > 0) continue;
+        const content = convertMarkdownToLexical({
+          editorConfig,
+          markdown: p.markdown,
+        });
+        await payload.create({
+          collection: "posts",
+          data: {
+            title: p.title,
+            slug: p.slug,
+            excerpt: p.excerpt,
+            category: p.category,
+            publishedDate: p.publishedDate,
+            content: content as unknown as Record<string, unknown>,
+            meta: { title: p.metaTitle, description: p.metaDescription },
+          },
+        });
+        seeded += 1;
+      }
+      if (seeded > 0) {
+        payload.logger.info(`Seeded ${seeded} new blog post(s) into Payload.`);
       }
     } catch (err) {
       payload.logger.error({ err }, "Blog seed failed");
