@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { label: "Products", href: "/products" },
   { label: "About", href: "/#about" },
   { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 const CALENDLY_URL =

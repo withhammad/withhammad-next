@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 import Reveal from "@/components/tools/Reveal";
 import {
-  DIRECTORY_TOOLS,
   DIRECTORY_CATEGORIES,
   type DirectoryCategory,
+  type DirectoryTool,
 } from "@/lib/tool-directory";
 
 const CAT_LABEL: Record<DirectoryCategory, string> = {
@@ -18,13 +18,13 @@ const CAT_LABEL: Record<DirectoryCategory, string> = {
 
 type Filter = "all" | DirectoryCategory;
 
-export default function ToolDirectory() {
+export default function ToolDirectory({ tools }: { tools: DirectoryTool[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return DIRECTORY_TOOLS.filter((t) => {
+    return tools.filter((t) => {
       const matchesCat = filter === "all" || t.category === filter;
       const matchesQuery =
         !q ||
@@ -32,12 +32,12 @@ export default function ToolDirectory() {
         t.useCase.toLowerCase().includes(q);
       return matchesCat && matchesQuery;
     });
-  }, [filter, query]);
+  }, [filter, query, tools]);
 
   const countFor = (f: Filter) =>
     f === "all"
-      ? DIRECTORY_TOOLS.length
-      : DIRECTORY_TOOLS.filter((t) => t.category === f).length;
+      ? tools.length
+      : tools.filter((t) => t.category === f).length;
 
   const tabs: { id: Filter; label: string }[] = [
     { id: "all", label: "All" },

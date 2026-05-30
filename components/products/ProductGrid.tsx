@@ -1,7 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import Reveal from "@/components/tools/Reveal";
-import type { Product } from "@/lib/products";
+import {
+  type Product,
+  buyHref,
+  buyLabel,
+  isExternalBuy,
+} from "@/lib/products";
 
 function CheckIcon() {
   return (
@@ -27,24 +33,32 @@ function BuyButton({
   product: Product;
   variant: "solid" | "outline";
 }) {
-  const external = product.buyUrl.startsWith("http");
+  const external = isExternalBuy(product);
   const base =
     "inline-flex h-12 w-full items-center justify-center rounded-full text-sm font-medium transition-[transform,background-color,border-color] duration-300 hover:-translate-y-0.5";
   const cls =
     variant === "solid"
       ? `${base} bg-[var(--accent-indigo)] text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] hover:bg-[#7C7DF3]`
       : `${base} border border-white/15 text-[var(--text)] hover:border-white/40 hover:bg-white/5`;
-  const label = product.free ? "Get it free" : `Buy · ${product.priceLabel}`;
   return (
     <a
-      href={product.buyUrl}
-      {...(external
-        ? { target: "_blank", rel: "noopener noreferrer" }
-        : {})}
+      href={buyHref(product)}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cls}
     >
-      {label}
+      {buyLabel(product)}
     </a>
+  );
+}
+
+function DetailsLink({ slug }: { slug: string }) {
+  return (
+    <Link
+      href={`/products/${slug}`}
+      className="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 hover:gap-2.5"
+    >
+      View details <span aria-hidden>→</span>
+    </Link>
   );
 }
 
@@ -75,7 +89,12 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
 
         <div className="relative z-10">
           <h3 className="text-lg font-semibold tracking-tight text-[var(--text)]">
-            {product.name}
+            <Link
+              href={`/products/${product.slug}`}
+              className="transition-colors hover:text-white"
+            >
+              {product.name}
+            </Link>
           </h3>
           <div className="mt-3 flex items-baseline gap-1.5">
             <span
@@ -104,11 +123,14 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
           </ul>
         ) : null}
 
-        <div className="relative z-10 mt-8 pt-2">
+        <div className="relative z-10 mt-8 flex flex-col gap-3 pt-2">
           <BuyButton
             product={product}
             variant={product.highlighted ? "solid" : "outline"}
           />
+          <div className="text-center">
+            <DetailsLink slug={product.slug} />
+          </div>
         </div>
       </div>
     </Reveal>
@@ -130,9 +152,17 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                 Free
               </span>
               <h3 className="mt-3 text-xl font-semibold tracking-tight text-[var(--text)]">
-                {free.name}
+                <Link
+                  href={`/products/${free.slug}`}
+                  className="transition-colors hover:text-white"
+                >
+                  {free.name}
+                </Link>
               </h3>
               <p className="mt-2 text-sm text-[var(--muted)]">{free.tagline}</p>
+              <div className="mt-3">
+                <DetailsLink slug={free.slug} />
+              </div>
             </div>
             <div className="w-full shrink-0 sm:w-56">
               <BuyButton product={free} variant="outline" />

@@ -1,5 +1,4 @@
 import { wpFetch } from "@/lib/wp";
-import { LOCAL_CASE_STUDIES } from "@/lib/case-studies-data";
 
 // ---- Types (match the live WPGraphQL schema from backend-setup-guide.md) ----
 
@@ -90,22 +89,8 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
  * isn't ready yet, it logs a warning and returns [] so the section renders its
  * graceful empty state. It "lights up" automatically once the CMS returns data.
  */
-export async function getCaseStudies(): Promise<CaseStudyCard[]> {
-  // Served from local content (lib/case-studies-data.ts) — no CMS dependency.
-  return [...LOCAL_CASE_STUDIES]
-    .map((cs) => ({
-      id: cs.id,
-      title: cs.title,
-      slug: cs.slug,
-      caseStudyFields: cs.caseStudyFields,
-      serviceTypes: cs.serviceTypes,
-    }))
-    .sort((a, b) => {
-      const ah = a.caseStudyFields?.isHero ? 1 : 0;
-      const bh = b.caseStudyFields?.isHero ? 1 : 0;
-      return bh - ah;
-    });
-}
+// Case-study fetchers now live in lib/content.ts (server-only, Payload-backed)
+// so this client-imported module stays free of Payload's node-only code.
 
 // ---- Service filter helpers ----
 
@@ -221,6 +206,7 @@ export type CaseStudyDetail = {
   slug: string;
   caseStudyFields: CaseStudyDetailFields | null;
   serviceTypes: { nodes: ServiceTypeTerm[] } | null;
+  seo?: { title: string | null; description: string | null; image: string | null };
 };
 
 export const CASE_STUDY_BY_SLUG_QUERY = /* GraphQL */ `
@@ -273,11 +259,7 @@ export const CASE_STUDY_BY_SLUG_QUERY = /* GraphQL */ `
   }
 `;
 
-export async function getCaseStudyBySlug(
-  slug: string,
-): Promise<CaseStudyDetail | null> {
-  return LOCAL_CASE_STUDIES.find((cs) => cs.slug === slug) ?? null;
-}
+// getCaseStudyBySlug → lib/content.ts
 
 // ---- Index (for generateStaticParams + prev/next nav) ----
 
@@ -305,16 +287,7 @@ export const CASE_STUDY_INDEX_QUERY = /* GraphQL */ `
   }
 `;
 
-export async function getCaseStudyIndex(): Promise<CaseStudyIndexItem[]> {
-  return [...LOCAL_CASE_STUDIES]
-    .map((cs) => ({
-      slug: cs.slug,
-      title: cs.title,
-      isHero: !!cs.caseStudyFields?.isHero,
-      isSample: !!cs.caseStudyFields?.isSample,
-    }))
-    .sort((a, b) => (b.isHero ? 1 : 0) - (a.isHero ? 1 : 0));
-}
+// getCaseStudyIndex → lib/content.ts
 
 // ---- Testimonials (carousel; section hides entirely when empty) ----
 

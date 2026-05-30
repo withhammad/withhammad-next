@@ -1,8 +1,10 @@
-import { wpFetch } from "@/lib/wp";
+// Product types + pure helpers — client-safe (NO Payload/node imports).
+// The Payload-backed fetchers live in lib/content.ts (server-only).
 
-// Store base for WooCommerce checkout/product links (cms subdomain at cutover).
-const STORE_URL =
-  process.env.NEXT_PUBLIC_STORE_URL ?? "https://cms.withhammad.com";
+export interface ProductFaq {
+  question: string;
+  answer: string;
+}
 
 export interface Product {
   id: string;
@@ -15,12 +17,23 @@ export interface Product {
   badge?: string;
   highlighted?: boolean;
   free?: boolean;
+  // Rich fields used by the per-product landing page (all optional).
+  ctaLabel?: string;
+  coverImageUrl?: string | null;
+  descriptionHtml?: string;
+  outcomes?: string[];
+  faqs?: ProductFaq[];
+  seo?: { title: string | null; description: string | null; image: string | null };
+  // Native checkout
+  price?: number | null; // numeric amount; enables Stripe/PayPal when > 0
+  currency?: string; // ISO code, e.g. usd
+  purchasable?: boolean; // price > 0 AND a deliverable is attached
 }
 
 /**
- * Curated catalogue used until WooCommerce + WooGraphQL are live. Edit freely —
- * once the store publishes matching products, getProducts() returns the live
- * WooGraphQL data instead and this becomes the fallback.
+ * Curated catalogue. Doubles as the seed for the Payload `products` collection
+ * (first boot) and the runtime fallback if the collection is ever empty. Once
+ * the admin holds products, getProducts() (lib/content.ts) returns those.
  */
 export const FALLBACK_PRODUCTS: Product[] = [
   {
@@ -33,6 +46,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
       "25-point funnel & ad-account audit",
       "Spot wasted spend in 15 minutes",
       "Prioritised fix list to action today",
+    ],
+    outcomes: [
+      "A clear view of where budget is leaking",
+      "Three quick wins you can ship this week",
     ],
     buyUrl: "/#contact",
     free: true,
@@ -49,7 +66,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
       "Built for ChatGPT, Claude & Gemini",
       "Lifetime updates",
     ],
-    buyUrl: `${STORE_URL}/product/prompt-vault/`,
+    outcomes: [
+      "Cut content & campaign drafting time by hours each week",
+      "A repeatable prompt library your whole team can use",
+    ],
+    buyUrl: "",
   },
   {
     id: "automation-toolkit",
@@ -64,7 +85,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
       "Setup walkthrough videos",
       "Everything in Prompt Vault",
     ],
-    buyUrl: `${STORE_URL}/product/automation-toolkit/`,
+    outcomes: [
+      "Automate lead-nurture, reporting & follow-ups",
+      "Win back hours of manual ops every week",
+    ],
+    buyUrl: "",
     badge: "Most popular",
     highlighted: true,
   },
@@ -81,92 +106,33 @@ export const FALLBACK_PRODUCTS: Product[] = [
       "Private community access",
       "Priority email support",
     ],
-    buyUrl: `${STORE_URL}/product/complete-growth-system/`,
+    outcomes: [
+      "A complete, documented growth engine",
+      "Direct support so you never get stuck",
+    ],
+    buyUrl: "",
   },
 ];
 
-// ---- WooGraphQL (lights up once WooCommerce + WPGraphQL for WooCommerce active) ----
+// ---- Buy / CTA helpers (pure; shared by ProductGrid + landing pages) ----
 
-type WooProductNode = {
-  id: string;
-  name: string | null;
-  slug: string | null;
-  price: string | null;
-  shortDescription: string | null;
-  link: string | null;
-};
-
-type ProductsResponse = {
-  products: { nodes: WooProductNode[] } | null;
-};
-
-export const PRODUCTS_QUERY = /* GraphQL */ `
-  query Products {
-    products(first: 24) {
-      nodes {
-        id
-        name
-        slug
-        link
-        ... on SimpleProduct {
-          price
-          shortDescription
-        }
-        ... on VariableProduct {
-          price
-          shortDescription
-        }
-      }
-    }
-  }
-`;
-
-const REQUEST_TIMEOUT_MS = 8000;
-
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error("WooGraphQL request timed out")), ms),
-    ),
-  ]);
+/** True when buyUrl is a real external checkout link (Stripe Payment Link, Gumroad, …). */
+export function isExternalBuy(p: Product): boolean {
+  return /^https?:\/\//i.test(p.buyUrl ?? "");
 }
 
-const stripHtml = (html: string) =>
-  html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+/** Where the buy button points: external link → native checkout (detail page) → booking. */
+export function buyHref(p: Product): string {
+  if (isExternalBuy(p)) return p.buyUrl;
+  if (p.purchasable) return `/products/${p.slug}`; // detail page hosts the checkout
+  if (p.free && p.buyUrl) return p.buyUrl;
+  return "/#contact";
+}
 
-/**
- * Fetches WooCommerce products via WooGraphQL. Never throws: if WooGraphQL isn't
- * active yet (the field doesn't exist) or the request fails, returns [] so the
- * page falls back to the curated catalogue. Lights up automatically when live.
- */
-export async function getProducts(): Promise<Product[]> {
-  if (!process.env.NEXT_PUBLIC_WP_GRAPHQL_URL) return [];
-  try {
-    const data = await withTimeout(
-      wpFetch<ProductsResponse>(PRODUCTS_QUERY),
-      REQUEST_TIMEOUT_MS,
-    );
-    const nodes = data?.products?.nodes ?? [];
-    return nodes
-      .filter((n) => !!n.name)
-      .map((n) => ({
-        id: n.id,
-        name: n.name ?? "",
-        slug: n.slug ?? "",
-        priceLabel: n.price ?? "",
-        tagline: n.shortDescription ? stripHtml(n.shortDescription) : "",
-        features: [],
-        buyUrl: n.link ?? `${STORE_URL}/product/${n.slug ?? ""}/`,
-      }));
-  } catch (err) {
-    console.warn(
-      "[wc] products fetch failed — using fallback catalogue:",
-      err instanceof Error ? err.message : String(err),
-    );
-    return [];
-  }
+/** Button label. Honest when no checkout is set up yet. */
+export function buyLabel(p: Product): string {
+  if (p.ctaLabel?.trim()) return p.ctaLabel.trim();
+  if (p.free) return "Get it free";
+  if (isExternalBuy(p) || p.purchasable) return `Buy · ${p.priceLabel}`;
+  return "Enquire to buy";
 }

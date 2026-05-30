@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# payload (local SQLite dev database)
+payload-local.db
+payload-local.db-shm
+payload-local.db-wal
+
+# Private digital deliverables (uploaded via admin; not committed)
+/private/downloads/*
+!/private/downloads/.gitkeep
