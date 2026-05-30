@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { MetricNumber, MetricBar } from "@/components/ui/charts";
-import GradientMesh from "@/components/ui/GradientMesh";
+import PostArtwork from "@/components/blog/PostArtwork";
 import MethodologyFlow from "@/components/sections/case-study/MethodologyFlow";
 import ResultsBlock from "@/components/sections/case-study/ResultsBlock";
 import {
@@ -98,7 +98,21 @@ export default function CaseStudyView({
     <div ref={rootRef} className="flex flex-1 flex-col">
       {/* ---------------- Hero ---------------- */}
       <section className="relative -mt-16 flex min-h-[78svh] flex-col justify-end overflow-hidden px-5 pb-14 pt-28 sm:px-8">
-        <GradientMesh />
+        {/* Service-themed artwork hero */}
+        <div aria-hidden className="absolute inset-0 -z-10">
+          <PostArtwork
+            seed={caseStudy.slug}
+            category={services[0]?.name}
+            variant="hero"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, var(--bg) 22%, color-mix(in oklab, var(--bg) 35%, transparent) 60%, transparent 88%)",
+            }}
+          />
+        </div>
         <div className="mx-auto w-full max-w-6xl">
           <Link
             href="/#selected-work"
@@ -138,10 +152,10 @@ export default function CaseStudyView({
           <div className="mt-6 grid items-end gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <h1
-                className="font-semibold tracking-tight text-[var(--text)]"
+                className="font-bold tracking-tight text-[var(--text)]"
                 style={{
-                  fontSize: "clamp(2.4rem, 6vw, 4.5rem)",
-                  lineHeight: 1.02,
+                  fontSize: "clamp(2.8rem, 7vw, 5.5rem)",
+                  lineHeight: 1.0,
                 }}
               >
                 {displayName}
