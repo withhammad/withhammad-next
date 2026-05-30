@@ -1,5 +1,5 @@
 import type Stripe from "stripe";
-import { getStripe, finalizeOrder } from "@/lib/selling";
+import { getStripe, getPaymentConfig, finalizeOrder } from "@/lib/selling";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,8 +8,9 @@ export const dynamic = "force-dynamic";
 // order (idempotent) so the buyer's download + email are guaranteed even if they
 // close the tab before the return page loads.
 export async function POST(req: Request) {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) return new Response("Webhook not configured", { status: 503 });
+  const cfg = await getPaymentConfig();
+  if (!cfg.stripe.webhookSecret)
+    return new Response("Webhook not configured", { status: 503 });
 
   const sig = req.headers.get("stripe-signature");
   if (!sig) return new Response("Missing signature", { status: 400 });
@@ -17,7 +18,8 @@ export async function POST(req: Request) {
   const raw = await req.text();
   let event: Stripe.Event;
   try {
-    event = getStripe().webhooks.constructEvent(raw, sig, secret);
+    const stripe = await getStripe();
+    event = stripe.webhooks.constructEvent(raw, sig, cfg.stripe.webhookSecret);
   } catch (err) {
     console.error("[webhooks/stripe] signature verification failed:", err);
     return new Response("Invalid signature", { status: 400 });

@@ -15,6 +15,7 @@ import {
 } from "@/lib/products";
 import Reveal from "@/components/tools/Reveal";
 import BuyPanel from "@/components/products/BuyPanel";
+import { getPaymentConfig } from "@/lib/selling";
 
 export const revalidate = 300;
 
@@ -105,11 +106,10 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const external = isExternalBuy(product);
-  const checkoutKeysPresent = Boolean(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-      process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+  const pay = await getPaymentConfig();
+  const showBuyPanel = Boolean(
+    product.purchasable && (pay.stripe.enabled || pay.paypal.enabled),
   );
-  const showBuyPanel = Boolean(product.purchasable && checkoutKeysPresent);
   const all = await getProducts();
   const others = all.filter((p) => p.slug !== product.slug).slice(0, 3);
 
@@ -304,6 +304,12 @@ export default async function ProductPage({
                     priceLabel={product.priceLabel}
                     currency={product.currency ?? "usd"}
                     label={product.ctaLabel?.trim() || `Buy · ${product.priceLabel}`}
+                    stripePublishableKey={
+                      pay.stripe.enabled ? pay.stripe.publishableKey : undefined
+                    }
+                    paypalClientId={
+                      pay.paypal.enabled ? pay.paypal.clientId : undefined
+                    }
                   />
                 ) : (
                   <a

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
@@ -8,23 +8,27 @@ import {
 } from "@stripe/react-stripe-js";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const PAYPAL_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
-
 export default function BuyPanel({
   productSlug,
   priceLabel,
   currency = "usd",
   label,
+  stripePublishableKey,
+  paypalClientId,
 }: {
   productSlug: string;
   priceLabel: string;
   currency?: string;
   label?: string;
+  stripePublishableKey?: string;
+  paypalClientId?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [payErr, setPayErr] = useState("");
+  const stripePromise = useMemo(
+    () => (stripePublishableKey ? loadStripe(stripePublishableKey) : null),
+    [stripePublishableKey],
+  );
 
   const fetchClientSecret = useCallback(async () => {
     const res = await fetch("/api/checkout/stripe", {
@@ -90,7 +94,7 @@ export default function BuyPanel({
             ) : null}
 
             {/* PayPal */}
-            {PAYPAL_ID ? (
+            {paypalClientId ? (
               <div className={stripePromise ? "mt-6" : ""}>
                 {stripePromise ? (
                   <div className="mb-4 flex items-center gap-3">
@@ -103,7 +107,7 @@ export default function BuyPanel({
                 ) : null}
                 <PayPalScriptProvider
                   options={{
-                    clientId: PAYPAL_ID,
+                    clientId: paypalClientId,
                     currency: currency.toUpperCase(),
                     components: "buttons",
                   }}

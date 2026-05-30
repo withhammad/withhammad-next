@@ -650,5 +650,85 @@ export default buildConfig({
         },
       ],
     },
+
+    // ---- Payments (Stripe + PayPal) — manage checkout right in the admin ----
+    {
+      slug: "payment-settings",
+      label: "Payments",
+      admin: {
+        group: "Settings",
+        description:
+          "Connect Stripe and/or PayPal to take payments on-site. Keys are stored privately and only ever used server-side. After saving, products with a price + a download file show a live checkout.",
+      },
+      fields: [
+        {
+          type: "collapsible",
+          label: "Stripe",
+          admin: { initCollapsed: false },
+          fields: [
+            {
+              name: "stripeEnabled",
+              type: "checkbox",
+              label: "Enable Stripe checkout",
+            },
+            {
+              name: "stripePublishableKey",
+              type: "text",
+              label: "Publishable key",
+              admin: {
+                description:
+                  "Starts with pk_live_ or pk_test_ — dashboard.stripe.com/apikeys",
+              },
+            },
+            {
+              name: "stripeSecretKey",
+              type: "text",
+              label: "Secret key",
+              admin: {
+                description: "Starts with sk_live_ or sk_test_. Kept private.",
+              },
+            },
+            {
+              name: "stripeWebhookSecret",
+              type: "text",
+              label: "Webhook signing secret",
+              admin: {
+                description:
+                  "whsec_… — in Stripe, add a webhook endpoint pointing to /api/webhooks/stripe and paste its signing secret here.",
+              },
+            },
+          ],
+        },
+        {
+          type: "collapsible",
+          label: "PayPal",
+          admin: { initCollapsed: false },
+          fields: [
+            {
+              name: "paypalEnabled",
+              type: "checkbox",
+              label: "Enable PayPal checkout",
+            },
+            {
+              name: "paypalClientId",
+              type: "text",
+              label: "Client ID",
+              admin: { description: "From developer.paypal.com → your REST app" },
+            },
+            { name: "paypalClientSecret", type: "text", label: "Client secret" },
+            {
+              name: "paypalMode",
+              type: "select",
+              label: "Mode",
+              defaultValue: "sandbox",
+              options: [
+                { label: "Sandbox (testing)", value: "sandbox" },
+                { label: "Live", value: "live" },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
 });

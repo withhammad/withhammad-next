@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  if (!paypalEnabled()) {
+  if (!(await paypalEnabled())) {
     return NextResponse.json({ error: "PayPal not configured" }, { status: 503 });
   }
 

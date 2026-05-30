@@ -1,6 +1,7 @@
 // Server-only native-selling helpers (Stripe + PayPal + digital delivery).
 // Imported only by the /api checkout + download routes — never by the client.
 import crypto from "node:crypto";
+import { cache } from "react";
 import Stripe from "stripe";
 import { Resend } from "resend";
 import { payloadClient } from "@/lib/payload";
@@ -11,21 +12,96 @@ export const SITE_URL =
 const DOWNLOAD_TTL_HOURS = Number(process.env.DOWNLOAD_TOKEN_TTL_HOURS ?? 72);
 export const MAX_DOWNLOADS = Number(process.env.DOWNLOAD_MAX ?? 5);
 
-/* ---- Provider availability (drives whether buttons render) ---- */
+/* ---- Payment configuration (admin "Payments" global → env fallback) ---- */
 
-export const stripeEnabled = () =>
-  Boolean(process.env.STRIPE_SECRET_KEY) &&
-  Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+export interface PaymentConfig {
+  stripe: {
+    enabled: boolean;
+    publishableKey: string;
+    secretKey: string;
+    webhookSecret: string;
+  };
+  paypal: {
+    enabled: boolean;
+    clientId: string;
+    clientSecret: string;
+    mode: "sandbox" | "live";
+  };
+}
 
-export const paypalEnabled = () =>
-  Boolean(process.env.PAYPAL_CLIENT_SECRET) &&
-  Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+interface PaymentGlobal {
+  stripeEnabled?: boolean | null;
+  stripePublishableKey?: string | null;
+  stripeSecretKey?: string | null;
+  stripeWebhookSecret?: string | null;
+  paypalEnabled?: boolean | null;
+  paypalClientId?: string | null;
+  paypalClientSecret?: string | null;
+  paypalMode?: string | null;
+}
 
-let _stripe: Stripe | null = null;
-export function getStripe(): Stripe {
-  if (!process.env.STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY missing");
-  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  return _stripe;
+// Reads the admin Payments global, falling back to env vars. Cached per request.
+export const getPaymentConfig = cache(async (): Promise<PaymentConfig> => {
+  let g: PaymentGlobal = {};
+  try {
+    const payload = await payloadClient();
+    g = (await payload.findGlobal({
+      slug: "payment-settings",
+    })) as unknown as PaymentGlobal;
+  } catch {
+    // payment-settings global may not exist yet; fall back to env vars below
+  }
+  const env = process.env;
+  const sSecret = (g.stripeSecretKey || env.STRIPE_SECRET_KEY || "").trim();
+  const sPub = (
+    g.stripePublishableKey ||
+    env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+    ""
+  ).trim();
+  const sWebhook = (
+    g.stripeWebhookSecret ||
+    env.STRIPE_WEBHOOK_SECRET ||
+    ""
+  ).trim();
+  const pId = (g.paypalClientId || env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "").trim();
+  const pSecret = (g.paypalClientSecret || env.PAYPAL_CLIENT_SECRET || "").trim();
+  const pMode =
+    (g.paypalMode || env.PAYPAL_ENV || "sandbox") === "live"
+      ? "live"
+      : "sandbox";
+  return {
+    stripe: {
+      enabled:
+        (Boolean(g.stripeEnabled) || Boolean(env.STRIPE_SECRET_KEY)) &&
+        Boolean(sSecret) &&
+        Boolean(sPub),
+      publishableKey: sPub,
+      secretKey: sSecret,
+      webhookSecret: sWebhook,
+    },
+    paypal: {
+      enabled:
+        (Boolean(g.paypalEnabled) || Boolean(env.PAYPAL_CLIENT_SECRET)) &&
+        Boolean(pId) &&
+        Boolean(pSecret),
+      clientId: pId,
+      clientSecret: pSecret,
+      mode: pMode,
+    },
+  };
+});
+
+export async function stripeEnabled(): Promise<boolean> {
+  return (await getPaymentConfig()).stripe.enabled;
+}
+export async function paypalEnabled(): Promise<boolean> {
+  return (await getPaymentConfig()).paypal.enabled;
+}
+
+export async function getStripe(): Promise<Stripe> {
+  const cfg = await getPaymentConfig();
+  if (!cfg.stripe.secretKey) throw new Error("Stripe is not configured");
+  return new Stripe(cfg.stripe.secretKey);
 }
 
 /* ---- Product lookup (server) ---- */
@@ -190,31 +266,31 @@ async function sendDownloadEmail(email: string, productName: string, token: stri
 
 /* ---- PayPal REST (v2) ---- */
 
-const paypalBase = () =>
-  process.env.PAYPAL_ENV === "live"
+const paypalBase = (mode: "sandbox" | "live") =>
+  mode === "live"
     ? "https://api-m.paypal.com"
     : "https://api-m.sandbox.paypal.com";
 
-async function paypalAccessToken(): Promise<string> {
-  const id = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const secret = process.env.PAYPAL_CLIENT_SECRET;
-  if (!id || !secret) throw new Error("PayPal credentials missing");
-  const res = await fetch(`${paypalBase()}/v1/oauth2/token`, {
+async function paypalAuth(): Promise<{ token: string; base: string }> {
+  const { clientId, clientSecret, mode } = (await getPaymentConfig()).paypal;
+  if (!clientId || !clientSecret) throw new Error("PayPal credentials missing");
+  const base = paypalBase(mode);
+  const res = await fetch(`${base}/v1/oauth2/token`, {
     method: "POST",
     headers: {
-      Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
+      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: "grant_type=client_credentials",
   });
   if (!res.ok) throw new Error(`PayPal auth failed: ${res.status}`);
   const json = (await res.json()) as { access_token: string };
-  return json.access_token;
+  return { token: json.access_token, base };
 }
 
 export async function createPaypalOrder(p: SellableProduct): Promise<string> {
-  const token = await paypalAccessToken();
-  const res = await fetch(`${paypalBase()}/v2/checkout/orders`, {
+  const { token, base } = await paypalAuth();
+  const res = await fetch(`${base}/v2/checkout/orders`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -246,9 +322,9 @@ export async function capturePaypalOrder(orderId: string): Promise<{
   currency?: string;
   productSlug?: string;
 }> {
-  const token = await paypalAccessToken();
+  const { token, base } = await paypalAuth();
   const res = await fetch(
-    `${paypalBase()}/v2/checkout/orders/${orderId}/capture`,
+    `${base}/v2/checkout/orders/${orderId}/capture`,
     {
       method: "POST",
       headers: {

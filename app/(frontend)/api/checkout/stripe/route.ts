@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 // Creates an embedded Checkout Session (stays on withhammad.com) and returns its
 // client secret for the on-page Stripe checkout.
 export async function POST(req: Request) {
-  if (!stripeEnabled()) {
+  if (!(await stripeEnabled())) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 503 });
   }
 
@@ -32,7 +32,8 @@ export async function POST(req: Request) {
   }
 
   try {
-    const session = await getStripe().checkout.sessions.create({
+    const stripe = await getStripe();
+    const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded_page",
       mode: "payment",
       line_items: [
