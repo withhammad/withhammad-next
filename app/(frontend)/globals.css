@@ -142,3 +142,36 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 2rem 0;
 }
+.post-content h2 {
+  scroll-margin-top: 6rem;
+}
+
+/* Post artwork — drifting gradient blobs (auto-disabled by the
+   prefers-reduced-motion block above, which clamps animation-duration). */
+@keyframes pa-drift-a {
+  0%,
+  100% {
+    transform: translate3d(-3%, -2%, 0);
+  }
+  50% {
+    transform: translate3d(5%, 3%, 0);
+  }
+}
+@keyframes pa-drift-b {
+  0%,
+  100% {
+    transform: translate3d(3%, 2%, 0);
+  }
+  50% {
+    transform: translate3d(-4%, -3%, 0);
+  }
+}
+@keyframes pa-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}

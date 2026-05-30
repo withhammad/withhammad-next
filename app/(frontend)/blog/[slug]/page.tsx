@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getPostSlugs, getPosts } from "@/lib/content";
 import { stripHtml, extractFaqs } from "@/lib/blog";
+import PostArtwork from "@/components/blog/PostArtwork";
 
 export const revalidate = 300;
 
@@ -175,8 +176,8 @@ export default async function PostPage({
           </div>
         ) : null}
 
-        {post.featuredImage ? (
-          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
+        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
+          {post.featuredImage ? (
             <Image
               src={post.featuredImage.sourceUrl}
               alt={post.featuredImage.altText ?? post.title}
@@ -185,30 +186,59 @@ export default async function PostPage({
               className="object-cover"
               priority
             />
-          </div>
-        ) : null}
+          ) : (
+            <PostArtwork
+              seed={post.slug}
+              category={post.categories[0]?.name}
+              variant="hero"
+            />
+          )}
+        </div>
 
         <div
           className="post-content mt-10"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        {/* CTA */}
-        <div className="mt-14 rounded-3xl border border-white/10 bg-[var(--panel)] p-7 text-center sm:p-9">
-          <h2 className="text-xl font-semibold tracking-tight text-[var(--text)]">
-            Want this done for you?
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-[var(--muted)]">
-            Book a free 30-minute call and we&apos;ll map the fastest path to
-            predictable growth.
-          </p>
-          <Link
-            href="/#contact"
-            className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+        {/* Lead-magnet CTA */}
+        <aside className="relative mt-16 overflow-hidden rounded-3xl border border-white/10 bg-[var(--panel)] p-8 sm:p-10">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 opacity-70"
+            style={{
+              background:
+                "radial-gradient(80% 120% at 0% 0%, color-mix(in oklab, var(--accent-indigo) 26%, transparent), transparent 60%), radial-gradient(80% 120% at 100% 100%, color-mix(in oklab, var(--accent-amber) 18%, transparent), transparent 60%)",
+            }}
+          />
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--accent-amber)] backdrop-blur">
+            Free strategy session
+          </span>
+          <h2
+            className="mt-4 max-w-xl font-semibold tracking-tight text-[var(--text)]"
+            style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", lineHeight: 1.12 }}
           >
-            Book a Call
-          </Link>
-        </div>
+            Want this built for your business?
+          </h2>
+          <p className="mt-3 max-w-lg text-[var(--muted)]">
+            Book a free 30-minute call and I&apos;ll map the fastest path to
+            predictable, AI-driven growth — no pitch, just a plan you can run
+            with.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/contact"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+            >
+              Book a free call →
+            </Link>
+            <Link
+              href="/tools"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 px-7 text-sm font-medium text-[var(--text)] transition-colors hover:border-white/35"
+            >
+              Explore free tools
+            </Link>
+          </div>
+        </aside>
       </article>
 
       {/* Related */}
@@ -222,17 +252,38 @@ export default async function PostPage({
               <Link
                 key={p.id}
                 href={`/blog/${p.slug}`}
-                className="group flex h-full flex-col rounded-2xl border border-white/10 bg-[var(--panel)] p-5 transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-white/25"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)] transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-white/25"
               >
-                <div className="mb-2 text-xs text-[var(--muted)]">
-                  {p.categories[0]?.name ?? "Article"} · {formatDate(p.date)}
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+                    {p.featuredImage ? (
+                      <Image
+                        src={p.featuredImage.sourceUrl}
+                        alt={p.featuredImage.altText ?? p.title}
+                        fill
+                        sizes="(max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <PostArtwork
+                        seed={p.slug}
+                        category={p.categories[0]?.name}
+                        variant="mini"
+                      />
+                    )}
+                  </div>
                 </div>
-                <h3 className="text-base font-semibold leading-snug tracking-tight text-[var(--text)]">
-                  {p.title}
-                </h3>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
-                  Read <span aria-hidden>→</span>
-                </span>
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="mb-2 text-xs text-[var(--muted)]">
+                    {p.categories[0]?.name ?? "Article"} · {formatDate(p.date)}
+                  </div>
+                  <h3 className="text-base font-semibold leading-snug tracking-tight text-[var(--text)]">
+                    {p.title}
+                  </h3>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
+                    Read <span aria-hidden>→</span>
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
