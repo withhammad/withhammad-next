@@ -14,6 +14,7 @@ import {
 } from "@/lib/wp-queries";
 import { MetricBar } from "@/components/ui/charts";
 import { parseMetric } from "@/lib/metrics";
+import PostArtwork from "@/components/blog/PostArtwork";
 
 export default function SelectedWork({
   caseStudies,
@@ -285,14 +286,15 @@ function CaseCard({
         sizeClass
       }
     >
-      {/* Visual layer (zooms on hover) */}
-      <div
-        className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105"
-        style={{
-          background:
-            "radial-gradient(120% 100% at 0% 0%, color-mix(in oklab, var(--accent-indigo) 22%, var(--panel)) 0%, var(--panel) 55%)",
-        }}
-      />
+      {/* Visual layer (zooms on hover) — on-brand generated artwork */}
+      <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105">
+        <PostArtwork
+          seed={cs.slug}
+          category={services[0]?.name}
+          variant={hero ? "hero" : "card"}
+          animate={false}
+        />
+      </div>
       {/* darken toward bottom for legibility */}
       <div
         aria-hidden

@@ -16,10 +16,18 @@ interface Theme {
 }
 
 // Brand stays indigo + amber; the third accent shifts by category.
+// Keys cover blog categories AND case-study service types (lowercased).
 const THEMES: Record<string, Theme> = {
+  // Blog categories
   "ai & automation": { c1: "#6366F1", c2: "#8B5CF6", c3: "#38BDF8" },
   "paid ads": { c1: "#F59E0B", c2: "#FB7185", c3: "#6366F1" },
   "seo & aeo": { c1: "#6366F1", c2: "#2DD4BF", c3: "#F59E0B" },
+  // Case-study service types
+  ppc: { c1: "#F59E0B", c2: "#FB7185", c3: "#6366F1" },
+  seo: { c1: "#6366F1", c2: "#2DD4BF", c3: "#F59E0B" },
+  "paid social": { c1: "#8B5CF6", c2: "#6366F1", c3: "#38BDF8" },
+  cro: { c1: "#10B981", c2: "#F59E0B", c3: "#6366F1" },
+  "multi-market": { c1: "#6366F1", c2: "#F59E0B", c3: "#38BDF8" },
 };
 const FALLBACK: Theme = { c1: "#6366F1", c2: "#F59E0B", c3: "#8B5CF6" };
 
@@ -45,11 +53,13 @@ export default function PostArtwork({
   category,
   variant = "card",
   className = "",
+  animate = true,
 }: {
   seed: string;
   category?: string | null;
   variant?: Variant;
   className?: string;
+  animate?: boolean;
 }) {
   const theme =
     (category && THEMES[category.toLowerCase().trim()]) || FALLBACK;
@@ -108,14 +118,14 @@ export default function PostArtwork({
         className="absolute inset-0"
         style={{
           background: `radial-gradient(42% 52% at ${aX}% ${aY}%, ${theme.c1}66, transparent 70%)`,
-          animation: "pa-drift-a 17s ease-in-out infinite",
+          animation: animate ? "pa-drift-a 17s ease-in-out infinite" : undefined,
         }}
       />
       <div
         className="absolute inset-0"
         style={{
           background: `radial-gradient(46% 56% at ${bX}% ${bY}%, ${theme.c2}54, transparent 72%)`,
-          animation: "pa-drift-b 21s ease-in-out infinite",
+          animation: animate ? "pa-drift-b 21s ease-in-out infinite" : undefined,
         }}
       />
       <div
@@ -171,7 +181,7 @@ export default function PostArtwork({
         {/* bold arc accent */}
         <g
           transform={`rotate(${arcRot} ${ringCx} ${ringCy})`}
-          style={{ animation: "pa-pulse 6s ease-in-out infinite" }}
+          style={{ animation: animate ? "pa-pulse 6s ease-in-out infinite" : undefined }}
         >
           <path
             d={`M ${ringCx} ${ringCy - 64} A 64 64 0 0 1 ${ringCx + 64} ${ringCy}`}
