@@ -1,4 +1,5 @@
 import { wpFetch } from "@/lib/wp";
+import { LOCAL_CASE_STUDIES } from "@/lib/case-studies-data";
 
 // ---- Types (match the live WPGraphQL schema from backend-setup-guide.md) ----
 
@@ -33,9 +34,7 @@ export type CaseStudyCard = {
   serviceTypes: { nodes: ServiceTypeTerm[] } | null;
 };
 
-type CaseStudiesResponse = {
-  caseStudies: { nodes: CaseStudyCard[] } | null;
-};
+// Case-study cards are built from local data (lib/case-studies-data.ts).
 
 // ---- Query ----
 
@@ -92,31 +91,20 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
  * graceful empty state. It "lights up" automatically once the CMS returns data.
  */
 export async function getCaseStudies(): Promise<CaseStudyCard[]> {
-  if (!process.env.NEXT_PUBLIC_WP_GRAPHQL_URL) {
-    console.warn(
-      "[wp] NEXT_PUBLIC_WP_GRAPHQL_URL not set — Selected Work renders empty state.",
-    );
-    return [];
-  }
-  try {
-    const data = await withTimeout(
-      wpFetch<CaseStudiesResponse>(CASE_STUDIES_QUERY),
-      REQUEST_TIMEOUT_MS,
-    );
-    const nodes = data?.caseStudies?.nodes ?? [];
-    // Lead with the hero case study, keep CMS order otherwise.
-    return [...nodes].sort((a, b) => {
+  // Served from local content (lib/case-studies-data.ts) — no CMS dependency.
+  return [...LOCAL_CASE_STUDIES]
+    .map((cs) => ({
+      id: cs.id,
+      title: cs.title,
+      slug: cs.slug,
+      caseStudyFields: cs.caseStudyFields,
+      serviceTypes: cs.serviceTypes,
+    }))
+    .sort((a, b) => {
       const ah = a.caseStudyFields?.isHero ? 1 : 0;
       const bh = b.caseStudyFields?.isHero ? 1 : 0;
       return bh - ah;
     });
-  } catch (err) {
-    console.warn(
-      "[wp] caseStudies fetch failed — Selected Work renders empty state:",
-      err instanceof Error ? err.message : String(err),
-    );
-    return [];
-  }
 }
 
 // ---- Service filter helpers ----
@@ -288,22 +276,7 @@ export const CASE_STUDY_BY_SLUG_QUERY = /* GraphQL */ `
 export async function getCaseStudyBySlug(
   slug: string,
 ): Promise<CaseStudyDetail | null> {
-  if (!process.env.NEXT_PUBLIC_WP_GRAPHQL_URL) return null;
-  try {
-    const data = await withTimeout(
-      wpFetch<{ caseStudy: CaseStudyDetail | null }>(CASE_STUDY_BY_SLUG_QUERY, {
-        slug,
-      }),
-      REQUEST_TIMEOUT_MS,
-    );
-    return data?.caseStudy ?? null;
-  } catch (err) {
-    console.warn(
-      `[wp] caseStudy(${slug}) fetch failed:`,
-      err instanceof Error ? err.message : String(err),
-    );
-    return null;
-  }
+  return LOCAL_CASE_STUDIES.find((cs) => cs.slug === slug) ?? null;
 }
 
 // ---- Index (for generateStaticParams + prev/next nav) ----
@@ -315,15 +288,7 @@ export type CaseStudyIndexItem = {
   isSample: boolean;
 };
 
-type CaseStudyIndexResponse = {
-  caseStudies: {
-    nodes: {
-      slug: string;
-      title: string | null;
-      caseStudyFields: { isHero: boolean | null; isSample: boolean | null } | null;
-    }[];
-  } | null;
-};
+// Case-study index is built from local data (lib/case-studies-data.ts).
 
 export const CASE_STUDY_INDEX_QUERY = /* GraphQL */ `
   query CaseStudyIndex {
@@ -341,29 +306,14 @@ export const CASE_STUDY_INDEX_QUERY = /* GraphQL */ `
 `;
 
 export async function getCaseStudyIndex(): Promise<CaseStudyIndexItem[]> {
-  if (!process.env.NEXT_PUBLIC_WP_GRAPHQL_URL) return [];
-  try {
-    const data = await withTimeout(
-      wpFetch<CaseStudyIndexResponse>(CASE_STUDY_INDEX_QUERY),
-      REQUEST_TIMEOUT_MS,
-    );
-    const nodes = data?.caseStudies?.nodes ?? [];
-    // Hero case study first, then CMS order — stable for prev/next nav.
-    return nodes
-      .map((n) => ({
-        slug: n.slug,
-        title: n.title,
-        isHero: !!n.caseStudyFields?.isHero,
-        isSample: !!n.caseStudyFields?.isSample,
-      }))
-      .sort((a, b) => (b.isHero ? 1 : 0) - (a.isHero ? 1 : 0));
-  } catch (err) {
-    console.warn(
-      "[wp] caseStudy index fetch failed:",
-      err instanceof Error ? err.message : String(err),
-    );
-    return [];
-  }
+  return [...LOCAL_CASE_STUDIES]
+    .map((cs) => ({
+      slug: cs.slug,
+      title: cs.title,
+      isHero: !!cs.caseStudyFields?.isHero,
+      isSample: !!cs.caseStudyFields?.isSample,
+    }))
+    .sort((a, b) => (b.isHero ? 1 : 0) - (a.isHero ? 1 : 0));
 }
 
 // ---- Testimonials (carousel; section hides entirely when empty) ----
