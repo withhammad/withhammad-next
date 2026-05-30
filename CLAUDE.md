@@ -1,1 +1,66 @@
-@AGENTS.md
+# CLAUDE.md — Project Context for withhammad.com
+
+> Claude Code reads this file automatically on startup. It gives you (the agent) the full picture so every prompt runs with correct context. Do not re-ask the user for things defined here.
+
+## What we're building
+A next-generation personal portfolio for **Hammad Yousuf** — a blended "AI Marketing Growth Strategist + Performance Marketing Specialist" based in Dubai/UAE. Premium, dark, heavily animated, award-worthy (benchmark: icon-ad.com). Goals: win clients, land roles, sell digital products, grow brand — **founder-first**.
+
+## Architecture (hybrid headless)
+- **Frontend:** Next.js (App Router) + TypeScript, deployed to Vercel → owns the root domain `withhammad.com`.
+- **Backend:** Headless WordPress at `cms.withhammad.com` (editor-only; visitors never see it).
+- **Data:** WPGraphQL. Endpoint: `https://cms.withhammad.com/graphql` (env: `NEXT_PUBLIC_WP_GRAPHQL_URL`).
+- **Products:** WooCommerce + WooGraphQL; "Buy" links go to WooCommerce checkout on `cms.withhammad.com`.
+- **Chatbot:** custom Anthropic Claude popup with RAG-lite from `content/knowledge.md`.
+
+## Design system (dark-first)
+CSS variables:
+- `--bg: #0A0A0B` · `--panel: #141417`
+- `--text: #F5F5F7` · `--muted: #9CA3AF`
+- `--accent-indigo: #6366F1` (primary CTAs, links)
+- `--accent-amber: #F59E0B` (metrics, highlights — use on numbers)
+Typography: oversized/kinetic headlines, fluid sizing via `clamp()`. Generous whitespace. Bento grids welcome.
+
+## Animation stack & rules
+- **GSAP + ScrollTrigger** (core), **Lenis** (smooth scroll, driven by GSAP ticker), **Framer Motion** (UI/page transitions).
+- Use the official `@gsap/react` `useGSAP()` hook; register ScrollTrigger once in `lib/gsap.ts`.
+- **Hard rules:** animate only `transform`/`opacity`; lazy-load below-the-fold motion; respect `prefers-reduced-motion` on EVERY animation (no-op when set); keep all critical text in the DOM (never hide headlines/CTAs behind animation). Target CWV: LCP<2.5s, INP<200ms, CLS<0.1. No heavy WebGL.
+
+## Information architecture
+Nav: **Work, Services, Products, About, Blog** + "Book a Call" (Calendly) + "Download CV".
+Homepage order: Hero → Selected Work (marquee) → Audience Router → Services → YouTube credibility → About → Testimonials → Final CTA.
+Audiences (priority): 1) Founders & Owners 2) Agencies + GCC Enterprises 3) Recruiters. (Students intentionally dropped from nav.)
+
+## GraphQL field names (match these exactly)
+Custom post types: `caseStudy` (plural `caseStudies`), `service`, `testimonial`. Taxonomy: `serviceType` (PPC, SEO, Paid Social, CRO, Multi-Market).
+
+`caseStudyFields` (ACF, exposed via WPGraphQL for ACF):
+`clientName, industry, servicesUsed, isHero (bool), showLogo (bool), clientLogo (image), heroMetric, heroMetricLabel, theChallenge, theStrategy, theExecution, metric1..metric5, label1..label5, testimonialQuote, testimonialName, testimonialTitle, testimonialLinkedin, galleryNote`
+> Note: results use FIXED fields `metric1..5` + `label1..5` (ACF Free has no repeater). Skip empties when rendering.
+
+The 5 case studies: **Printo** (3,750 conversions), **Deewan** (−28% CPA, 4 GCC markets), **Good Morning Property** (AED 76.38 CPL), **Rainbow Printing** (+50% organic, +27% CVR), **ICON** (−22% CPA). All featured equally; homepage leads with strongest numbers.
+
+## Products (branded "With Hammad", English)
+Free lead magnet · $27 Prompt Vault · $197 Automation Toolkit · $997 Complete Growth System. Sold via WooCommerce.
+
+## Chatbot behavior
+Confident, punchy, sales-y. Must nail: "are you available for hire", "what results have you driven", "can I book a call", "what do you charge/rates". Always push toward booking a call. NEVER discuss personal/family life or personal salary expectations (service pricing is fine). Lead capture → email (`LEAD_EMAIL_TO`).
+
+## Code conventions
+- Animation/interactive components are client components (`'use client'`).
+- Guard `window`/`matchMedia`. Refresh ScrollTrigger after content loads.
+- Data fetching: SSG + ISR; `generateStaticParams` for dynamic routes; on-demand revalidation via `/api/revalidate`.
+- Folder structure: `app/`, `components/sections/`, `components/ui/`, `lib/`, `content/`.
+
+## Permissions / safety (important)
+- Auto-approve OK for: file edits + local builds inside this project.
+- ALWAYS ASK before: `git push`, deploys, deletions, commands outside the project folder, anything touching secrets.
+- NEVER put real secrets/API keys/passwords in code or commits — they go in `.env.local` and Vercel env settings, entered by the user.
+
+## Reference files in this folder
+- `claude-code-prompts.md` — the 18 build prompts, in order (run sequentially).
+- `withhammad-build-guide.md` — full phase-by-phase guide.
+- `backend-setup-guide.md` — WordPress backend steps.
+- `case-studies-content.md` — case study copy (goes into WordPress, not code).
+
+## Build order
+Backend live → Prompt 1 (scaffold) → 2 (layout) → 3-10 (sections) → 11 (case pages) → 12 (chatbot) → 13 (products) → 14 (blog) → 15 (ISR) → 16 (audit) → deploy. Run one prompt at a time; user reviews in browser between each.
