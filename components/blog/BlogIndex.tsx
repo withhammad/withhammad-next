@@ -43,6 +43,7 @@ function Cover({
     <PostArtwork
       seed={post.slug}
       category={post.categories[0]?.name}
+      eyebrow={variant === "hero" ? post.categories[0]?.name : null}
       variant={variant}
     />
   );

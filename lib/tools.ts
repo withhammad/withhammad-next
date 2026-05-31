@@ -1,6 +1,15 @@
 // Data for the /tools hub. Add or edit tools here — the hub renders from these
 // arrays, so no JSX changes are needed to add a new card.
 
+export type ToolIconName =
+  | "calculator"
+  | "citation"
+  | "audit"
+  | "prompt"
+  | "directory"
+  | "adcopy"
+  | "image";
+
 export interface ToolCard {
   name: string;
   description: string;
@@ -9,6 +18,7 @@ export interface ToolCard {
   badge?: string;
   duration?: string;
   accent?: "indigo" | "amber";
+  icon?: ToolIconName;
 }
 
 // The existing GCC marketing tools — currently live on the WordPress site.
@@ -22,6 +32,7 @@ export const GCC_TOOLS: ToolCard[] = [
     external: true,
     badge: "Calculator",
     duration: "~60 sec",
+    icon: "calculator",
   },
   {
     name: "GEO Citation Checker",
@@ -31,6 +42,7 @@ export const GCC_TOOLS: ToolCard[] = [
     external: true,
     badge: "AEO",
     duration: "~90 sec",
+    icon: "citation",
   },
   {
     name: "AI Marketing Stack Audit",
@@ -40,6 +52,7 @@ export const GCC_TOOLS: ToolCard[] = [
     external: true,
     badge: "Audit",
     duration: "~2 min",
+    icon: "audit",
   },
 ];
 
@@ -52,6 +65,7 @@ export const AI_TOOLS: ToolCard[] = [
     href: "/tools/prompt-generator",
     badge: "Free · No login",
     accent: "indigo",
+    icon: "prompt",
   },
   {
     name: "AI Tools Directory for Marketers",
@@ -60,6 +74,7 @@ export const AI_TOOLS: ToolCard[] = [
     href: "/tools/tool-directory",
     badge: "Free · No login",
     accent: "indigo",
+    icon: "directory",
   },
   {
     name: "AI Ad Copy Writer",
@@ -68,6 +83,7 @@ export const AI_TOOLS: ToolCard[] = [
     href: "/tools/ad-copy-writer",
     badge: "Free · AI",
     accent: "amber",
+    icon: "adcopy",
   },
   {
     name: "AI Image Generator",
@@ -76,5 +92,6 @@ export const AI_TOOLS: ToolCard[] = [
     href: "/tools/image-generator",
     badge: "Free · Email unlock",
     accent: "amber",
+    icon: "image",
   },
 ];

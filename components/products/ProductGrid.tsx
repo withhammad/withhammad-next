@@ -2,12 +2,47 @@
 
 import Link from "next/link";
 import Reveal from "@/components/tools/Reveal";
+import GradientCover from "@/components/ui/GradientCover";
 import {
   type Product,
   buyHref,
   buyLabel,
   isExternalBuy,
 } from "@/lib/products";
+
+// Small "what's inside" icon row — a designed accent for digital products.
+const INSIDE = [
+  { label: "Templates", d: "M14 3v4a1 1 0 0 0 1 1h4 M9 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5H9z" },
+  { label: "Fast setup", d: "M13 2 4 14h7l-1 8 9-12h-7z" },
+  { label: "Lifetime updates", d: "M3 12a9 9 0 0 1 15-6.7L21 8 M21 3v5h-5 M21 12a9 9 0 0 1-15 6.7L3 16 M3 21v-5h5" },
+];
+
+function InsideRow() {
+  return (
+    <div className="relative z-10 mt-5 flex flex-wrap gap-2">
+      {INSIDE.map((it) => (
+        <span
+          key={it.label}
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] text-[var(--muted)]"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-3.5 w-3.5 text-[var(--accent-amber)]"
+            aria-hidden
+          >
+            <path d={it.d} />
+          </svg>
+          {it.label}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function CheckIcon() {
   return (
@@ -81,11 +116,18 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
           />
         ) : null}
 
-        {product.badge ? (
-          <span className="relative z-10 mb-4 inline-flex w-fit items-center rounded-full bg-[var(--accent-indigo)] px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-white">
-            {product.badge}
-          </span>
-        ) : null}
+        {/* branded cover with tier badge */}
+        <div className="relative z-10 -mx-7 -mt-7 mb-6 h-28 overflow-hidden sm:h-32">
+          <GradientCover
+            seed={product.slug}
+            category={
+              product.free ? "free" : product.highlighted ? "premium" : "paid"
+            }
+            badge={product.badge ?? (product.free ? "Free" : product.priceLabel)}
+            variant="card"
+            animate={false}
+          />
+        </div>
 
         <div className="relative z-10">
           <h3 className="text-lg font-semibold tracking-tight text-[var(--text)]">
@@ -111,6 +153,8 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
             {product.tagline}
           </p>
         </div>
+
+        <InsideRow />
 
         {product.features.length > 0 ? (
           <ul className="relative z-10 mt-6 space-y-3 text-sm text-[var(--text)]">

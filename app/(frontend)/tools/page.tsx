@@ -3,6 +3,7 @@ import Link from "next/link";
 import Reveal from "@/components/tools/Reveal";
 import { GCC_TOOLS, AI_TOOLS, type ToolCard } from "@/lib/tools";
 import { pageMetadata } from "@/lib/content";
+import ToolGlyph from "@/components/tools/ToolGlyph";
 
 export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -27,16 +28,26 @@ function HubCard({ tool, index }: { tool: ToolCard; index: number }) {
       />
       <div className="relative z-10 flex h-full flex-col">
         <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-[var(--muted)]">
-            {tool.badge}
-          </span>
+          {tool.icon ? (
+            <span
+              className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.03]"
+              style={{ color: accent }}
+            >
+              <ToolGlyph name={tool.icon} className="h-5 w-5" />
+            </span>
+          ) : (
+            <span />
+          )}
           {tool.duration ? (
             <span className="text-[11px] text-[var(--muted)]">
               {tool.duration}
             </span>
           ) : null}
         </div>
-        <h3 className="mt-5 text-lg font-semibold tracking-tight text-[var(--text)]">
+        <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-[var(--muted)]">
+          {tool.badge}
+        </span>
+        <h3 className="mt-3 text-lg font-semibold tracking-tight text-[var(--text)]">
           {tool.name}
         </h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--muted)]">
