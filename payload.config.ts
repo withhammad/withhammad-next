@@ -9,6 +9,7 @@ import {
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import sharp from "sharp";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { LOCAL_CASE_STUDIES } from "./lib/case-studies-data";
 import { FALLBACK_PRODUCTS } from "./lib/products";
 import { DIRECTORY_TOOLS } from "./lib/tool-directory";
@@ -49,6 +50,18 @@ const SERVICE_TYPE_OPTIONS = [
 ];
 
 export default buildConfig({
+  // Cloud storage for uploads: Vercel's filesystem is read-only, so media +
+  // download-files must live on Vercel Blob. Active only when the token is set
+  // (create a Blob store in the Vercel dashboard → it injects BLOB_READ_WRITE_TOKEN).
+  plugins: process.env.BLOB_READ_WRITE_TOKEN
+    ? [
+        vercelBlobStorage({
+          collections: { media: true, "download-files": true },
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+          addRandomSuffix: true,
+        }),
+      ]
+    : [],
   admin: {
     user: "users",
     meta: {
