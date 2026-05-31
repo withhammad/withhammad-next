@@ -67,47 +67,53 @@ export default buildConfig({
   onInit: async (payload) => {
     // ---- Case studies ----
     try {
-      const existing = await payload.count({ collection: "case-studies" });
-      if (existing.totalDocs === 0) {
-        for (const cs of LOCAL_CASE_STUDIES) {
-          const f = cs.caseStudyFields;
-          if (!f) continue;
-          const pairs: [string | null, string | null][] = [
-            [f.metric1, f.label1],
-            [f.metric2, f.label2],
-            [f.metric3, f.label3],
-            [f.metric4, f.label4],
-            [f.metric5, f.label5],
-          ];
-          const metrics = pairs
-            .filter(([v]) => !!v)
-            .map(([value, label]) => ({
-              value: value ?? "",
-              label: label ?? "",
-            }));
-          await payload.create({
-            collection: "case-studies",
-            data: {
-              title: cs.title ?? cs.slug,
-              slug: cs.slug,
-              clientName: f.clientName ?? undefined,
-              industry: f.industry ?? undefined,
-              servicesUsed: f.servicesUsed ?? undefined,
-              serviceTypes: cs.serviceTypes?.nodes.map((n) => n.slug) ?? [],
-              isHero: Boolean(f.isHero),
-              isSample: Boolean(f.isSample),
-              showLogo: f.showLogo ?? true,
-              heroMetric: f.heroMetric ?? undefined,
-              heroMetricLabel: f.heroMetricLabel ?? undefined,
-              theChallenge: f.theChallenge ?? undefined,
-              theStrategy: f.theStrategy ?? undefined,
-              theExecution: f.theExecution ?? undefined,
-              metrics,
-            },
-          });
-        }
+      let seededCs = 0;
+      for (const cs of LOCAL_CASE_STUDIES) {
+        const f = cs.caseStudyFields;
+        if (!f) continue;
+        const foundCs = await payload.count({
+          collection: "case-studies",
+          where: { slug: { equals: cs.slug } },
+        });
+        if (foundCs.totalDocs > 0) continue;
+        const pairs: [string | null, string | null][] = [
+          [f.metric1, f.label1],
+          [f.metric2, f.label2],
+          [f.metric3, f.label3],
+          [f.metric4, f.label4],
+          [f.metric5, f.label5],
+        ];
+        const metrics = pairs
+          .filter(([v]) => !!v)
+          .map(([value, label]) => ({
+            value: value ?? "",
+            label: label ?? "",
+          }));
+        await payload.create({
+          collection: "case-studies",
+          data: {
+            title: cs.title ?? cs.slug,
+            slug: cs.slug,
+            clientName: f.clientName ?? undefined,
+            industry: f.industry ?? undefined,
+            servicesUsed: f.servicesUsed ?? undefined,
+            serviceTypes: cs.serviceTypes?.nodes.map((n) => n.slug) ?? [],
+            isHero: Boolean(f.isHero),
+            isSample: Boolean(f.isSample),
+            showLogo: f.showLogo ?? true,
+            heroMetric: f.heroMetric ?? undefined,
+            heroMetricLabel: f.heroMetricLabel ?? undefined,
+            theChallenge: f.theChallenge ?? undefined,
+            theStrategy: f.theStrategy ?? undefined,
+            theExecution: f.theExecution ?? undefined,
+            metrics,
+          },
+        });
+        seededCs += 1;
+      }
+      if (seededCs > 0) {
         payload.logger.info(
-          `Seeded ${LOCAL_CASE_STUDIES.length} case studies into Payload.`,
+          `Seeded ${seededCs} new case study(ies) into Payload.`,
         );
       }
     } catch (err) {
