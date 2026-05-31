@@ -50,12 +50,29 @@ interface GeminiResp {
   error?: { code?: number; message?: string };
 }
 
+// Strip markdown noise, "Draft/Option/Version" leakage, and parentheticals that
+// some vision responses prepend, so the description feeds the generator cleanly.
+function cleanCaption(s: string): string {
+  let t = s.replace(/[*_`#>]+/g, " ");
+  t = t.replace(/^\s*[-•\d.)\]]+\s*/g, " ");
+  t = t.replace(
+    /\b(?:draft|option|version|alt(?:ernative)?|caption|description|prompt)\s*\d*\s*[:)\-–—]*/gi,
+    " ",
+  );
+  t = t.replace(/\((?:incorporating|including|note|revised)[^)]*\)/gi, " ");
+  t = t.replace(/\s+/g, " ").trim();
+  t = t.replace(/^[\s:;,.\-–—)\]]+/, "").trim();
+  const words = t.split(" ");
+  return words.length > 60 ? words.slice(0, 60).join(" ") : t;
+}
+
 async function geminiVision(
   apiKey: string,
   instruction: string,
   imageData: string,
   mimeType: string,
   maxOutputTokens: number,
+  temperature = 0.6,
 ): Promise<{ text?: string; error?: string; code?: number }> {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
@@ -71,7 +88,13 @@ async function geminiVision(
             ],
           },
         ],
-        generationConfig: { temperature: 0.6, maxOutputTokens },
+        // thinkingBudget:0 → no hidden reasoning tokens. Without it, flash-latest
+        // spends the budget "thinking" and truncates/leaks draft text into output.
+        generationConfig: {
+          temperature,
+          maxOutputTokens,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
       cache: "no-store",
     },
@@ -186,12 +209,15 @@ export async function POST(req: Request) {
 
   const describe = await geminiVision(
     apiKey,
-    "Describe this image for an AI image generator in vivid, concrete detail: main subject, " +
-      "pose/action, setting, lighting, dominant colors, and any distinctive features. " +
-      "Output ONLY the description as a single paragraph, max 60 words. No preamble.",
+    "You are an image-captioning function. Look at the image and write ONE plain-prose " +
+      "sentence (max 45 words) describing exactly what is visually present: main subject, " +
+      "pose or action, setting, lighting, and dominant colors. " +
+      "Output nothing but that single sentence — no markdown, no asterisks, no bullets, " +
+      "no labels, no quotes, no 'Draft'/'Option'/'Version', no alternatives, no preamble.",
     imageData,
     mimeType,
-    300,
+    256,
+    0.35,
   );
   if (describe.error || !describe.text) {
     const friendly =
@@ -201,7 +227,8 @@ export async function POST(req: Request) {
     return Response.json({ error: friendly }, { status: 502 });
   }
 
-  const finalPrompt = [describe.text, twist, STYLE_MODIFIERS[styleKey]]
+  const caption = cleanCaption(describe.text);
+  const finalPrompt = [caption, twist, STYLE_MODIFIERS[styleKey]]
     .filter(Boolean)
     .join(". ");
   const [width, height] = ASPECT_DIMS[aspectRatio] ?? [1024, 1024];
@@ -215,6 +242,6 @@ export async function POST(req: Request) {
     mode: "transform",
     image,
     style: styleKey,
-    caption: describe.text,
+    caption,
   });
 }
