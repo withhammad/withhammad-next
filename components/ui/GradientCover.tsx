@@ -7,6 +7,7 @@
 // prefers-reduced-motion block (globals.css) clamps it to a no-op.
 
 import React from "react";
+import Image from "next/image";
 
 export type CoverPattern = "auto" | "dots" | "grid" | "waves" | "orbits";
 export type CoverVariant = "card" | "hero" | "mini";
@@ -79,6 +80,7 @@ export default function GradientCover({
   variant = "card",
   animate = true,
   className = "",
+  imageSrc = null,
 }: {
   seed: string;
   category?: string | null;
@@ -89,6 +91,7 @@ export default function GradientCover({
   variant?: CoverVariant;
   animate?: boolean;
   className?: string;
+  imageSrc?: string | null;
 }) {
   const safeSeed = seed || "with-hammad";
   const theme = (category && THEMES[category.toLowerCase().trim()]) || FALLBACK;
@@ -113,14 +116,25 @@ export default function GradientCover({
       aria-hidden
       className={`relative h-full w-full overflow-hidden bg-[#0A0A0B] ${className}`}
     >
-      {/* sheen */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(155deg, rgba(255,255,255,0.05), transparent 55%)",
-        }}
-      />
+      {imageSrc ? (
+        /* Real AI-generated cover image (replaces the procedural art). */
+        <Image
+          src={imageSrc}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="object-cover"
+        />
+      ) : (
+        <>
+          {/* sheen */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(155deg, rgba(255,255,255,0.05), transparent 55%)",
+            }}
+          />
       {/* gradient-mesh blobs */}
       <div
         className="absolute inset-0"
@@ -329,6 +343,8 @@ export default function GradientCover({
 
         <rect width="400" height="260" filter={`url(#${uid}-grain)`} opacity="0.05" />
       </svg>
+        </>
+      )}
 
       {/* depth vignette + bottom fade (stronger when there's overlaid text) */}
       <div

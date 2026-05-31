@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import PostArtwork from "@/components/blog/PostArtwork";
+import { blogCoverFor } from "@/lib/ai-images";
 import type { PostCard } from "@/lib/blog";
 
 const MONTHS = [
@@ -43,6 +44,7 @@ function Cover({
     <PostArtwork
       seed={post.slug}
       category={post.categories[0]?.name}
+      imageSrc={blogCoverFor(post.categories[0]?.name)}
       eyebrow={variant === "hero" ? post.categories[0]?.name : null}
       variant={variant}
     />

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getPostSlugs, getPosts } from "@/lib/content";
 import { stripHtml, extractFaqs } from "@/lib/blog";
 import PostArtwork from "@/components/blog/PostArtwork";
+import { blogCoverFor } from "@/lib/ai-images";
 
 export const revalidate = 300;
 
@@ -252,6 +253,7 @@ export default async function PostPage({
             <PostArtwork
               seed={post.slug}
               category={post.categories[0]?.name}
+              imageSrc={blogCoverFor(post.categories[0]?.name)}
               variant="hero"
             />
           )}
@@ -356,6 +358,7 @@ export default async function PostPage({
                       <PostArtwork
                         seed={p.slug}
                         category={p.categories[0]?.name}
+                        imageSrc={blogCoverFor(p.categories[0]?.name)}
                         variant="mini"
                       />
                     )}
