@@ -105,6 +105,36 @@ export default function Hero() {
     >
       <GradientMesh />
 
+      {/* AI-generated ambient hero backdrop (real image), with a brand-dark
+          gradient overlay so the headline + stats stay fully legible. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-[6] overflow-hidden"
+      >
+        <Image
+          src="/ai/hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-60"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(100deg, var(--bg) 6%, color-mix(in oklab, var(--bg) 62%, transparent) 42%, color-mix(in oklab, var(--bg) 22%, transparent) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent 32%, var(--bg) 97%)",
+          }}
+        />
+      </div>
+
       <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.25fr_0.75fr]">
         <div>
           <div
