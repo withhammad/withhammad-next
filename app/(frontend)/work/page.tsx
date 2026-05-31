@@ -10,7 +10,7 @@ const SITE = "https://withhammad.com";
 export const metadata: Metadata = {
   title: "Case Studies — Real Campaigns, Real Numbers | With Hammad",
   description:
-    "Performance-marketing case studies across Google Ads, Meta, SEO, CRO, and multi-market growth in the GCC and beyond — real campaigns, real numbers, real results.",
+    "Performance-marketing case studies across Google Ads, Meta, SEO, CRO, and multi-market growth — real campaigns, real numbers, real results.",
   alternates: { canonical: "/work" },
   openGraph: {
     title: "Case Studies — Real Campaigns, Real Numbers",
@@ -18,6 +18,11 @@ export const metadata: Metadata = {
       "Performance-marketing case studies across Google Ads, Meta, SEO, CRO, and multi-market growth — real campaigns, real numbers.",
     type: "website",
     url: "/work",
+    images: ["/ai/og-default.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/ai/og-default.jpg"],
   },
 };
 

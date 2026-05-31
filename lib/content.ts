@@ -338,7 +338,8 @@ export async function pageMetadata(opts: {
   const ogImage =
     absUrl(opts.doc?.image) ||
     absUrl(pageOverride?.image?.url) ||
-    absUrl(settings?.defaultOgImage?.url);
+    absUrl(settings?.defaultOgImage?.url) ||
+    "https://withhammad.com/ai/og-default.jpg"; // brand fallback so every page has a social card
   const images = ogImage ? [{ url: ogImage }] : undefined;
   const creator = settings?.twitterHandle?.trim();
   const keywords = opts.doc?.keywords
