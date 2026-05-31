@@ -23,24 +23,27 @@ export async function GET(req: Request) {
     return new Response("Missing prompt", { status: 400 });
   }
 
-  const target = `https://${POLLINATIONS_HOST}/prompt/${encodeURIComponent(
-    prompt,
-  )}?width=${w}&height=${h}&model=${model}&nologo=true&seed=${seed}`;
-
-  // Retry transient non-image / failed responses (concurrent loads get throttled).
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  // Pollinations' free tier is flaky (intermittent 402/403/timeout), so retry a
+  // few times, alternating models, with a per-attempt timeout so a hang doesn't
+  // eat the whole budget. Any non-image response is treated as retryable.
+  const models = [model, "turbo", "flux"];
+  for (let attempt = 0; attempt < models.length; attempt += 1) {
     if (attempt > 0) {
-      await new Promise((r) => setTimeout(r, attempt * 800));
+      await new Promise((r) => setTimeout(r, 400));
     }
+    const target = `https://${POLLINATIONS_HOST}/prompt/${encodeURIComponent(
+      prompt,
+    )}?width=${w}&height=${h}&model=${models[attempt]}&nologo=true&seed=${seed}`;
     try {
       const res = await fetch(target, {
         cache: "no-store",
         headers: { "User-Agent": UA, Accept: "image/*" },
+        signal: AbortSignal.timeout(9000),
       });
       const ct = res.headers.get("content-type") ?? "";
       if (res.ok && ct.startsWith("image/")) {
         const buf = await res.arrayBuffer();
-        if (buf.byteLength > 0) {
+        if (buf.byteLength > 1000) {
           return new Response(buf, {
             status: 200,
             headers: {
@@ -52,7 +55,7 @@ export async function GET(req: Request) {
         }
       }
     } catch {
-      /* retry */
+      /* timeout / network — retry next model */
     }
   }
 
