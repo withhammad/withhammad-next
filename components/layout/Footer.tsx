@@ -19,7 +19,7 @@ const SOCIAL = [
 ] as const;
 
 const NAV = [
-  { label: "Work", href: "/#selected-work" },
+  { label: "Work", href: "/work" },
   { label: "Services", href: "/#services" },
   { label: "Tools", href: "/tools" },
   { label: "Products", href: "/products" },

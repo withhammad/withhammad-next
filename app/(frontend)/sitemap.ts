@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/tools/tool-directory",
     "/tools/ad-copy-writer",
     "/tools/image-generator",
+    "/work",
     "/products",
     "/blog",
     "/contact",
