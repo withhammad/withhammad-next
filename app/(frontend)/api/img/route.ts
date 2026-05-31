@@ -10,6 +10,53 @@ const POLLINATIONS_HOST = "image.pollinations.ai";
 const UA =
   "Mozilla/5.0 (compatible; withhammad.com/1.0; +https://withhammad.com)";
 
+// Reliable free provider: Cloudflare Workers AI (set CF_ACCOUNT_ID + CF_AI_TOKEN
+// in env). SDXL-Lightning honours width/height, is fast, and is genuinely free
+// (~hundreds of images/day). Falls back to keyless Pollinations when unset.
+const CF_ACCOUNT = process.env.CF_ACCOUNT_ID;
+const CF_TOKEN = process.env.CF_AI_TOKEN;
+const CF_MODEL =
+  process.env.CF_AI_MODEL ?? "@cf/bytedance/stable-diffusion-xl-lightning";
+
+async function cloudflareImage(
+  prompt: string,
+  width: number,
+  height: number,
+  seed: number,
+): Promise<{ buf: ArrayBuffer | Buffer; ct: string } | null> {
+  if (!CF_ACCOUNT || !CF_TOKEN) return null;
+  try {
+    const res = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT}/ai/run/${CF_MODEL}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${CF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt, width, height, num_steps: 6, seed }),
+        signal: AbortSignal.timeout(20000),
+        cache: "no-store",
+      },
+    );
+    const ct = res.headers.get("content-type") ?? "";
+    if (!res.ok) return null;
+    // SD models return a binary image; Flux returns JSON { result: { image: b64 } }.
+    if (ct.startsWith("image/")) {
+      const buf = await res.arrayBuffer();
+      return buf.byteLength > 1000 ? { buf, ct } : null;
+    }
+    if (ct.includes("json")) {
+      const data = (await res.json()) as { result?: { image?: string } };
+      const b64 = data.result?.image;
+      if (b64) return { buf: Buffer.from(b64, "base64"), ct: "image/jpeg" };
+    }
+  } catch {
+    /* fall through to Pollinations */
+  }
+  return null;
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const prompt = (searchParams.get("p") ?? "").trim().slice(0, 1500);
@@ -23,6 +70,19 @@ export async function GET(req: Request) {
     return new Response("Missing prompt", { status: 400 });
   }
 
+  // Primary: Cloudflare Workers AI (reliable, free) when configured.
+  const cf = await cloudflareImage(prompt, w, h, seed);
+  if (cf) {
+    return new Response(cf.buf, {
+      status: 200,
+      headers: {
+        "Content-Type": cf.ct,
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
+  }
+
+  // Fallback: keyless Pollinations.
   // Pollinations' free tier is flaky (intermittent 402/403/timeout), so retry a
   // few times, alternating models, with a per-attempt timeout so a hang doesn't
   // eat the whole budget. Any non-image response is treated as retryable.
