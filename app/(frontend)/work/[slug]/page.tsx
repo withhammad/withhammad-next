@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getCaseStudyBySlug, getCaseStudyIndex } from "@/lib/content";
 import type { CaseStudyDetail } from "@/lib/wp-queries";
 import CaseStudyView from "@/components/sections/CaseStudyView";
+import { clamp } from "@/lib/text";
 
 export const revalidate = 300;
 
@@ -42,13 +43,12 @@ export async function generateMetadata({
   const name = displayName(cs);
   const metric = metricSuffix(cs);
   const desc = f?.heroMetric
-    ? `${name}: ${f.heroMetric}${
-        f.heroMetricLabel ? ` ${f.heroMetricLabel.toLowerCase()}` : ""
-      }${
-        f.servicesUsed ? ` via ${f.servicesUsed}` : ""
-      }. A performance-marketing case study by Hammad Yousuf — the strategy, structure, and results.`.slice(
-        0,
-        158,
+    ? clamp(
+        `${name}: ${f.heroMetric}${
+          f.heroMetricLabel ? ` ${f.heroMetricLabel.toLowerCase()}` : ""
+        }${
+          f.servicesUsed ? ` via ${f.servicesUsed}` : ""
+        }. A performance-marketing case study by Hammad Yousuf — the strategy, structure, and results.`,
       )
     : `${name} — a performance-marketing case study by Hammad Yousuf: the challenge, strategy, execution, and measurable results.`;
 

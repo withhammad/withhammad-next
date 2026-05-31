@@ -9,10 +9,9 @@ export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     path: "/tools",
     pageKey: "tools",
-    fallbackTitle:
-      "Free Marketing Tools for the GCC — Ad Spend Calculator & AEO Checker | With Hammad",
+    fallbackTitle: "Free Marketing & AI Tools for the GCC | With Hammad",
     fallbackDescription:
-      "Free marketing tools for the GCC — a GCC ad spend calculator, an AEO citation checker, an AI prompt generator, an AI ad-copy writer, an AI image generator, and a curated AI tools directory for marketers. No login.",
+      "Free marketing & AI tools for the GCC: an ad-spend calculator, AEO citation checker, AI prompt generator, ad-copy writer, and image generator. No login.",
   });
 }
 

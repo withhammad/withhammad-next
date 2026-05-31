@@ -29,7 +29,10 @@ export async function generateMetadata(): Promise<Metadata> {
   // image URLs resolve against metadataBase automatically.
   const settings = await getSiteSettings();
   const description = settings?.defaultDescription?.trim() || SITE_DESCRIPTION;
-  const ogImage = settings?.defaultOgImage?.url ?? undefined;
+  // Falls back to the AI brand card so index/home pages always have a social
+  // image; detail pages (case studies, posts, products) override via their own
+  // opengraph-image route.
+  const ogImage = settings?.defaultOgImage?.url ?? "/ai/og-default.jpg";
   const creator = settings?.twitterHandle?.trim();
 
   return {

@@ -6,6 +6,7 @@ import { getPostBySlug, getPostSlugs, getPosts } from "@/lib/content";
 import { stripHtml, extractFaqs } from "@/lib/blog";
 import PostArtwork from "@/components/blog/PostArtwork";
 import { blogCoverFor } from "@/lib/ai-images";
+import { clamp } from "@/lib/text";
 
 export const revalidate = 300;
 
@@ -58,9 +59,10 @@ export async function generateMetadata({
 
   // Per-doc SEO override (admin → post → SEO) wins over the auto-generated meta.
   const title = post.seo?.title?.trim() || `${post.title} | With Hammad`;
-  const description = (
-    post.seo?.description?.trim() || stripHtml(post.excerpt)
-  ).slice(0, 160);
+  const description = clamp(
+    post.seo?.description?.trim() || stripHtml(post.excerpt),
+    160,
+  );
   const canonical = `/blog/${post.slug}`;
   const ogUrl = post.seo?.image || post.featuredImage?.sourceUrl;
   const images = ogUrl ? [{ url: ogUrl }] : undefined;
@@ -136,7 +138,7 @@ export default async function PostPage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description: (post.seo?.description?.trim() || shortAnswer).slice(0, 200),
+    description: clamp(post.seo?.description?.trim() || shortAnswer, 200),
     image: `${SITE_URL}/blog/${post.slug}/opengraph-image`,
     datePublished: post.date || undefined,
     dateModified: post.modified || post.date || undefined,

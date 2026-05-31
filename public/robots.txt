@@ -1,0 +1,30 @@
+# robots.txt — withhammad.com
+# Served statically (the dynamic app/robots route wasn't resolving under the
+# (frontend) route group). Allow everything except API routes.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# AI / answer-engine crawlers — intentionally ALLOWED for AEO (we want With
+# Hammad's content cited in AI answers).
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://withhammad.com/sitemap.xml
+Host: https://withhammad.com

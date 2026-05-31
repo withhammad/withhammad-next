@@ -13,7 +13,7 @@ export function generateMetadata(): Promise<Metadata> {
     pageKey: "products",
     fallbackTitle: "Products — Marketing Systems & Toolkits | With Hammad",
     fallbackDescription:
-      "Digital products to run AI-driven growth yourself: the Prompt Vault ($27), the Automation Toolkit ($197), and the Complete Growth System ($997). Plus a free growth-audit checklist.",
+      "Run AI-driven growth yourself — the $27 Prompt Vault, $197 Automation Toolkit, $997 Complete Growth System, plus a free growth-audit checklist.",
   });
 }
 
