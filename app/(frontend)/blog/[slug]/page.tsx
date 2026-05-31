@@ -21,6 +21,26 @@ function formatDate(iso: string): string {
   return `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}`;
 }
 
+// Contextual internal link chosen by the post's category, so each article points
+// readers to the most relevant proof (case studies) or product. Matched on the
+// category NAME (case-insensitive) to stay robust to slug formatting.
+function contextualLink(
+  categoryName: string | undefined,
+): { href: string; label: string } {
+  const c = (categoryName ?? "").toLowerCase();
+  if (c.includes("automation") || c.includes("ai")) {
+    return {
+      href: "/products/automation-toolkit",
+      label: "See the Automation Toolkit",
+    };
+  }
+  if (c.includes("paid") || c.includes("ads") || c.includes("ppc")) {
+    return { href: "/work", label: "See the paid-ads case studies" };
+  }
+  // SEO/AEO and everything else → proof in the work archive.
+  return { href: "/work", label: "See the results in my case studies" };
+}
+
 export async function generateStaticParams() {
   const slugs = await getPostSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -49,6 +69,8 @@ export async function generateMetadata({
     ...(post.tags ?? []),
   ].filter(Boolean);
 
+  const section = post.categories[0]?.name;
+
   return {
     title,
     description,
@@ -59,15 +81,19 @@ export async function generateMetadata({
       description,
       type: "article",
       url: canonical,
-      images,
+      // Only set images when a real per-doc image exists; otherwise omit the key
+      // so Next's file-based opengraph-image.tsx is auto-injected as the OG image.
+      ...(images ? { images } : {}),
       publishedTime: post.date || undefined,
-      modifiedTime: post.modified || undefined,
+      modifiedTime: post.modified || post.date || undefined,
+      authors: ["Hammad Yousuf"],
+      ...(section ? { section } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description,
-      images: images?.map((i) => i.url),
+      ...(images ? { images: images.map((i) => i.url) } : {}),
     },
   };
 }
@@ -97,16 +123,42 @@ export default async function PostPage({
     ...others.filter((p) => !sameCat.includes(p)),
   ].slice(0, 3);
 
+  const ctxLink = contextualLink(post.categories[0]?.name);
+
+  const section = post.categories[0]?.name;
+  const articleKeywords = [
+    ...(post.seo?.keywords?.split(",").map((k) => k.trim()) ?? []),
+    ...(post.tags ?? []),
+  ].filter(Boolean);
+
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
-    description: shortAnswer.slice(0, 200),
+    description: (post.seo?.description?.trim() || shortAnswer).slice(0, 200),
+    image: `${SITE_URL}/blog/${post.slug}/opengraph-image`,
     datePublished: post.date || undefined,
     dateModified: post.modified || post.date || undefined,
-    author: { "@type": "Person", name: post.authorName ?? "Hammad Yousuf" },
-    image: post.featuredImage?.sourceUrl,
+    author: { "@type": "Person", name: "Hammad Yousuf", url: SITE_URL },
+    publisher: { "@type": "Person", name: "Hammad Yousuf", url: SITE_URL },
     mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+    ...(section ? { articleSection: section } : {}),
+    ...(articleKeywords.length ? { keywords: articleKeywords.join(", ") } : {}),
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${SITE_URL}/blog`,
+      },
+      { "@type": "ListItem", position: 3, name: post.title },
+    ],
   };
 
   const faqLd =
@@ -127,6 +179,10 @@ export default async function PostPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       {faqLd ? (
         <script
@@ -260,6 +316,16 @@ export default async function PostPage({
               Explore free tools
             </Link>
           </div>
+          <p className="mt-6 text-sm text-[var(--muted)]">
+            Prefer proof first?{" "}
+            <Link
+              href={ctxLink.href}
+              className="font-medium text-[var(--accent-indigo)] underline-offset-4 transition-colors hover:text-[#7C7DF3] hover:underline"
+            >
+              {ctxLink.label}
+            </Link>
+            .
+          </p>
         </aside>
       </article>
 

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { getPosts, pageMetadata } from "@/lib/content";
+import { stripHtml } from "@/lib/blog";
 import BlogIndex from "@/components/blog/BlogIndex";
 import Reveal from "@/components/tools/Reveal";
+
+const SITE_URL = "https://withhammad.com";
 
 export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -18,8 +21,66 @@ export const revalidate = 300;
 export default async function BlogPage() {
   const posts = await getPosts();
 
+  // Blog + ItemList describe the archive for search/AEO; descriptive names and
+  // absolute URLs per post. BreadcrumbList places the archive under Home.
+  const blogLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "With Hammad — Blog",
+    description:
+      "Practical playbooks on AI marketing, performance media, SEO/AEO, and the growth systems behind predictable revenue.",
+    url: `${SITE_URL}/blog`,
+    author: { "@type": "Person", name: "Hammad Yousuf", url: SITE_URL },
+    publisher: { "@type": "Person", name: "Hammad Yousuf", url: SITE_URL },
+    ...(posts.length
+      ? {
+          blogPost: posts.map((p) => ({
+            "@type": "BlogPosting",
+            headline: p.title,
+            url: `${SITE_URL}/blog/${p.slug}`,
+            datePublished: p.date || undefined,
+            ...(p.excerpt ? { description: stripHtml(p.excerpt).slice(0, 200) } : {}),
+            ...(p.categories[0] ? { articleSection: p.categories[0].name } : {}),
+          })),
+        }
+      : {}),
+  };
+
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Articles",
+    itemListElement: posts.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: p.title,
+      url: `${SITE_URL}/blog/${p.slug}`,
+    })),
+  };
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+    ],
+  };
+
   return (
     <main className="relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <section className="relative mx-auto max-w-6xl px-5 pb-6 pt-28 sm:px-8 sm:pt-32">
         <div
           aria-hidden

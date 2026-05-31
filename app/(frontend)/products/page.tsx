@@ -5,6 +5,8 @@ import { getProducts, pageMetadata } from "@/lib/content";
 import ProductGrid from "@/components/products/ProductGrid";
 import Reveal from "@/components/tools/Reveal";
 
+const SITE_URL = "https://withhammad.com";
+
 export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     path: "/products",
@@ -22,8 +24,37 @@ export default async function ProductsPage() {
   const live = await getProducts();
   const products = live.length ? live : FALLBACK_PRODUCTS;
 
+  // ItemList of the catalogue — descriptive name (incl. price/tier) + canonical url.
+  const itemListLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Digital products — With Hammad",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE_URL}/products/${p.slug}`,
+      name: `${p.name} — ${p.free ? "Free" : p.priceLabel}`,
+    })),
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Products" },
+    ],
+  };
+
   return (
     <main className="relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <section className="relative mx-auto max-w-6xl px-5 pb-8 pt-28 sm:px-8 sm:pt-32">
         <div
           aria-hidden

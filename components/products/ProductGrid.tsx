@@ -10,6 +10,59 @@ import {
   isExternalBuy,
 } from "@/lib/products";
 
+// Contextual internal links per product — a relevant (seeded, real) blog post
+// + the homepage services section. Keeps anchor text descriptive for SEO and
+// gives each card two genuine onward paths. Falls back to the blog hub if a
+// product slug isn't mapped (no dead links, no invented targets).
+const RELATED: Record<string, { href: string; label: string }> = {
+  "growth-audit-checklist": {
+    href: "/blog/google-ads-wasting-money-fix",
+    label: "Read: why Google Ads burn budget — the 5-step fix",
+  },
+  "prompt-vault": {
+    href: "/blog/ai-marketing-for-founders-2026",
+    label: "Read: how to run your marketing with AI in 2026",
+  },
+  "automation-toolkit": {
+    href: "/blog/claude-code-for-marketers",
+    label: "Read: automate PPC & Meta reporting without an engineer",
+  },
+  "complete-growth-system": {
+    href: "/blog/ai-marketing-for-founders-2026",
+    label: "Read: the founder's AI marketing playbook",
+  },
+};
+
+function RelatedLinks({ product }: { product: Product }) {
+  const post = RELATED[product.slug] ?? {
+    href: "/blog",
+    label: "Read the marketing growth blog",
+  };
+  return (
+    <div className="relative z-10 mt-6 flex flex-col gap-1.5 border-t border-white/10 pt-4 text-sm">
+      <Link
+        href={post.href}
+        className="inline-flex items-center gap-1.5 text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+      >
+        <span aria-hidden className="text-[var(--accent-amber)]">
+          →
+        </span>
+        {post.label}
+      </Link>
+      <Link
+        href="/#services"
+        aria-label={`See the marketing services behind ${product.name}`}
+        className="inline-flex items-center gap-1.5 text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+      >
+        <span aria-hidden className="text-[var(--accent-amber)]">
+          →
+        </span>
+        Work with me — done-for-you services
+      </Link>
+    </div>
+  );
+}
+
 // Small "what's inside" icon row — a designed accent for digital products.
 const INSIDE = [
   { label: "Templates", d: "M14 3v4a1 1 0 0 0 1 1h4 M9 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5H9z" },
@@ -78,6 +131,7 @@ function BuyButton({
   return (
     <a
       href={buyHref(product)}
+      aria-label={`${buyLabel(product)} — ${product.name}`}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cls}
     >
@@ -86,10 +140,11 @@ function BuyButton({
   );
 }
 
-function DetailsLink({ slug }: { slug: string }) {
+function DetailsLink({ product }: { product: Product }) {
   return (
     <Link
-      href={`/products/${slug}`}
+      href={`/products/${product.slug}`}
+      aria-label={`View details for ${product.name}`}
       className="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 hover:gap-2.5"
     >
       View details <span aria-hidden>→</span>
@@ -133,6 +188,7 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
           <h3 className="text-lg font-semibold tracking-tight text-[var(--text)]">
             <Link
               href={`/products/${product.slug}`}
+              aria-label={`${product.name} — ${product.free ? "free" : product.priceLabel}, view details`}
               className="transition-colors hover:text-white"
             >
               {product.name}
@@ -167,13 +223,15 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
           </ul>
         ) : null}
 
-        <div className="relative z-10 mt-8 flex flex-col gap-3 pt-2">
+        <RelatedLinks product={product} />
+
+        <div className="relative z-10 mt-6 flex flex-col gap-3 pt-2">
           <BuyButton
             product={product}
             variant={product.highlighted ? "solid" : "outline"}
           />
           <div className="text-center">
-            <DetailsLink slug={product.slug} />
+            <DetailsLink product={product} />
           </div>
         </div>
       </div>
@@ -198,6 +256,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
               <h3 className="mt-3 text-xl font-semibold tracking-tight text-[var(--text)]">
                 <Link
                   href={`/products/${free.slug}`}
+                  aria-label={`${free.name} — free, view details`}
                   className="transition-colors hover:text-white"
                 >
                   {free.name}
@@ -205,8 +264,9 @@ export default function ProductGrid({ products }: { products: Product[] }) {
               </h3>
               <p className="mt-2 text-sm text-[var(--muted)]">{free.tagline}</p>
               <div className="mt-3">
-                <DetailsLink slug={free.slug} />
+                <DetailsLink product={free} />
               </div>
+              <RelatedLinks product={free} />
             </div>
             <div className="w-full shrink-0 sm:w-56">
               <BuyButton product={free} variant="outline" />

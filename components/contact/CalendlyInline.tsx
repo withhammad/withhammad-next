@@ -122,6 +122,19 @@ export default function CalendlyInline({
           Open the scheduler in a new tab ↗
         </a>
       </p>
+      {/* No-JS / crawler fallback: a real, crawlable booking link. */}
+      <noscript>
+        <p className="mt-3 text-center text-sm text-[var(--muted)]">
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--accent-indigo)] hover:underline"
+          >
+            Book a free 30-minute call with Hammad Yousuf ↗
+          </a>
+        </p>
+      </noscript>
     </div>
   );
 }

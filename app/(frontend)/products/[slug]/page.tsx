@@ -35,24 +35,28 @@ export async function generateMetadata({
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product not found | With Hammad" };
 
+  const priceTier = product.free ? "Free" : product.priceLabel;
+
   // Per-doc SEO override (admin → product → SEO) wins over the auto meta.
   const title =
     product.seo?.title?.trim() ||
-    `${product.name} ${product.priceLabel ? `· ${product.priceLabel}` : ""} | With Hammad`;
+    `${product.name} — ${priceTier} | With Hammad`;
   const description =
-    product.seo?.description?.trim() ||
-    product.tagline ||
-    `${product.name} — a digital product by Hammad Yousuf.`;
+    product.seo?.description?.trim() || autoDescription(product);
   const canonical = `/products/${product.slug}`;
-  const ogUrl = product.seo?.image || product.coverImageUrl;
-  const images = ogUrl ? [{ url: ogUrl }] : undefined;
+  // Prefer the explicit SEO image, else the cover, else the per-route OG generator.
+  const ogUrl =
+    product.seo?.image ||
+    product.coverImageUrl ||
+    `/products/${product.slug}/opengraph-image`;
+  const images = [{ url: ogUrl }];
 
   return {
     title,
     description,
     alternates: { canonical },
     openGraph: {
-      title: product.name,
+      title: `${product.name} — ${priceTier}`,
       description,
       type: "website",
       url: canonical,
@@ -60,11 +64,38 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: product.name,
+      title: `${product.name} — ${priceTier}`,
       description,
-      images: images?.map((i) => i.url),
+      images: images.map((i) => i.url),
     },
   };
+}
+
+// Benefit-led meta description: price + what's inside, ~140-160 chars.
+// Adds as many whole features as fit (never cuts a feature mid-word) so the
+// "includes …" list always ends on a complete item.
+function autoDescription(p: Product): string {
+  const priceTier = p.free ? "Free" : `${p.priceLabel} one-time`;
+  const lead = p.tagline?.trim() || `${p.name} by Hammad Yousuf.`;
+  const base = `${lead} ${priceTier}`;
+
+  if (p.features.length === 0) {
+    return `${base} digital product by Hammad Yousuf.`;
+  }
+
+  const fitted: string[] = [];
+  for (const f of p.features) {
+    const next = [...fitted, f].join(", ");
+    // Keep the whole string (lead + price + "— includes ….") under ~158 chars.
+    if (`${base} — includes ${next}.`.length > 158) break;
+    fitted.push(f);
+  }
+  // Guarantee at least one feature even if the first is long (then trim safely).
+  if (fitted.length === 0) fitted.push(p.features[0]);
+
+  const full = `${base} — includes ${fitted.join(", ")}.`;
+  if (full.length <= 160) return full;
+  return `${full.slice(0, 159).replace(/\s+\S*$/, "")}…`;
 }
 
 function priceToNumber(priceLabel: string): number {
@@ -113,20 +144,39 @@ export default async function ProductPage({
   const all = await getProducts();
   const others = all.filter((p) => p.slug !== product.slug).slice(0, 3);
 
+  // OMITS aggregateRating + review on purpose — no real ratings exist, so we
+  // never invent any (matches the no-fake-testimonials rule sitewide).
+  const offerPrice = product.free
+    ? 0
+    : (product.price ?? priceToNumber(product.priceLabel));
   const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.tagline || product.name,
-    image: product.coverImageUrl ? [product.coverImageUrl] : undefined,
+    description: autoDescription(product),
+    image: `${SITE_URL}/products/${product.slug}/opengraph-image`,
     brand: { "@type": "Brand", name: "With Hammad" },
     offers: {
       "@type": "Offer",
-      price: priceToNumber(product.priceLabel),
+      price: offerPrice,
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/products/${product.slug}`,
     },
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${SITE_URL}/products`,
+      },
+      { "@type": "ListItem", position: 3, name: product.name },
+    ],
   };
 
   const buyCls =
@@ -137,6 +187,10 @@ export default async function ProductPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <section className="relative mx-auto max-w-6xl px-5 pb-16 pt-28 sm:px-8 sm:pt-32">

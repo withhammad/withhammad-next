@@ -52,6 +52,33 @@ const CHANNELS = [
   "Multi-Market GCC",
 ];
 
+// Service JSON-LD — productized performance-marketing offer. Provider is the
+// Person (Hammad), served across the UAE, the wider GCC, and remote worldwide.
+const SERVICE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Performance marketing services — Dubai & GCC",
+  serviceType: [
+    "Google Ads management",
+    "Meta Ads management",
+    "SEO",
+    "Answer Engine Optimization",
+    "Conversion rate optimization",
+    "Marketing automation",
+    "Multi-market growth",
+  ],
+  provider: {
+    "@type": "Person",
+    name: "Hammad Yousuf",
+    url: "https://withhammad.com",
+  },
+  areaServed: [
+    { "@type": "Country", name: "United Arab Emirates" },
+    { "@type": "Place", name: "GCC" },
+    { "@type": "Place", name: "Worldwide (remote)" },
+  ],
+};
+
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
 }
@@ -104,6 +131,10 @@ export default function Services({
       id="services"
       className="relative scroll-mt-24 py-24 sm:py-32"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_LD) }}
+      />
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <header className="mb-10 max-w-2xl">
           <span

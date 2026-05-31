@@ -9,11 +9,29 @@ export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     path: "/tools",
     pageKey: "tools",
-    fallbackTitle: "Free Marketing & AI Tools for Founders | With Hammad",
+    fallbackTitle:
+      "Free Marketing Tools for the GCC — Ad Spend Calculator & AEO Checker | With Hammad",
     fallbackDescription:
-      "Free, no-login marketing tools — a GCC ad-spend calculator, AEO citation checker, AI prompt generator, AI ad-copy writer, AI image generator, and a curated AI tools directory for marketers.",
+      "Free marketing tools for the GCC — a GCC ad spend calculator, an AEO citation checker, an AI prompt generator, an AI ad-copy writer, an AI image generator, and a curated AI tools directory for marketers. No login.",
   });
 }
+
+const SITE = "https://withhammad.com";
+
+// ItemList JSON-LD of every tool in the hub (GCC + AI). Internal tools resolve
+// to absolute URLs; external tools already carry their full href.
+const TOOLS_LD = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Free marketing & AI tools",
+  itemListElement: [...GCC_TOOLS, ...AI_TOOLS].map((tool, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: tool.name,
+    description: tool.description,
+    url: tool.href.startsWith("http") ? tool.href : `${SITE}${tool.href}`,
+  })),
+};
 
 function HubCard({ tool, index }: { tool: ToolCard; index: number }) {
   const accent =
@@ -90,6 +108,10 @@ function HubCard({ tool, index }: { tool: ToolCard; index: number }) {
 export default function ToolsHub() {
   return (
     <main className="relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(TOOLS_LD) }}
+      />
       {/* Intro */}
       <section className="relative mx-auto max-w-6xl px-5 pb-8 pt-28 sm:px-8 sm:pt-32">
         <div

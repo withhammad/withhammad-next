@@ -52,6 +52,20 @@ export async function generateMetadata(): Promise<Metadata> {
       ...(ogImage ? { images: [ogImage] } : {}),
       ...(creator ? { creator } : {}),
     },
+    // Search-engine site verification. Set these in Vercel → Project → Settings →
+    // Environment Variables (both must be NEXT_PUBLIC_ so they're available at
+    // metadata build time):
+    //   NEXT_PUBLIC_GSC_VERIFICATION  → Google Search Console "HTML tag" token
+    //   NEXT_PUBLIC_BING_VERIFICATION → Bing Webmaster Tools meta token (msvalidate.01)
+    // When unset, the field is omitted entirely (no empty/invalid meta tags).
+    verification: {
+      ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
+        ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+        : {}),
+      ...(process.env.NEXT_PUBLIC_BING_VERIFICATION
+        ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION } }
+        : {}),
+    },
   };
 }
 

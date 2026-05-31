@@ -1,21 +1,20 @@
 import type { MetadataRoute } from "next";
-import {
-  getPostSlugs,
-  getCaseStudyIndex,
-  getProductSlugs,
-} from "@/lib/content";
+import { getPosts, getCaseStudyIndex, getProductSlugs } from "@/lib/content";
 
 const BASE = "https://withhammad.com";
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [postSlugs, caseStudies, productSlugs] = await Promise.all([
-    getPostSlugs(),
+  const [posts, caseStudies, productSlugs] = await Promise.all([
+    getPosts(),
     getCaseStudyIndex(),
     getProductSlugs(),
   ]);
 
+  // Static routes: home, section indexes, the 4 tool subpages, and /contact.
+  // NOTE: /checkout/return is intentionally excluded — it is a transactional,
+  // noindex page (order-confirmation) that must never enter the sitemap.
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/tools",
@@ -33,8 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: p === "" ? 1 : 0.7,
   }));
 
-  const postRoutes: MetadataRoute.Sitemap = postSlugs.map((slug) => ({
-    url: `${BASE}/blog/${slug}`,
+  // Posts expose a real published date, so we attach lastModified. Case studies
+  // and products have no real content date surfaced by their fetchers, so we
+  // OMIT lastModified for those rather than fabricating one.
+  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${BASE}/blog/${post.slug}`,
+    ...(post.date ? { lastModified: new Date(post.date) } : {}),
     changeFrequency: "monthly",
     priority: 0.6,
   }));

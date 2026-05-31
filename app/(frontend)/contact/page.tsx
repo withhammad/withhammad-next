@@ -29,8 +29,15 @@ const CONTACT_LD = {
   mainEntity: {
     "@type": "Person",
     name: "Hammad Yousuf",
+    url: "https://withhammad.com",
     email: `mailto:${EMAIL}`,
     address: { "@type": "PostalAddress", addressLocality: "Dubai", addressCountry: "AE" },
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: EMAIL,
+      contactType: "sales",
+      areaServed: ["AE", "GCC", "Worldwide"],
+    },
   },
 };
 
