@@ -21,11 +21,14 @@ export interface PostCard {
   excerpt: string; // plain text or HTML
   categories: PostCategory[];
   featuredImage: PostImage | null;
+  tags?: string[];
 }
 
 export interface SeoMeta {
   title: string | null;
   description: string | null;
+  keyphrase?: string | null;
+  keywords?: string | null;
   image: string | null;
 }
 

@@ -26,6 +26,8 @@ export function lexicalToHtml(data: unknown): string {
 type PayloadMeta = {
   title?: string | null;
   description?: string | null;
+  keyphrase?: string | null;
+  keywords?: string | null;
   image?: { url?: string | null } | null;
 } | null;
 
@@ -34,9 +36,17 @@ export function extractSeo(meta?: PayloadMeta) {
   const seo = {
     title: meta.title ?? null,
     description: meta.description ?? null,
+    keyphrase: meta.keyphrase ?? null,
+    keywords: meta.keywords ?? null,
     image: meta.image?.url ?? null,
   };
-  return seo.title || seo.description || seo.image ? seo : undefined;
+  return seo.title ||
+    seo.description ||
+    seo.keyphrase ||
+    seo.keywords ||
+    seo.image
+    ? seo
+    : undefined;
 }
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -137,6 +147,7 @@ export interface PayloadPost {
   updatedAt?: string | null;
   excerpt?: string | null;
   category?: string | null;
+  tags?: (string | null)[] | null;
   content?: unknown; // lexical SerializedEditorState
   featuredImage?: { url?: string | null; alt?: string | null } | null;
   meta?: PayloadMeta;
@@ -152,6 +163,7 @@ export function mapPost(doc: PayloadPost): PostDetail {
     categories: doc.category
       ? [{ name: doc.category, slug: slugifyCategory(doc.category) }]
       : [],
+    tags: (doc.tags ?? []).filter((t): t is string => !!t),
     featuredImage: doc.featuredImage?.url
       ? { sourceUrl: doc.featuredImage.url, altText: doc.featuredImage.alt ?? null }
       : null,

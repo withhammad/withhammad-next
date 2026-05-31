@@ -312,7 +312,12 @@ export async function pageMetadata(opts: {
   fallbackTitle: string;
   fallbackDescription: string;
   pageKey?: PageKey;
-  doc?: { title?: string | null; description?: string | null; image?: string | null };
+  doc?: {
+    title?: string | null;
+    description?: string | null;
+    image?: string | null;
+    keywords?: string | null;
+  };
   ogType?: "website" | "article";
 }): Promise<Metadata> {
   const settings = await getSiteSettings();
@@ -336,10 +341,15 @@ export async function pageMetadata(opts: {
     absUrl(settings?.defaultOgImage?.url);
   const images = ogImage ? [{ url: ogImage }] : undefined;
   const creator = settings?.twitterHandle?.trim();
+  const keywords = opts.doc?.keywords
+    ?.split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
 
   return {
     title,
     description,
+    ...(keywords && keywords.length ? { keywords } : {}),
     alternates: { canonical: opts.path },
     openGraph: {
       title,

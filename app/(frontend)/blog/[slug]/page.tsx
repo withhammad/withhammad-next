@@ -43,10 +43,16 @@ export async function generateMetadata({
   const canonical = `/blog/${post.slug}`;
   const ogUrl = post.seo?.image || post.featuredImage?.sourceUrl;
   const images = ogUrl ? [{ url: ogUrl }] : undefined;
+  const keywords = [
+    ...(post.seo?.keywords?.split(",").map((k) => k.trim()) ?? []),
+    ...(post.seo?.keyphrase ? [post.seo.keyphrase] : []),
+    ...(post.tags ?? []),
+  ].filter(Boolean);
 
   return {
     title,
     description,
+    ...(keywords.length ? { keywords } : {}),
     alternates: { canonical },
     openGraph: {
       title: post.title,
@@ -199,6 +205,22 @@ export default async function PostPage({
           className="post-content mt-10"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+
+        {post.tags && post.tags.length > 0 ? (
+          <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-white/10 pt-6">
+            <span className="mr-1 text-xs uppercase tracking-[0.15em] text-[var(--muted)]">
+              Tags
+            </span>
+            {post.tags.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-white/12 bg-[var(--panel)] px-3 py-1 text-xs text-[var(--text)]"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        ) : null}
 
         {/* Lead-magnet CTA */}
         <aside className="relative mt-16 overflow-hidden rounded-3xl border border-white/10 bg-[var(--panel)] p-8 sm:p-10">

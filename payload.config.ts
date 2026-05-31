@@ -352,9 +352,45 @@ export default buildConfig({
             description: "Optional — overrides the auto-generated SEO for this page.",
           },
           fields: [
-            { name: "title", type: "text" },
-            { name: "description", type: "textarea" },
-            { name: "image", type: "upload", relationTo: "media" },
+            {
+              name: "title",
+              type: "text",
+              admin: {
+                description:
+                  "SEO / browser-tab title (~60 chars). Falls back to the page title.",
+              },
+            },
+            {
+              name: "description",
+              type: "textarea",
+              admin: {
+                description:
+                  "Meta description shown in Google + social results (~155 chars).",
+              },
+            },
+            {
+              name: "keyphrase",
+              type: "text",
+              admin: {
+                description: "Focus keyphrase you want this page to rank for.",
+              },
+            },
+            {
+              name: "keywords",
+              type: "text",
+              admin: {
+                description:
+                  "Comma-separated keywords — emitted as the meta keywords tag.",
+              },
+            },
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              admin: {
+                description: "Social / Open Graph share image (ideally 1200×630).",
+              },
+            },
           ],
         },
       ],
@@ -385,6 +421,14 @@ export default buildConfig({
           },
         },
         { name: "category", type: "text" },
+        {
+          name: "tags",
+          type: "text",
+          hasMany: true,
+          admin: {
+            description: "Topic tags — shown on the post and emitted as meta keywords.",
+          },
+        },
         { name: "publishedDate", type: "date" },
         { name: "featuredImage", type: "upload", relationTo: "media" },
         { name: "content", type: "richText" },
@@ -396,9 +440,45 @@ export default buildConfig({
             description: "Optional — overrides the auto-generated SEO for this page.",
           },
           fields: [
-            { name: "title", type: "text" },
-            { name: "description", type: "textarea" },
-            { name: "image", type: "upload", relationTo: "media" },
+            {
+              name: "title",
+              type: "text",
+              admin: {
+                description:
+                  "SEO / browser-tab title (~60 chars). Falls back to the page title.",
+              },
+            },
+            {
+              name: "description",
+              type: "textarea",
+              admin: {
+                description:
+                  "Meta description shown in Google + social results (~155 chars).",
+              },
+            },
+            {
+              name: "keyphrase",
+              type: "text",
+              admin: {
+                description: "Focus keyphrase you want this page to rank for.",
+              },
+            },
+            {
+              name: "keywords",
+              type: "text",
+              admin: {
+                description:
+                  "Comma-separated keywords — emitted as the meta keywords tag.",
+              },
+            },
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              admin: {
+                description: "Social / Open Graph share image (ideally 1200×630).",
+              },
+            },
           ],
         },
       ],
@@ -594,9 +674,45 @@ export default buildConfig({
             description: "Optional — overrides the auto-generated SEO for this page.",
           },
           fields: [
-            { name: "title", type: "text" },
-            { name: "description", type: "textarea" },
-            { name: "image", type: "upload", relationTo: "media" },
+            {
+              name: "title",
+              type: "text",
+              admin: {
+                description:
+                  "SEO / browser-tab title (~60 chars). Falls back to the page title.",
+              },
+            },
+            {
+              name: "description",
+              type: "textarea",
+              admin: {
+                description:
+                  "Meta description shown in Google + social results (~155 chars).",
+              },
+            },
+            {
+              name: "keyphrase",
+              type: "text",
+              admin: {
+                description: "Focus keyphrase you want this page to rank for.",
+              },
+            },
+            {
+              name: "keywords",
+              type: "text",
+              admin: {
+                description:
+                  "Comma-separated keywords — emitted as the meta keywords tag.",
+              },
+            },
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              admin: {
+                description: "Social / Open Graph share image (ideally 1200×630).",
+              },
+            },
           ],
         },
       ],
