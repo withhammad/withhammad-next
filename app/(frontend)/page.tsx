@@ -57,12 +57,8 @@ export default async function Home() {
     getTestimonials(),
   ]);
 
-  // Homepage features real client work only; illustrative samples stay in the
-  // CMS (and at their /work/[slug] pages) but aren't surfaced here.
-  const realCaseStudies = caseStudies.filter(
-    (cs) => cs.caseStudyFields?.isSample !== true,
-  );
-
+  // SelectedWork splits real client work (marquee) from clearly-labeled
+  // illustrative samples (a separate "Sample Projects" row), so pass the full set.
   return (
     <>
       <script
@@ -74,7 +70,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_LD) }}
       />
       <Hero />
-      <SelectedWork caseStudies={realCaseStudies} />
+      <SelectedWork caseStudies={caseStudies} />
       <AudienceRouter />
       <Services services={services} />
       <YouTubeCredibility />
