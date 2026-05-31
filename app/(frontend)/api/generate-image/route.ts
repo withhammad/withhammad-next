@@ -1,36 +1,9 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ??
-  "https://calendly.com/withhammad-marketing/30min";
-
 // Provider is configurable. Default: Flux Schnell on Replicate (fast + cheap).
 // Swap by setting REPLICATE_MODEL to any Replicate model "owner/name".
 const MODEL = process.env.REPLICATE_MODEL ?? "black-forest-labs/flux-schnell";
-
-/* Basic rate limit (per email + per IP) — caps cost on this email-gated tool. */
-const WINDOW_MS = 60 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-
-function clientIp(req: Request): string {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0].trim();
-  return req.headers.get("x-real-ip") ?? "anon";
-}
-
-function rateLimited(key: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(key, recent);
-    return true;
-  }
-  recent.push(now);
-  hits.set(key, recent);
-  return false;
-}
 
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
@@ -94,19 +67,8 @@ export async function POST(req: Request) {
     );
   }
 
-  // TODO(list-building): the gated email is available here — wire it to your
-  // CRM / newsletter (e.g. Resend audiences) if you want to capture leads.
-  if (
-    rateLimited(`email:${email.toLowerCase()}`) ||
-    rateLimited(`ip:${clientIp(req)}`)
-  ) {
-    return Response.json(
-      {
-        error: `Free limit reached (${MAX_PER_WINDOW}/hour). Want unlimited on-brand creative? Book a call: ${CALENDLY_URL}`,
-      },
-      { status: 429 },
-    );
-  }
+  // No rate limit — Pollinations is free, so generation is unlimited.
+  // (The email gate above still validates + could feed a CRM / newsletter later.)
 
   // Free, keyless provider (Pollinations) so the tool works at zero cost out of
   // the box — the image renders straight from the returned URL (the <Image> is

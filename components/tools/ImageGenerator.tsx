@@ -204,7 +204,7 @@ export default function ImageGenerator() {
           {status === "loading" ? "Generating…" : "Generate image"}
         </button>
         <p className="mt-3 text-center text-xs text-[var(--muted)]">
-          Free · 5 images per hour
+          Free · unlimited generations
         </p>
       </div>
 
