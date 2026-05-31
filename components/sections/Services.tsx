@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
@@ -129,12 +130,32 @@ export default function Services({
     <section
       ref={sectionRef}
       id="services"
-      className="relative scroll-mt-24 py-24 sm:py-32"
+      className="relative scroll-mt-24 overflow-hidden py-24 sm:py-32"
     >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_LD) }}
       />
+      {/* AI-generated ambient backdrop — subtle, behind the bento content. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
+        <Image
+          src="/ai/services.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover opacity-[0.22]"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 90% at 50% 0%, transparent 28%, var(--bg) 78%), linear-gradient(to bottom, var(--bg) 0%, transparent 16%, transparent 84%, var(--bg) 100%)",
+          }}
+        />
+      </div>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <header className="mb-10 max-w-2xl">
           <span
