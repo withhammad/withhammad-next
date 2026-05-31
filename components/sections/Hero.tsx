@@ -235,7 +235,7 @@ function Headshot() {
         {!errored ? (
           <Image
             src="/hammad-headshot.jpg"
-            alt="Hammad Yousuf"
+            alt="Hammad Yousuf, AI marketing growth strategist based in Dubai"
             fill
             sizes="(max-width: 1024px) 80vw, 400px"
             className="object-cover"

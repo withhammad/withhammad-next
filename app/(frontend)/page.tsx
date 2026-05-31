@@ -35,6 +35,17 @@ const PERSON_LD = {
   sameAs: [
     "https://www.youtube.com/@with.hammad",
     "https://www.linkedin.com/in/hammadyousuf",
+    "https://www.instagram.com/withhammad",
+    "https://github.com/withhammad",
+  ],
+  knowsAbout: [
+    "Google Ads",
+    "Meta Ads",
+    "SEO",
+    "Answer Engine Optimization (AEO)",
+    "Conversion Rate Optimization (CRO)",
+    "Google Analytics 4 (GA4)",
+    "Marketing automation",
   ],
   address: {
     "@type": "PostalAddress",
@@ -48,6 +59,36 @@ const WEBSITE_LD = {
   "@type": "WebSite",
   name: "With Hammad",
   url: "https://withhammad.com",
+  // No site search → SearchAction intentionally omitted.
+};
+
+const PROFESSIONAL_SERVICE_LD = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "With Hammad — AI Marketing & Performance Growth",
+  url: "https://withhammad.com",
+  image: "https://withhammad.com/hammad-headshot.jpg",
+  founder: { "@type": "Person", name: "Hammad Yousuf" },
+  email: "marketing@withhammad.com",
+  areaServed: [
+    { "@type": "Country", name: "United Arab Emirates" },
+    { "@type": "Place", name: "GCC" },
+    { "@type": "Place", name: "Worldwide (remote)" },
+  ],
+  serviceType: [
+    "Google Ads management",
+    "Meta Ads management",
+    "Performance marketing",
+    "SEO",
+    "Answer Engine Optimization",
+    "Conversion rate optimization",
+    "Marketing automation",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Dubai",
+    addressCountry: "AE",
+  },
 };
 
 export default async function Home() {
@@ -68,6 +109,12 @@ export default async function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(PROFESSIONAL_SERVICE_LD),
+        }}
       />
       <Hero />
       <SelectedWork caseStudies={caseStudies} />

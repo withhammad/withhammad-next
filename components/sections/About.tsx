@@ -51,7 +51,7 @@ function AboutPhoto() {
         {!errored ? (
           <Image
             src="/hammad-about.jpg"
-            alt="Hammad Yousuf"
+            alt="Hammad Yousuf — performance marketing specialist for founders in Dubai and the GCC"
             fill
             sizes="(max-width: 1024px) 80vw, 384px"
             className="object-cover"
