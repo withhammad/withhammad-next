@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-3-5-haiku-latest";
-const GEMINI_MODEL = process.env.GEMINI_CHAT_MODEL ?? "gemini-2.0-flash";
+const GEMINI_MODEL = process.env.GEMINI_CHAT_MODEL ?? "gemini-flash-latest";
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ??
   "https://calendly.com/withhammad-marketing/30min";
