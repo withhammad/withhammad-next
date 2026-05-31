@@ -7,7 +7,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-3-5-haiku-latest";
-const GEMINI_MODEL = process.env.GEMINI_CHAT_MODEL ?? "gemini-flash-latest";
+// gemini-2.5-flash-lite has a much larger free daily quota (~1000/day) than
+// gemini-flash-latest (→ gemini-3.5-flash, only 20/day) — critical for a live
+// chatbot that would otherwise die after 20 messages a day.
+const GEMINI_MODEL = process.env.GEMINI_CHAT_MODEL ?? "gemini-2.5-flash-lite";
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ??
   "https://calendly.com/withhammad-marketing/30min";

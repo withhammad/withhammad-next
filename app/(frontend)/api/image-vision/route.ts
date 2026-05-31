@@ -13,7 +13,9 @@ export const maxDuration = 30; // headroom for retry-with-backoff on free-tier 4
 // Vision (image→text) runs on gemini-flash-latest, the same free quota the chatbot uses.
 // Image generation runs on keyless Pollinations.
 
-const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL ?? "gemini-flash-latest";
+// gemini-2.5-flash-lite: vision-capable with a much larger free daily quota
+// (~1000/day) than gemini-flash-latest (→ gemini-3.5-flash, only 20/day).
+const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL ?? "gemini-2.5-flash-lite";
 
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 

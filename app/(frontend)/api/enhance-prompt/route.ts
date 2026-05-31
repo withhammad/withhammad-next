@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 // gemini-flash-latest (the chatbot's quota). If no key is set, it's a no-op
 // passthrough so the UI never breaks.
 
-const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL ?? "gemini-flash-latest";
+const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL ?? "gemini-2.5-flash-lite";
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
 export async function POST(req: Request) {
