@@ -5,13 +5,14 @@ import Image from "next/image";
 import Reveal from "@/components/tools/Reveal";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-type Mode = "create" | "transform" | "analyze";
+type Mode = "create" | "transform" | "analyze" | "caption";
 type Status = "idle" | "loading" | "done" | "error";
 
 const MODES: { id: Mode; label: string; hint: string }[] = [
   { id: "create", label: "Create", hint: "Text → image" },
-  { id: "transform", label: "Transform", hint: "Photo → new style" },
+  { id: "transform", label: "Transform", hint: "Photo → restyle" },
   { id: "analyze", label: "Analyze", hint: "Photo → insights" },
+  { id: "caption", label: "Caption", hint: "Photo → copy" },
 ];
 
 const ASPECTS = [
@@ -21,6 +22,16 @@ const ASPECTS = [
   { id: "3:2", label: "Classic" },
 ] as const;
 
+const COUNTS = [1, 4];
+
+const PLATFORMS = [
+  { id: "instagram", label: "Instagram" },
+  { id: "linkedin", label: "LinkedIn" },
+  { id: "facebook", label: "Facebook" },
+  { id: "x", label: "X" },
+  { id: "tiktok", label: "TikTok" },
+];
+
 // "Create" styles are folded into the text prompt client-side.
 const CREATE_STYLES: { id: string; label: string; mod: string }[] = [
   { id: "", label: "None", mod: "" },
@@ -28,7 +39,11 @@ const CREATE_STYLES: { id: string; label: string; mod: string }[] = [
   { id: "render3d", label: "3D Render", mod: "glossy 3D render, soft studio lighting, premium product shot" },
   { id: "cartoon", label: "Cartoon", mod: "vibrant cartoon illustration, bold clean outlines, flat cel shading" },
   { id: "anime", label: "Anime", mod: "anime key art, cel shaded, expressive, studio quality" },
+  { id: "comic", label: "Comic", mod: "comic-book panel, heavy ink outlines, halftone shading, dynamic" },
+  { id: "sketch", label: "Sketch", mod: "graphite pencil sketch, cross-hatching, sketchbook texture, monochrome" },
+  { id: "pixel", label: "Pixel Art", mod: "retro 8-bit pixel art, chunky pixels, limited palette" },
   { id: "cyberpunk", label: "Cyberpunk", mod: "neon cyberpunk, magenta and cyan glow, futuristic, cinematic" },
+  { id: "vaporwave", label: "Vaporwave", mod: "vaporwave aesthetic, pastel pink and cyan, retro 80s grid, chrome" },
   { id: "watercolor", label: "Watercolor", mod: "soft watercolor painting, delicate washes, paper texture" },
   { id: "minimal", label: "Minimal", mod: "minimal clean design, generous negative space, elegant" },
 ];
@@ -42,6 +57,15 @@ const TRANSFORM_STYLES: { id: string; label: string }[] = [
   { id: "watercolor", label: "Watercolor" },
   { id: "cyberpunk", label: "Cyberpunk" },
   { id: "popart", label: "Pop Art" },
+  { id: "comic", label: "Comic" },
+  { id: "sketch", label: "Sketch" },
+  { id: "pixel", label: "Pixel Art" },
+  { id: "claymation", label: "Claymation" },
+  { id: "lowpoly", label: "Low Poly" },
+  { id: "vaporwave", label: "Vaporwave" },
+  { id: "sticker", label: "Sticker" },
+  { id: "lineart", label: "Line Art" },
+  { id: "renaissance", label: "Renaissance" },
   { id: "surreal", label: "Surreal ✦" },
 ];
 
@@ -56,6 +80,14 @@ const chip = (active: boolean) =>
   (active
     ? "bg-[var(--accent-indigo)] text-white"
     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]");
+
+interface CaptionData {
+  altText: string;
+  caption: string;
+  hashtags: string[];
+  adText: string;
+  platform: string;
+}
 
 /** Downscale to ≤1024px on the long edge and re-encode as JPEG to keep payloads small. */
 async function processFile(
@@ -126,6 +158,61 @@ function RichText({ text }: { text: string }) {
   );
 }
 
+function Spinner({ msg, reduced }: { msg: string; reduced: boolean }) {
+  return (
+    <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
+      <span
+        className={
+          "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+          (reduced ? "" : "animate-spin")
+        }
+      />
+      <span className="text-sm">{msg}</span>
+    </div>
+  );
+}
+
+function CopyBtn({ text }: { text: string }) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setDone(true);
+          setTimeout(() => setDone(false), 1500);
+        } catch {
+          /* clipboard blocked */
+        }
+      }}
+      className="shrink-0 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent-indigo)] hover:text-[var(--text)]"
+    >
+      {done ? "Copied ✓" : "Copy"}
+    </button>
+  );
+}
+
+function CopyBlock({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-[var(--bg)] p-3.5">
+      <div className="mb-1.5 flex items-center justify-between gap-3">
+        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
+          {label}
+        </span>
+        <CopyBtn text={value} />
+      </div>
+      <p className="text-sm leading-relaxed text-[var(--text)]">{value}</p>
+    </div>
+  );
+}
+
 export default function ImageGenerator() {
   const reduced = useReducedMotion();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -137,16 +224,20 @@ export default function ImageGenerator() {
   const [mode, setMode] = useState<Mode>("create");
   const [prompt, setPrompt] = useState("");
   const [aspect, setAspect] = useState<string>("1:1");
+  const [count, setCount] = useState(1);
   const [createStyle, setCreateStyle] = useState("");
   const [transformStyle, setTransformStyle] = useState("cartoon");
+  const [platform, setPlatform] = useState("instagram");
 
   const [preview, setPreview] = useState("");
   const [imgBase64, setImgBase64] = useState("");
   const [imgMime, setImgMime] = useState("image/jpeg");
 
   const [status, setStatus] = useState<Status>("idle");
-  const [image, setImage] = useState("");
+  const [enhancing, setEnhancing] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
   const [analysis, setAnalysis] = useState("");
+  const [captionData, setCaptionData] = useState<CaptionData | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -179,8 +270,9 @@ export default function ImageGenerator() {
 
   const resetResults = () => {
     setStatus("idle");
-    setImage("");
+    setImages([]);
     setAnalysis("");
+    setCaptionData(null);
     setError("");
   };
 
@@ -209,6 +301,24 @@ export default function ImageGenerator() {
     }
   };
 
+  const enhance = async () => {
+    if (enhancing || !prompt.trim()) return;
+    setEnhancing(true);
+    try {
+      const res = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, prompt: prompt.trim() }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { prompt?: string };
+      if (data.prompt) setPrompt(data.prompt);
+    } catch {
+      /* leave prompt as-is */
+    } finally {
+      setEnhancing(false);
+    }
+  };
+
   const run = async () => {
     if (status === "loading") return;
 
@@ -216,25 +326,32 @@ export default function ImageGenerator() {
       if (!prompt.trim()) return;
       setStatus("loading");
       setError("");
-      setImage("");
+      setImages([]);
       const mod = CREATE_STYLES.find((s) => s.id === createStyle)?.mod;
       const finalPrompt = mod ? `${prompt.trim()}, ${mod}` : prompt.trim();
       try {
         const res = await fetch("/api/generate-image", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, prompt: finalPrompt, aspectRatio: aspect }),
+          body: JSON.stringify({
+            email,
+            prompt: finalPrompt,
+            aspectRatio: aspect,
+            count,
+          }),
         });
         const data = (await res.json().catch(() => ({}))) as {
           image?: string;
+          images?: string[];
           error?: string;
         };
-        if (!res.ok || !data.image) {
+        const out = data.images?.length ? data.images : data.image ? [data.image] : [];
+        if (!res.ok || out.length === 0) {
           setError(data.error ?? "Something went wrong. Please try again.");
           setStatus("error");
           return;
         }
-        setImage(data.image);
+        setImages(out);
         setStatus("done");
       } catch {
         setError("Network error. Please try again.");
@@ -243,7 +360,7 @@ export default function ImageGenerator() {
       return;
     }
 
-    // transform + analyze both need an uploaded image
+    // transform + analyze + caption need an uploaded image
     if (!imgBase64) {
       setError("Upload an image first.");
       setStatus("error");
@@ -251,8 +368,9 @@ export default function ImageGenerator() {
     }
     setStatus("loading");
     setError("");
-    setImage("");
+    setImages([]);
     setAnalysis("");
+    setCaptionData(null);
     try {
       const res = await fetch("/api/image-vision", {
         method: "POST",
@@ -265,11 +383,19 @@ export default function ImageGenerator() {
           style: transformStyle,
           prompt: mode === "transform" ? prompt.trim() : undefined,
           aspectRatio: aspect,
+          count,
+          platform,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         image?: string;
+        images?: string[];
         text?: string;
+        altText?: string;
+        caption?: string;
+        hashtags?: string[];
+        adText?: string;
+        platform?: string;
         error?: string;
       };
       if (!res.ok) {
@@ -279,13 +405,22 @@ export default function ImageGenerator() {
       }
       if (mode === "analyze") {
         setAnalysis(data.text ?? "");
+      } else if (mode === "caption") {
+        setCaptionData({
+          altText: data.altText ?? "",
+          caption: data.caption ?? "",
+          hashtags: data.hashtags ?? [],
+          adText: data.adText ?? "",
+          platform: data.platform ?? platform,
+        });
       } else {
-        if (!data.image) {
+        const out = data.images?.length ? data.images : data.image ? [data.image] : [];
+        if (out.length === 0) {
           setError("Couldn't transform that image. Try again.");
           setStatus("error");
           return;
         }
-        setImage(data.image);
+        setImages(out);
       }
       setStatus("done");
     } catch {
@@ -329,7 +464,7 @@ export default function ImageGenerator() {
           </h2>
           <p className="mt-2 text-sm text-[var(--muted)]">
             Pop in your email and start creating — it&apos;s free and unlimited.
-            Generate, restyle, and analyze images.
+            Generate, restyle, analyze, and caption images.
           </p>
           <input
             type="email"
@@ -353,27 +488,31 @@ export default function ImageGenerator() {
     );
   }
 
-  const needsUpload = mode === "transform" || mode === "analyze";
-  const canRun =
-    mode === "create" ? Boolean(prompt.trim()) : Boolean(imgBase64);
+  const needsUpload = mode !== "create";
+  const showImageControls = mode === "create" || mode === "transform";
+  const canRun = mode === "create" ? Boolean(prompt.trim()) : Boolean(imgBase64);
   const runLabel =
     status === "loading"
       ? mode === "analyze"
         ? "Analyzing…"
-        : mode === "transform"
-          ? "Reimagining…"
-          : "Generating…"
+        : mode === "caption"
+          ? "Writing copy…"
+          : mode === "transform"
+            ? "Reimagining…"
+            : "Generating…"
       : mode === "analyze"
         ? "Analyze image"
-        : mode === "transform"
-          ? "Transform image"
-          : "Generate image";
+        : mode === "caption"
+          ? "Write copy"
+          : mode === "transform"
+            ? "Transform image"
+            : "Generate image";
 
   /* ------------------------------- studio ------------------------------- */
   return (
     <Reveal className="space-y-6">
       {/* Mode switcher */}
-      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-[var(--panel)] p-1.5">
+      <div className="grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[var(--panel)] p-1.5 sm:grid-cols-4">
         {MODES.map((m) => (
           <button
             key={m.id}
@@ -395,7 +534,7 @@ export default function ImageGenerator() {
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         {/* ----------------------------- controls ----------------------------- */}
         <div className="rounded-2xl border border-white/10 bg-[var(--panel)] p-5 sm:p-6">
-          {/* Upload (transform + analyze) */}
+          {/* Upload (transform + analyze + caption) */}
           {needsUpload ? (
             <div className="mb-5">
               <span className="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
@@ -445,7 +584,7 @@ export default function ImageGenerator() {
           ) : null}
 
           {/* Prompt (create) / optional twist (transform) */}
-          {mode !== "analyze" ? (
+          {mode === "create" || mode === "transform" ? (
             <label className="block">
               <span className="mb-1.5 block text-xs font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
                 {mode === "create" ? "Describe your image" : "Add a twist (optional)"}
@@ -461,12 +600,33 @@ export default function ImageGenerator() {
                 className={FIELD + " h-24 resize-none py-2.5"}
               />
             </label>
-          ) : (
+          ) : null}
+
+          {/* Enhance (create only) */}
+          {mode === "create" ? (
+            <button
+              type="button"
+              onClick={enhance}
+              disabled={enhancing || !prompt.trim()}
+              className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent-indigo)] hover:text-[var(--text)] disabled:opacity-40"
+            >
+              {enhancing ? "Enhancing…" : "✨ Enhance prompt"}
+            </button>
+          ) : null}
+
+          {mode === "caption" ? (
+            <p className="text-sm text-[var(--muted)]">
+              Upload any image and get ready-to-post copy — SEO alt text, a
+              scroll-stopping caption, hashtags, and ad text, tuned per platform.
+            </p>
+          ) : null}
+
+          {mode === "analyze" ? (
             <p className="text-sm text-[var(--muted)]">
               Upload any image and get a creative-director breakdown: subject,
               mood, palette, what works, and how to make it a stronger ad.
             </p>
-          )}
+          ) : null}
 
           {/* Style presets */}
           {mode === "create" ? (
@@ -509,26 +669,67 @@ export default function ImageGenerator() {
             </div>
           ) : null}
 
-          {/* Aspect ratio (create + transform) */}
-          {mode !== "analyze" ? (
+          {/* Platform (caption only) */}
+          {mode === "caption" ? (
             <div className="mt-5">
               <span className="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
-                Aspect ratio
+                Platform
               </span>
               <div className="flex flex-wrap gap-2">
-                {ASPECTS.map((a) => (
+                {PLATFORMS.map((p) => (
                   <button
-                    key={a.id}
+                    key={p.id}
                     type="button"
-                    onClick={() => setAspect(a.id)}
-                    className={chip(aspect === a.id)}
+                    onClick={() => setPlatform(p.id)}
+                    className={chip(platform === p.id)}
                   >
-                    {a.label}{" "}
-                    <span className="text-[11px] opacity-60">{a.id}</span>
+                    {p.label}
                   </button>
                 ))}
               </div>
             </div>
+          ) : null}
+
+          {/* Aspect ratio + count (create + transform) */}
+          {showImageControls ? (
+            <>
+              <div className="mt-5">
+                <span className="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
+                  Aspect ratio
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {ASPECTS.map((a) => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setAspect(a.id)}
+                      className={chip(aspect === a.id)}
+                    >
+                      {a.label}{" "}
+                      <span className="text-[11px] opacity-60">{a.id}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <span className="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
+                  How many
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {COUNTS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setCount(c)}
+                      className={chip(count === c)}
+                    >
+                      {c} image{c > 1 ? "s" : ""}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
           ) : null}
 
           <button
@@ -567,15 +768,7 @@ export default function ImageGenerator() {
               ) : (
                 <div className="grid min-h-[20rem] place-items-center text-center">
                   {status === "loading" ? (
-                    <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
-                      <span
-                        className={
-                          "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
-                          (reduced ? "" : "animate-spin")
-                        }
-                      />
-                      <span className="text-sm">Analyzing your image…</span>
-                    </div>
+                    <Spinner msg="Analyzing your image…" reduced={reduced} />
                   ) : status === "error" ? (
                     <p className="text-sm text-[var(--muted)]">{error}</p>
                   ) : (
@@ -586,34 +779,104 @@ export default function ImageGenerator() {
                 </div>
               )}
             </div>
+          ) : mode === "caption" ? (
+            <div className="min-h-[24rem] rounded-2xl border border-white/10 bg-[var(--panel)] p-6">
+              {status === "done" && captionData ? (
+                <div className="space-y-3">
+                  {preview ? (
+                    <div className="relative mb-1 h-36 overflow-hidden rounded-xl border border-white/10 bg-[var(--bg)]">
+                      <Image
+                        src={preview}
+                        alt="Captioned image"
+                        fill
+                        unoptimized
+                        sizes="(max-width: 1024px) 100vw, 520px"
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : null}
+                  <CopyBlock label="Alt text (SEO)" value={captionData.altText} />
+                  <CopyBlock label="Caption" value={captionData.caption} />
+                  <div className="rounded-xl border border-white/10 bg-[var(--bg)] p-3.5">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
+                        Hashtags
+                      </span>
+                      <CopyBtn
+                        text={captionData.hashtags.map((h) => `#${h}`).join(" ")}
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {captionData.hashtags.map((h) => (
+                        <span
+                          key={h}
+                          className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-[var(--accent-indigo)]"
+                        >
+                          #{h}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <CopyBlock label="Ad primary text" value={captionData.adText} />
+                </div>
+              ) : (
+                <div className="grid min-h-[20rem] place-items-center text-center">
+                  {status === "loading" ? (
+                    <Spinner msg="Writing your copy…" reduced={reduced} />
+                  ) : status === "error" ? (
+                    <p className="text-sm text-[var(--muted)]">{error}</p>
+                  ) : (
+                    <p className="text-sm text-[var(--muted)]">
+                      Your ready-to-post copy will appear here.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           ) : (
             <>
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)]">
-                {status === "done" && image ? (
-                  <Image
-                    src={image}
-                    alt={prompt || "Generated image"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 520px"
-                    unoptimized
-                    className="object-contain"
-                  />
-                ) : (
+              {status === "done" && images.length ? (
+                <div
+                  className={
+                    images.length > 1 ? "grid grid-cols-2 gap-3" : ""
+                  }
+                >
+                  {images.map((src, i) => (
+                    <div
+                      key={src}
+                      className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)]"
+                    >
+                      <Image
+                        src={src}
+                        alt={`${prompt || "Result"} ${i + 1}`}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 520px"
+                        unoptimized
+                        className="object-contain"
+                      />
+                      <a
+                        href={src}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute right-2 top-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
+                      >
+                        Open ↗
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)]">
                   <div className="absolute inset-0 grid place-items-center p-8 text-center">
                     {status === "loading" ? (
-                      <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
-                        <span
-                          className={
-                            "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
-                            (reduced ? "" : "animate-spin")
-                          }
-                        />
-                        <span className="text-sm">
-                          {mode === "transform"
+                      <Spinner
+                        reduced={reduced}
+                        msg={
+                          mode === "transform"
                             ? "Reimagining your photo…"
-                            : "Painting your image…"}
-                        </span>
-                      </div>
+                            : "Painting your image…"
+                        }
+                      />
                     ) : status === "error" ? (
                       <p className="text-sm text-[var(--muted)]">{error}</p>
                     ) : (
@@ -624,19 +887,8 @@ export default function ImageGenerator() {
                       </p>
                     )}
                   </div>
-                )}
-              </div>
-
-              {status === "done" && image ? (
-                <a
-                  href={image}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] hover:underline"
-                >
-                  Open full size ↗
-                </a>
-              ) : null}
+                </div>
+              )}
             </>
           )}
         </div>

@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 //                   (cartoon / anime / 3D / etc.) → Pollinations re-generates it as a NEW
 //                   image. (True pixel-level image editing isn't on Gemini's free tier in
 //                   every region, so we reimagine rather than edit — always free, no key cost.)
+//   • "caption"   : Gemini returns ready-to-post copy (alt text, caption, hashtags, ad text).
 //
 // Vision (image→text) runs on gemini-flash-latest, the same free quota the chatbot uses.
 // Image generation runs on keyless Pollinations.
@@ -25,14 +26,32 @@ const STYLE_MODIFIERS: Record<string, string> = {
     "Reimagined as a glossy 3D Pixar-style render: soft global illumination, rounded friendly forms, subsurface skin glow, cinematic depth of field.",
   oil:
     "Reimagined as a classical oil painting: thick visible brush strokes, rich impasto texture, dramatic chiaroscuro, museum gallery lighting.",
-  cyberpunk:
-    "Reimagined in neon cyberpunk style: rain-slick reflections, magenta and cyan glow, holographic signage, futuristic dystopian atmosphere.",
   watercolor:
     "Reimagined as a delicate watercolor painting: soft translucent washes, gentle color bleeds, visible cold-press paper texture, airy negative space.",
-  surreal:
-    "Reimagined as a surreal dreamlike scene: impossible physics, Dalí-esque melting forms, unexpected juxtapositions, otherworldly volumetric lighting, hyper-imaginative.",
+  cyberpunk:
+    "Reimagined in neon cyberpunk style: rain-slick reflections, magenta and cyan glow, holographic signage, futuristic dystopian atmosphere.",
   popart:
     "Reimagined as bold Warhol pop-art: high-contrast halftone dots, vivid flat color blocks, screen-print aesthetic, graphic and punchy.",
+  surreal:
+    "Reimagined as a surreal dreamlike scene: impossible physics, Dalí-esque melting forms, unexpected juxtapositions, otherworldly volumetric lighting, hyper-imaginative.",
+  sketch:
+    "Reimagined as a detailed graphite pencil sketch: expressive hand-drawn cross-hatching, soft shading, sketchbook paper texture, monochrome.",
+  comic:
+    "Reimagined as a bold comic-book panel: heavy ink outlines, halftone shading, dynamic action lines, saturated primary colors, graphic-novel style.",
+  pixel:
+    "Reimagined as retro 8-bit pixel art: chunky pixels, limited color palette, crisp dithering, nostalgic video-game aesthetic.",
+  claymation:
+    "Reimagined as a charming claymation figure: handmade plasticine texture, visible fingerprints, soft studio lighting, stop-motion charm.",
+  lowpoly:
+    "Reimagined as a low-poly 3D render: faceted geometric triangles, flat shaded planes, minimal modern vector aesthetic.",
+  vaporwave:
+    "Reimagined in vaporwave aesthetic: pastel pink and cyan gradients, retro 80s grid, chrome and glitch elements, dreamy nostalgic mood.",
+  sticker:
+    "Reimagined as a glossy die-cut sticker: thick white border, bold flat colors, kawaii cartoon style, subtle drop shadow.",
+  lineart:
+    "Reimagined as minimal single-line art: clean continuous black contour lines on a plain background, elegant and modern.",
+  renaissance:
+    "Reimagined as a Renaissance oil masterpiece: chiaroscuro lighting, rich earthy tones, classical composition, old-master detail.",
 };
 
 const ASPECT_DIMS: Record<string, [number, number]> = {
@@ -66,6 +85,12 @@ function cleanCaption(s: string): string {
   return words.length > 60 ? words.slice(0, 60).join(" ") : t;
 }
 
+function pollUrl(prompt: string, w: number, h: number, seed: number): string {
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(
+    prompt,
+  )}?width=${w}&height=${h}&model=flux&nologo=true&seed=${seed}`;
+}
+
 async function geminiVision(
   apiKey: string,
   instruction: string,
@@ -73,6 +98,7 @@ async function geminiVision(
   mimeType: string,
   maxOutputTokens: number,
   temperature = 0.6,
+  extraConfig: Record<string, unknown> = {},
 ): Promise<{ text?: string; error?: string; code?: number }> {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
@@ -94,6 +120,7 @@ async function geminiVision(
           temperature,
           maxOutputTokens,
           thinkingConfig: { thinkingBudget: 0 },
+          ...extraConfig,
         },
       }),
       cache: "no-store",
@@ -132,6 +159,8 @@ export async function POST(req: Request) {
     style?: string;
     prompt?: string;
     aspectRatio?: string;
+    platform?: string;
+    count?: number;
   };
   try {
     body = await req.json();
@@ -140,7 +169,12 @@ export async function POST(req: Request) {
   }
 
   const email = (body.email ?? "").trim();
-  const mode = body.mode === "transform" ? "transform" : "analyze";
+  const mode =
+    body.mode === "transform"
+      ? "transform"
+      : body.mode === "caption"
+        ? "caption"
+        : "analyze";
   const imageData = (body.imageData ?? "").trim();
   const mimeType = ["image/jpeg", "image/png", "image/webp"].includes(
     body.mimeType ?? "",
@@ -160,10 +194,7 @@ export async function POST(req: Request) {
     );
   }
   if (!imageData) {
-    return Response.json(
-      { error: "Upload an image first." },
-      { status: 422 },
-    );
+    return Response.json({ error: "Upload an image first." }, { status: 422 });
   }
   // base64 inflates ~33%; ~10MB b64 ≈ 7.5MB raw. Reject oversized payloads.
   if (imageData.length > 10_000_000) {
@@ -203,8 +234,78 @@ export async function POST(req: Request) {
     return Response.json({ status: "ok", mode: "analyze", text: out.text });
   }
 
+  /* --------------------------------- caption -------------------------------- */
+  if (mode === "caption") {
+    const platform = [
+      "instagram",
+      "linkedin",
+      "facebook",
+      "x",
+      "tiktok",
+    ].includes(body.platform ?? "")
+      ? (body.platform as string)
+      : "instagram";
+    const out = await geminiVision(
+      apiKey,
+      "You are a social media manager. Look at the image and write ready-to-post copy " +
+        `tuned for ${platform} — match that platform's tone and length. ` +
+        "Provide: altText (concise SEO alt text, one sentence), caption (a scroll-stopping " +
+        "post caption, 1–2 lines, at most one emoji), hashtags (6–8 relevant tags WITHOUT " +
+        "the # symbol), and adText (2–3 line conversion-focused ad primary text).",
+      imageData,
+      mimeType,
+      700,
+      0.85,
+      {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "object",
+          properties: {
+            altText: { type: "string" },
+            caption: { type: "string" },
+            hashtags: { type: "array", items: { type: "string" } },
+            adText: { type: "string" },
+          },
+          required: ["altText", "caption", "hashtags", "adText"],
+        },
+      },
+    );
+    if (out.error || !out.text) {
+      const friendly =
+        out.code === 429
+          ? "The free vision quota is busy right now — try again in a moment."
+          : out.error ?? "Couldn't read that image. Try another.";
+      return Response.json({ error: friendly }, { status: 502 });
+    }
+    try {
+      const parsed = JSON.parse(out.text) as {
+        altText?: string;
+        caption?: string;
+        hashtags?: string[];
+        adText?: string;
+      };
+      return Response.json({
+        status: "ok",
+        mode: "caption",
+        platform,
+        altText: parsed.altText ?? "",
+        caption: parsed.caption ?? "",
+        hashtags: Array.isArray(parsed.hashtags)
+          ? parsed.hashtags.map((h) => String(h).replace(/^#/, "")).slice(0, 10)
+          : [],
+        adText: parsed.adText ?? "",
+      });
+    } catch {
+      return Response.json(
+        { error: "Couldn't format the copy. Try again." },
+        { status: 502 },
+      );
+    }
+  }
+
   /* -------------------------------- transform ------------------------------- */
-  const styleKey = body.style && STYLE_MODIFIERS[body.style] ? body.style : "cartoon";
+  const styleKey =
+    body.style && STYLE_MODIFIERS[body.style] ? body.style : "cartoon";
   const twist = (body.prompt ?? "").trim().slice(0, 200);
 
   const describe = await geminiVision(
@@ -232,15 +333,17 @@ export async function POST(req: Request) {
     .filter(Boolean)
     .join(". ");
   const [width, height] = ASPECT_DIMS[aspectRatio] ?? [1024, 1024];
-  const seed = Date.now() % 1_000_000;
-  const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    finalPrompt,
-  )}?width=${width}&height=${height}&model=flux&nologo=true&seed=${seed}`;
+  const count = Math.min(Math.max(Number(body.count) || 1, 1), 4);
+  const base = Date.now() % 1_000_000;
+  const images = Array.from({ length: count }, (_, i) =>
+    pollUrl(finalPrompt, width, height, (base + i * 7919) % 1_000_000),
+  );
 
   return Response.json({
     status: "ok",
     mode: "transform",
-    image,
+    image: images[0],
+    images,
     style: styleKey,
     caption,
   });

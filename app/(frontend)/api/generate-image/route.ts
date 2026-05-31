@@ -5,6 +5,13 @@ export const dynamic = "force-dynamic";
 // Swap by setting REPLICATE_MODEL to any Replicate model "owner/name".
 const MODEL = process.env.REPLICATE_MODEL ?? "black-forest-labs/flux-schnell";
 
+const DIMS: Record<string, [number, number]> = {
+  "1:1": [1024, 1024],
+  "16:9": [1280, 720],
+  "9:16": [720, 1280],
+  "3:2": [1200, 800],
+};
+
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
 interface ReplicatePrediction {
@@ -39,7 +46,12 @@ async function settle(
 }
 
 export async function POST(req: Request) {
-  let body: { email?: string; prompt?: string; aspectRatio?: string };
+  let body: {
+    email?: string;
+    prompt?: string;
+    aspectRatio?: string;
+    count?: number;
+  };
   try {
     body = await req.json();
   } catch {
@@ -53,6 +65,7 @@ export async function POST(req: Request) {
   )
     ? (body.aspectRatio as string)
     : "1:1";
+  const count = Math.min(Math.max(Number(body.count) || 1, 1), 4);
 
   if (!isEmail(email)) {
     return Response.json(
@@ -71,21 +84,21 @@ export async function POST(req: Request) {
   // (The email gate above still validates + could feed a CRM / newsletter later.)
 
   // Free, keyless provider (Pollinations) so the tool works at zero cost out of
-  // the box — the image renders straight from the returned URL (the <Image> is
+  // the box — images render straight from the returned URLs (the <Image> is
   // already `unoptimized`). Set REPLICATE_API_TOKEN to upgrade to Flux Schnell.
   if (!process.env.REPLICATE_API_TOKEN) {
-    const dims: Record<string, [number, number]> = {
-      "1:1": [1024, 1024],
-      "16:9": [1280, 720],
-      "9:16": [720, 1280],
-      "3:2": [1200, 800],
-    };
-    const [width, height] = dims[aspectRatio] ?? [1024, 1024];
-    const seed = Date.now() % 1_000_000;
-    const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(
-      prompt,
-    )}?width=${width}&height=${height}&model=flux&nologo=true&seed=${seed}`;
-    return Response.json({ status: "ok", image });
+    const [width, height] = DIMS[aspectRatio] ?? [1024, 1024];
+    const base = Date.now() % 1_000_000;
+    const images = Array.from(
+      { length: count },
+      (_, i) =>
+        `https://image.pollinations.ai/prompt/${encodeURIComponent(
+          prompt,
+        )}?width=${width}&height=${height}&model=flux&nologo=true&seed=${
+          (base + i * 7919) % 1_000_000
+        }`,
+    );
+    return Response.json({ status: "ok", image: images[0], images });
   }
 
   try {
@@ -101,7 +114,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           input: {
             prompt,
-            num_outputs: 1,
+            num_outputs: count,
             aspect_ratio: aspectRatio,
             output_format: "webp",
           },
@@ -120,16 +133,20 @@ export async function POST(req: Request) {
     }
 
     const final = await settle(data, process.env.REPLICATE_API_TOKEN);
-    const out = Array.isArray(final.output) ? final.output[0] : final.output;
+    const images = Array.isArray(final.output)
+      ? final.output
+      : final.output
+        ? [final.output]
+        : [];
 
-    if (final.status === "failed" || !out) {
+    if (final.status === "failed" || images.length === 0) {
       return Response.json(
         { error: final.error || "Image generation failed. Please try again." },
         { status: 502 },
       );
     }
 
-    return Response.json({ status: "ok", image: out });
+    return Response.json({ status: "ok", image: images[0], images });
   } catch (err) {
     console.error("[generate-image] failed:", err);
     return Response.json(
