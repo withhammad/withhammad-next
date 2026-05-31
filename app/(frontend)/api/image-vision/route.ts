@@ -1,5 +1,6 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30; // headroom for retry-with-backoff on free-tier 429s
 
 // Vision-powered image tools — 100% free.
 //   • "analyze"   : Gemini reads the uploaded image → creative/marketing breakdown (text).
@@ -100,54 +101,73 @@ async function geminiVision(
   temperature = 0.6,
   extraConfig: Record<string, unknown> = {},
 ): Promise<{ text?: string; error?: string; code?: number }> {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: instruction },
-              { inline_data: { mime_type: mimeType, data: imageData } },
-            ],
-          },
+  // thinkingBudget:0 → no hidden reasoning tokens. Without it, flash-latest
+  // spends the budget "thinking" and truncates/leaks draft text into output.
+  const payload = JSON.stringify({
+    contents: [
+      {
+        parts: [
+          { text: instruction },
+          { inline_data: { mime_type: mimeType, data: imageData } },
         ],
-        // thinkingBudget:0 → no hidden reasoning tokens. Without it, flash-latest
-        // spends the budget "thinking" and truncates/leaks draft text into output.
-        generationConfig: {
-          temperature,
-          maxOutputTokens,
-          thinkingConfig: { thinkingBudget: 0 },
-          ...extraConfig,
-        },
-      }),
-      cache: "no-store",
+      },
+    ],
+    generationConfig: {
+      temperature,
+      maxOutputTokens,
+      thinkingConfig: { thinkingBudget: 0 },
+      ...extraConfig,
     },
-  );
+  });
 
-  const data = (await res.json().catch(() => ({}))) as GeminiResp;
-  if (!res.ok || data.error) {
-    return {
-      error: data.error?.message ?? "Vision request failed.",
-      code: data.error?.code ?? res.status,
-    };
+  let lastError = "Vision request failed.";
+  let lastCode = 0;
+
+  // The free tier intermittently throttles image-input calls (429) under bursty
+  // load. Retry a few times with backoff before giving up.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, attempt * 1200));
+    }
+    let res: Response;
+    try {
+      res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+          cache: "no-store",
+        },
+      );
+    } catch {
+      lastError = "Vision request failed.";
+      lastCode = 0;
+      continue;
+    }
+
+    const data = (await res.json().catch(() => ({}))) as GeminiResp;
+    if (res.ok && !data.error) {
+      const text = data.candidates?.[0]?.content?.parts
+        ?.map((p) => p.text ?? "")
+        .join("")
+        .trim();
+      if (text) return { text };
+      const reason = data.candidates?.[0]?.finishReason;
+      return {
+        error:
+          reason === "SAFETY"
+            ? "That image couldn't be processed (content safety). Try a different photo."
+            : "No response from the vision model. Try again.",
+      };
+    }
+
+    lastCode = data.error?.code ?? res.status;
+    lastError = data.error?.message ?? "Vision request failed.";
+    if (![429, 500, 502, 503].includes(lastCode)) break; // non-retryable
   }
-  const text = data.candidates?.[0]?.content?.parts
-    ?.map((p) => p.text ?? "")
-    .join("")
-    .trim();
-  if (!text) {
-    const reason = data.candidates?.[0]?.finishReason;
-    return {
-      error:
-        reason === "SAFETY"
-          ? "That image couldn't be processed (content safety). Try a different photo."
-          : "No response from the vision model. Try again.",
-    };
-  }
-  return { text };
+
+  return { error: lastError, code: lastCode };
 }
 
 export async function POST(req: Request) {
