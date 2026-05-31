@@ -213,6 +213,73 @@ function CopyBlock({
   );
 }
 
+function ResultImage({
+  src,
+  alt,
+  reduced,
+}: {
+  src: string;
+  alt: string;
+  reduced: boolean;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)]">
+      {!failed ? (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 1024px) 100vw, 520px"
+          unoptimized
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          className={
+            "object-contain transition-opacity duration-300 " +
+            (loaded ? "opacity-100" : "opacity-0")
+          }
+        />
+      ) : null}
+      {!loaded && !failed ? (
+        <div className="absolute inset-0 grid place-items-center">
+          <span
+            className={
+              "h-7 w-7 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+              (reduced ? "" : "animate-spin")
+            }
+          />
+        </div>
+      ) : null}
+      {failed ? (
+        <div className="absolute inset-0 grid place-items-center p-4 text-center">
+          <p className="text-xs text-[var(--muted)]">
+            Couldn&apos;t load this one.{" "}
+            <a
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--accent-indigo)] underline"
+            >
+              Open directly ↗
+            </a>
+          </p>
+        </div>
+      ) : null}
+      {loaded ? (
+        <a
+          href={src}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute right-2 top-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
+        >
+          Open ↗
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
 export default function ImageGenerator() {
   const reduced = useReducedMotion();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -837,32 +904,15 @@ export default function ImageGenerator() {
             <>
               {status === "done" && images.length ? (
                 <div
-                  className={
-                    images.length > 1 ? "grid grid-cols-2 gap-3" : ""
-                  }
+                  className={images.length > 1 ? "grid grid-cols-2 gap-3" : ""}
                 >
                   {images.map((src, i) => (
-                    <div
+                    <ResultImage
                       key={src}
-                      className="group relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)]"
-                    >
-                      <Image
-                        src={src}
-                        alt={`${prompt || "Result"} ${i + 1}`}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 520px"
-                        unoptimized
-                        className="object-contain"
-                      />
-                      <a
-                        href={src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="absolute right-2 top-2 rounded-full bg-black/60 px-2.5 py-1 text-[11px] text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
-                      >
-                        Open ↗
-                      </a>
-                    </div>
+                      src={src}
+                      alt={`${prompt || "Result"} ${i + 1}`}
+                      reduced={reduced}
+                    />
                   ))}
                 </div>
               ) : (

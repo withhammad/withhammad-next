@@ -1,3 +1,5 @@
+import { proxiedImage } from "@/lib/pollinations";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -89,14 +91,8 @@ export async function POST(req: Request) {
   if (!process.env.REPLICATE_API_TOKEN) {
     const [width, height] = DIMS[aspectRatio] ?? [1024, 1024];
     const base = Date.now() % 1_000_000;
-    const images = Array.from(
-      { length: count },
-      (_, i) =>
-        `https://image.pollinations.ai/prompt/${encodeURIComponent(
-          prompt,
-        )}?width=${width}&height=${height}&model=flux&nologo=true&seed=${
-          (base + i * 7919) % 1_000_000
-        }`,
+    const images = Array.from({ length: count }, (_, i) =>
+      proxiedImage(prompt, width, height, (base + i * 7919) % 1_000_000),
     );
     return Response.json({ status: "ok", image: images[0], images });
   }

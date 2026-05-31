@@ -1,3 +1,5 @@
+import { proxiedImage } from "@/lib/pollinations";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 30; // headroom for retry-with-backoff on free-tier 429s
@@ -86,12 +88,6 @@ function cleanCaption(s: string): string {
   t = t.replace(/^[\s:;,.\-–—)\]]+/, "").trim();
   const words = t.split(" ");
   return words.length > 60 ? words.slice(0, 60).join(" ") : t;
-}
-
-function pollUrl(prompt: string, w: number, h: number, seed: number): string {
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    prompt,
-  )}?width=${w}&height=${h}&model=flux&nologo=true&seed=${seed}`;
 }
 
 async function geminiVision(
@@ -358,7 +354,7 @@ export async function POST(req: Request) {
   const count = Math.min(Math.max(Number(body.count) || 1, 1), 4);
   const base = Date.now() % 1_000_000;
   const images = Array.from({ length: count }, (_, i) =>
-    pollUrl(finalPrompt, width, height, (base + i * 7919) % 1_000_000),
+    proxiedImage(finalPrompt, width, height, (base + i * 7919) % 1_000_000),
   );
 
   return Response.json({
