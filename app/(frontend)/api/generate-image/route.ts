@@ -94,11 +94,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // No provider key yet → tell the UI to show its "coming soon" state.
-  if (!process.env.REPLICATE_API_TOKEN) {
-    return Response.json({ status: "coming_soon" });
-  }
-
   // TODO(list-building): the gated email is available here — wire it to your
   // CRM / newsletter (e.g. Resend audiences) if you want to capture leads.
   if (
@@ -111,6 +106,24 @@ export async function POST(req: Request) {
       },
       { status: 429 },
     );
+  }
+
+  // Free, keyless provider (Pollinations) so the tool works at zero cost out of
+  // the box — the image renders straight from the returned URL (the <Image> is
+  // already `unoptimized`). Set REPLICATE_API_TOKEN to upgrade to Flux Schnell.
+  if (!process.env.REPLICATE_API_TOKEN) {
+    const dims: Record<string, [number, number]> = {
+      "1:1": [1024, 1024],
+      "16:9": [1280, 720],
+      "9:16": [720, 1280],
+      "3:2": [1200, 800],
+    };
+    const [width, height] = dims[aspectRatio] ?? [1024, 1024];
+    const seed = Date.now() % 1_000_000;
+    const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+      prompt,
+    )}?width=${width}&height=${height}&model=flux&nologo=true&seed=${seed}`;
+    return Response.json({ status: "ok", image });
   }
 
   try {
