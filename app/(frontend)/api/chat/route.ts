@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-3-5-haiku-latest";
+const GEMINI_MODEL = process.env.GEMINI_CHAT_MODEL ?? "gemini-2.0-flash";
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ??
   "https://calendly.com/withhammad-marketing/30min";
@@ -84,8 +85,11 @@ export async function POST(req: Request) {
     return new Response("No user message", { status: 400 });
   }
 
-  // Graceful fallback so the widget never looks broken before the key is set.
-  if (!process.env.ANTHROPIC_API_KEY) {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+  // Graceful fallback so the widget never looks broken before a key is set.
+  if (!geminiKey && !anthropicKey) {
     const msg = `Thanks for reaching out! The live assistant isn't connected yet — but Hammad would genuinely love to talk. Grab a free 30-minute call here: ${CALENDLY_URL}`;
     return new Response(encoder.encode(msg), {
       headers: {
@@ -95,24 +99,75 @@ export async function POST(req: Request) {
     });
   }
 
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        const events = await anthropic.messages.create({
-          model: MODEL,
-          max_tokens: 1024,
-          system: SYSTEM_PROMPT,
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
-          stream: true,
-        });
-        for await (const event of events) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            controller.enqueue(encoder.encode(event.delta.text));
+        if (geminiKey) {
+          // Google Gemini (free tier) — native SSE streaming, no SDK needed.
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${geminiKey}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                contents: messages.map((m) => ({
+                  role: m.role === "assistant" ? "model" : "user",
+                  parts: [{ text: m.content }],
+                })),
+                generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+              }),
+            },
+          );
+          if (!res.ok || !res.body) {
+            throw new Error(`Gemini ${res.status}: ${await res.text()}`);
+          }
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              const t = line.trim();
+              if (!t.startsWith("data:")) continue;
+              const payload = t.slice(5).trim();
+              if (!payload || payload === "[DONE]") continue;
+              try {
+                const obj = JSON.parse(payload);
+                const text =
+                  obj?.candidates?.[0]?.content?.parts
+                    ?.map((p: { text?: string }) => p.text ?? "")
+                    .join("") ?? "";
+                if (text) controller.enqueue(encoder.encode(text));
+              } catch {
+                /* partial / keep-alive line — skip */
+              }
+            }
+          }
+        } else {
+          // Anthropic — used only when GEMINI_API_KEY is absent.
+          const anthropic = new Anthropic({ apiKey: anthropicKey });
+          const events = await anthropic.messages.create({
+            model: MODEL,
+            max_tokens: 1024,
+            system: SYSTEM_PROMPT,
+            messages: messages.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
+            stream: true,
+          });
+          for await (const event of events) {
+            if (
+              event.type === "content_block_delta" &&
+              event.delta.type === "text_delta"
+            ) {
+              controller.enqueue(encoder.encode(event.delta.text));
+            }
           }
         }
       } catch (err) {
