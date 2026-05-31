@@ -23,7 +23,7 @@ async function cloudflareImage(
   width: number,
   height: number,
   seed: number,
-): Promise<{ buf: ArrayBuffer | Buffer; ct: string } | null> {
+): Promise<{ buf: ArrayBuffer; ct: string } | null> {
   if (!CF_ACCOUNT || !CF_TOKEN) return null;
   try {
     const res = await fetch(
@@ -49,7 +49,14 @@ async function cloudflareImage(
     if (ct.includes("json")) {
       const data = (await res.json()) as { result?: { image?: string } };
       const b64 = data.result?.image;
-      if (b64) return { buf: Buffer.from(b64, "base64"), ct: "image/jpeg" };
+      if (b64) {
+        const b = Buffer.from(b64, "base64");
+        const ab = b.buffer.slice(
+          b.byteOffset,
+          b.byteOffset + b.byteLength,
+        ) as ArrayBuffer;
+        return { buf: ab, ct: "image/jpeg" };
+      }
     }
   } catch {
     /* fall through to Pollinations */
