@@ -77,6 +77,7 @@ export interface PayloadCaseStudy {
   theChallenge?: string | null;
   theStrategy?: string | null;
   theExecution?: string | null;
+  videoEmbedUrl?: string | null;
   metrics?: { value?: string | null; label?: string | null }[] | null;
   testimonial?: {
     quote?: string | null;
@@ -118,6 +119,7 @@ export function mapCaseStudy(doc: PayloadCaseStudy): CaseStudyDetail {
       theChallenge: doc.theChallenge ?? null,
       theStrategy: doc.theStrategy ?? null,
       theExecution: doc.theExecution ?? null,
+      videoEmbedUrl: doc.videoEmbedUrl ?? null,
       metric1: m(0),
       label1: l(0),
       metric2: m(1),

@@ -119,6 +119,7 @@ export default buildConfig({
             theChallenge: f.theChallenge ?? undefined,
             theStrategy: f.theStrategy ?? undefined,
             theExecution: f.theExecution ?? undefined,
+            videoEmbedUrl: f.videoEmbedUrl ?? undefined,
             metrics,
           },
         });
@@ -317,6 +318,14 @@ export default buildConfig({
           name: "theExecution",
           type: "textarea",
           admin: { description: "One action per line." },
+        },
+        {
+          name: "videoEmbedUrl",
+          type: "text",
+          admin: {
+            description:
+              "YouTube embed URL (use youtube-nocookie.com/embed/<id>). Renders an aspect-correct iframe between methodology and results.",
+          },
         },
         {
           name: "metrics",

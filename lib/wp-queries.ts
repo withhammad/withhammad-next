@@ -183,6 +183,7 @@ export type CaseStudyDetailFields = {
   theChallenge: string | null;
   theStrategy: string | null;
   theExecution: string | null;
+  videoEmbedUrl: string | null;
   metric1: string | null;
   label1: string | null;
   metric2: string | null;

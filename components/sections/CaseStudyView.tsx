@@ -230,6 +230,39 @@ export default function CaseStudyView({
         execution={f?.theExecution ?? null}
       />
 
+      {/* ---------------- Video walkthrough (only if present) ---------------- */}
+      {f?.videoEmbedUrl && f.videoEmbedUrl.trim() ? (
+        <section className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+          <div
+            data-reveal
+            className="border-t border-white/10 py-12 sm:py-16"
+          >
+            <div className="mb-6">
+              <span className="font-mono text-sm text-[var(--accent-indigo)]">
+                02
+              </span>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text)]">
+                The walkthrough
+              </h2>
+              <p className="mt-1 max-w-2xl text-[var(--muted)]">
+                A behind-the-scenes look at the build — what was changed, why, and what the data showed.
+              </p>
+            </div>
+            <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black [aspect-ratio:16/9]">
+              <iframe
+                src={f.videoEmbedUrl}
+                title={`${displayName} case study walkthrough`}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* ---------------- Results (before/after + metric viz) ---------------- */}
       <ResultsBlock results={results} beforeAfter={beforeAfter} />
 

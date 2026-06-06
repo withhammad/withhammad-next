@@ -31,6 +31,8 @@ export const LOCAL_CASE_STUDIES: CaseStudyDetail[] = [
         "Restructure for intent and clarity. Split the single campaign into product-specific Search campaigns so budget and messaging matched each buyer's intent. Establish clean conversion tracking that separated genuine purchase/lead actions from low-value taps. Set a defensible Target CPA and let the data — not guesswork — drive bids. Cut waste aggressively with negatives and match-type discipline.",
       theExecution:
         "Broke the catch-all account into tightly themed campaigns and ad groups per product.\nRebuilt responsive search ads with distinct, un-over-pinned headlines per product line.\nLayered in a negative-keyword framework to stop broad-match waste.\nFixed sitelink and tracking issues and set a Target CPA aligned to unit economics.\nIdentified that Arabic search terms converted at a dramatically lower CPA than English — and shifted weight accordingly.",
+      videoEmbedUrl:
+        "https://www.youtube-nocookie.com/embed/3WRK9XhQ4as?si=1FhqnwxBTk0vX6yu",
       metric1: "24,600",
       label1: "Clicks driven",
       metric2: "3,750",
@@ -71,6 +73,7 @@ export const LOCAL_CASE_STUDIES: CaseStudyDetail[] = [
         "Treat each market as its own campaign with localized intent, then concentrate budget where cost-per-lead was lowest and quality highest. Tighten targeting around genuine commercial-intent searches and reduce spend on tyre-kicker traffic.",
       theExecution:
         "Built market-specific campaigns with localized keywords and ad copy across the four countries.\nImplemented conversion tracking to compare lead quality and CPA by market.\nReallocated budget continuously toward the best-performing geos and search themes.\nPruned low-intent terms and refined audience signals to lift lead quality.",
+      videoEmbedUrl: null,
       metric1: "+30%",
       label1: "Increase in leads",
       metric2: "−28%",
@@ -111,6 +114,7 @@ export const LOCAL_CASE_STUDIES: CaseStudyDetail[] = [
         "Pair sharp audience targeting with a high-converting lead flow — strong hook, clear offer, fast-loading form — so every dirham of ad spend translated into a real enquiry rather than a wasted click.",
       theExecution:
         "Built audience sets around genuine property-intent signals.\nWrote scroll-stopping ad creative tailored to the offer and locality.\nOptimized the landing page and lead form to cut friction and lift completion rate.\nMonitored lead quality and iterated creative to keep CPL efficient.",
+      videoEmbedUrl: null,
       metric1: "80",
       label1: "Qualified leads",
       metric2: "AED 76.38",
@@ -149,6 +153,7 @@ export const LOCAL_CASE_STUDIES: CaseStudyDetail[] = [
         "Win organic visibility on high-intent commercial keywords, then make sure that hard-won traffic converted — pairing SEO with conversion-rate optimization so growth compounded instead of leaking.",
       theExecution:
         "Researched and targeted the commercial keywords with real buyer intent.\nStrengthened on-page SEO, content structure, and technical fundamentals.\nRan CRO improvements on key pages to lift enquiry/conversion rate.\nTracked rankings → traffic → conversions as one connected funnel.",
+      videoEmbedUrl: null,
       metric1: "+50%",
       label1: "Organic traffic growth",
       metric2: "+27%",
