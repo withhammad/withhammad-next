@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { getSiteSettings } from "@/lib/content";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
@@ -72,6 +76,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Analytics env vars (all NEXT_PUBLIC_ so they ship to the client at build
+// time, all optional — each tag is skipped when its env var is absent):
+//   NEXT_PUBLIC_GA_MEASUREMENT_ID    → GA4 "G-XXXXXXXXXX" id from Admin → Data Streams
+//   NEXT_PUBLIC_LINKEDIN_PARTNER_ID  → LinkedIn Insight Tag partner id (8-digit) from Campaign Manager
+// Vercel Analytics + Speed Insights need no env vars and auto-activate on Vercel.
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const LINKEDIN_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -91,6 +103,36 @@ export default function RootLayout({
           <Footer />
           <ChatWidget />
         </SmoothScrollProvider>
+        <Analytics />
+        <SpeedInsights />
+        {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
+        {LINKEDIN_ID ? (
+          <>
+            <Script id="linkedin-insight" strategy="afterInteractive">{`
+              _linkedin_partner_id = "${LINKEDIN_ID}";
+              window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+              window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+              (function(l) {
+                if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}
+                var s = document.getElementsByTagName("script")[0];
+                var b = document.createElement("script");
+                b.type = "text/javascript"; b.async = true;
+                b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+                s.parentNode.insertBefore(b, s);
+              })(window.lintrk);
+            `}</Script>
+            <noscript>
+              {/* eslint-disable-next-line @next/next/no-img-element -- LinkedIn requires a raw 1x1 pixel; <noscript> precludes next/image */}
+              <img
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                alt=""
+                src={`https://px.ads.linkedin.com/collect/?pid=${LINKEDIN_ID}&fmt=gif`}
+              />
+            </noscript>
+          </>
+        ) : null}
       </body>
     </html>
   );
