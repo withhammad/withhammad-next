@@ -59,6 +59,15 @@ export const GCC_TOOLS: ToolCard[] = [
 // The new AI tools — built natively in this site.
 export const AI_TOOLS: ToolCard[] = [
   {
+    name: "AI Ads Audit — Google + Meta",
+    description:
+      "Paste your campaign snapshot and get a 0-100 Ads Health Score, critical issues, and quick wins — the same framework I run on $999/mo client accounts.",
+    href: "/tools/ai-ads-audit",
+    badge: "Free · AI",
+    accent: "amber",
+    icon: "audit",
+  },
+  {
     name: "AI Marketing Prompt Generator",
     description:
       "Build high-converting prompts for Google Ads, Meta, SEO, email and CRO. Pick a goal, fill the blanks, copy.",
