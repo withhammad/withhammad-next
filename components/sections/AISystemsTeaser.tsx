@@ -8,6 +8,7 @@ export default function AISystemsTeaser() {
   return (
     <section
       id="ai-systems-teaser"
+      data-hud-section="02 / SYSTEMS"
       className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28"
     >
       <div className="flex flex-wrap items-end justify-between gap-6">

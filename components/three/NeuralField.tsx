@@ -17,8 +17,140 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-const ACCENT = new THREE.Color("#FF8C00");
+const ACCENT = new THREE.Color("#FF8A00");
 const ACCENT_COOL = new THREE.Color("#38BDF8");
+
+// --- AI core: fresnel edge glow + noise-driven pulse, emissive pushed above
+// 1.0 so a bloom pass (when enabled) picks it up selectively. uPulse rises as
+// the cursor nears the core.
+const CORE_VERT = /* glsl */ `
+  varying vec3 vNormal;
+  varying vec3 vView;
+  varying vec3 vPos;
+  void main() {
+    vNormal = normalize(normalMatrix * normal);
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vView = normalize(-mv.xyz);
+    vPos = position;
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+const CORE_FRAG = /* glsl */ `
+  uniform float uTime;
+  uniform float uPulse;
+  uniform vec3 uColor;
+  uniform vec3 uColorHot;
+  varying vec3 vNormal;
+  varying vec3 vView;
+  varying vec3 vPos;
+
+  // cheap value noise — enough for a living surface, no texture fetch
+  float hash(vec3 p) {
+    return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453123);
+  }
+  float noise(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+          mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+      mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+          mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y),
+      f.z
+    );
+  }
+
+  void main() {
+    float fresnel = pow(1.0 - max(dot(vNormal, vView), 0.0), 2.2);
+    float n = noise(vPos * 2.6 + uTime * 0.35);
+    float veins = smoothstep(0.42, 0.62, n) * 0.55;
+    float breath = 0.75 + 0.25 * sin(uTime * 1.4);
+    vec3 col = mix(uColor, uColorHot, veins);
+    // emissive intensity deliberately exceeds 1.0 for selective bloom
+    float intensity = (fresnel * 1.6 + veins * 0.7 + 0.12) * breath * (1.0 + uPulse * 1.4);
+    gl_FragColor = vec4(col * intensity, clamp(fresnel * 1.2 + veins + uPulse * 0.4, 0.0, 0.95));
+  }
+`;
+
+function AICore({
+  scale,
+  reduced,
+  pointer,
+}: {
+  scale: number;
+  reduced: boolean;
+  pointer: React.MutableRefObject<{ x: number; y: number }>;
+}) {
+  const matRef = useRef<THREE.ShaderMaterial>(null);
+  const ringA = useRef<THREE.Mesh>(null);
+  const ringB = useRef<THREE.Mesh>(null);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uPulse: { value: 0 },
+      uColor: { value: ACCENT.clone() },
+      uColorHot: { value: new THREE.Color("#FF5C00") },
+    }),
+    [],
+  );
+
+  useFrame((state, delta) => {
+    const m = matRef.current;
+    if (m) {
+      m.uniforms.uTime.value = state.clock.elapsedTime;
+      // cursor proximity to screen centre drives the pulse
+      const d = Math.hypot(pointer.current.x, pointer.current.y);
+      const target = reduced ? 0 : THREE.MathUtils.clamp(1 - d * 1.4, 0, 1);
+      m.uniforms.uPulse.value = THREE.MathUtils.lerp(
+        m.uniforms.uPulse.value,
+        target,
+        0.06,
+      );
+    }
+    if (!reduced) {
+      if (ringA.current) {
+        ringA.current.rotation.x += delta * 0.22;
+        ringA.current.rotation.z += delta * 0.1;
+      }
+      if (ringB.current) {
+        ringB.current.rotation.y += delta * 0.16;
+        ringB.current.rotation.z -= delta * 0.08;
+      }
+    }
+  });
+
+  return (
+    <group scale={scale}>
+      <mesh>
+        <sphereGeometry args={[1.05, 48, 48]} />
+        <shaderMaterial
+          ref={matRef}
+          vertexShader={CORE_VERT}
+          fragmentShader={CORE_FRAG}
+          uniforms={uniforms}
+          transparent
+          depthWrite={false}
+        />
+      </mesh>
+      {/* orbiting instrument rings */}
+      <mesh ref={ringA} rotation={[1.1, 0.4, 0]}>
+        <torusGeometry args={[1.55, 0.012, 8, 96]} />
+        <meshBasicMaterial color={ACCENT} transparent opacity={0.5} depthWrite={false} />
+      </mesh>
+      <mesh ref={ringB} rotation={[-0.6, 1.2, 0.3]}>
+        <torusGeometry args={[1.95, 0.008, 8, 96]} />
+        <meshBasicMaterial color={ACCENT} transparent opacity={0.28} depthWrite={false} />
+      </mesh>
+      {/* faint wireframe shell retains the orchestrator motif */}
+      <mesh scale={1.35}>
+        <icosahedronGeometry args={[1.05, 1]} />
+        <meshBasicMaterial color={ACCENT} wireframe transparent opacity={0.1} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
 
 function Field({
   count,
@@ -164,26 +296,8 @@ function Field({
       <primitive object={links} />
       <primitive object={points} ref={pointsRef} />
 
-      {/* Orchestrator core — the same motif as the /work agent network */}
-      <mesh scale={coreScale}>
-        <icosahedronGeometry args={[1.15, 1]} />
-        <meshBasicMaterial
-          color={ACCENT}
-          wireframe
-          transparent
-          opacity={0.22}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh scale={coreScale * 0.45}>
-        <icosahedronGeometry args={[1.15, 0]} />
-        <meshBasicMaterial
-          color={ACCENT}
-          transparent
-          opacity={0.12}
-          depthWrite={false}
-        />
-      </mesh>
+      {/* JARVIS AI core — shader sphere + orbiting instrument rings */}
+      <AICore scale={coreScale} reduced={reduced} pointer={pointer} />
     </group>
   );
 }

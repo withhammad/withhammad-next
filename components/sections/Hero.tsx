@@ -19,8 +19,44 @@ const NeuralField = dynamic(() => import("@/components/three/NeuralField"), {
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
 
-const HEADLINE = "I build AI agents that run marketing operations.";
-const ACCENT_WORDS = new Set(["agents"]);
+// Stacked game-menu headline. Each line reveals from its own mask via the
+// existing [data-word-inner] GSAP timeline (gated on the boot sequence).
+const HEADLINE_LINES = ["AI MARKETING", "AUTOMATION", "ENGINEER"];
+const ACCENT_LINE = 1; // "AUTOMATION" carries the amber
+
+const STATUS_TEXT = "DUBAI, UAE — SYSTEMS ONLINE";
+
+/** Mono terminal status line that types itself once cued. */
+function TypingStatus({ play, reduced }: { play: boolean; reduced: boolean }) {
+  const [chars, setChars] = useState(reduced ? STATUS_TEXT.length : 0);
+  useEffect(() => {
+    if (reduced) {
+      setChars(STATUS_TEXT.length);
+      return;
+    }
+    if (!play) return;
+    let i = 0;
+    const t = window.setInterval(() => {
+      i += 1;
+      setChars(i);
+      if (i >= STATUS_TEXT.length) window.clearInterval(t);
+    }, 34);
+    return () => window.clearInterval(t);
+  }, [play, reduced]);
+
+  return (
+    <div className="mt-6 font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--muted)]">
+      <span className="mr-2 text-[var(--accent)]">&gt;</span>
+      {STATUS_TEXT.slice(0, chars)}
+      <span
+        aria-hidden
+        className={`ml-1 inline-block h-[1em] w-[6px] translate-y-[2px] bg-[var(--accent)] ${
+          chars >= STATUS_TEXT.length ? "animate-pulse" : ""
+        }`}
+      />
+    </div>
+  );
+}
 
 type Stat = {
   value: number;
@@ -108,6 +144,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
+      data-hud-section="01 / HERO"
       className="relative -mt-16 flex min-h-[100svh] flex-col justify-center overflow-hidden px-5 pb-16 pt-28 sm:px-8"
     >
       <GradientMesh />
@@ -149,27 +186,30 @@ export default function Hero() {
           </div>
 
           <h1
-            className="font-semibold tracking-tight text-[var(--text)]"
-            style={{ fontSize: "clamp(2.3rem, 5vw, 4.4rem)", lineHeight: 1.05 }}
+            className="font-display font-semibold uppercase text-[var(--text)]"
+            style={{ fontSize: "clamp(2.6rem, 6.4vw, 5.6rem)", lineHeight: 0.98 }}
           >
-            {HEADLINE.split(" ").map((word, i) => (
-              <span
-                key={i}
-                className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-baseline"
-              >
+            {HEADLINE_LINES.map((line, i) => (
+              <span key={line} className="block overflow-hidden pb-[0.08em] -mb-[0.04em]">
                 <span
                   data-word-inner
                   className={
-                    "inline-block will-change-transform " +
-                    (ACCENT_WORDS.has(word) ? "text-[var(--accent-2)]" : "")
+                    "block will-change-transform " +
+                    (i === ACCENT_LINE ? "text-[var(--accent)]" : "")
+                  }
+                  style={
+                    i === ACCENT_LINE
+                      ? { textShadow: "0 0 32px var(--accent-glow)" }
+                      : undefined
                   }
                 >
-                  {word}
+                  {line}
                 </span>
-                {" "}
               </span>
             ))}
           </h1>
+
+          <TypingStatus play={play} reduced={reduced} />
 
           <p
             data-rise

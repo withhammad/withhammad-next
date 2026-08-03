@@ -7,16 +7,19 @@
    against a second amber collapses into mush, so data series and dual-token
    gradients reach for this rather than --accent-2. */
 :root {
-  --bg: #121212;
-  --bg-deep: #0A0A0B;
-  --panel: #1A1A1D;
+  --bg: #0C0C0E;
+  --bg-deep: #08080A;
+  --panel: #141417;
   --text: #F5F5F7;
   --muted: #A1A1AA;
-  --accent: #FF8C00;
-  --accent-2: #FFC24D;
+  --accent: #FF8A00;
+  --accent-2: #FFB454;
+  --accent-hot: #FF5C00;
   --accent-ink: #0A0A0B;
-  --accent-glow: rgba(255, 140, 0, 0.45);
+  --accent-glow: rgba(255, 138, 0, 0.45);
   --accent-cool: #38BDF8;
+  /* 1px hairlines — depth comes from light and layering, not shadows */
+  --line: rgba(255, 255, 255, 0.06);
 }
 
 @theme inline {
@@ -28,10 +31,50 @@
   --color-accent-2: var(--accent-2);
   --color-accent-ink: var(--accent-ink);
   --color-accent-cool: var(--accent-cool);
+  --color-accent-hot: var(--accent-hot);
+  --color-line: var(--line);
   --color-background: var(--bg);
   --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-clash);
+}
+
+/* Display type — game-menu scale headlines */
+.font-display {
+  font-family: var(--font-clash), var(--font-geist-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Global film grain — fixed SVG noise at ~3%, above the world, below the HUD.
+   pointer-events off so it never eats a click; hidden from print. */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media print {
+  .film-grain {
+    display: none !important;
+  }
+}
+
+/* Scanline accent for terminal/HUD surfaces */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255, 255, 255, 0.015) 3px,
+    rgba(255, 255, 255, 0.015) 4px
+  );
 }
 
 html,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -10,6 +11,7 @@ import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import NavBar from "@/components/layout/NavBar";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/ui/CustomCursor";
+import HudFrame from "@/components/hud/HudFrame";
 import IntroLoader from "@/components/ui/IntroLoader";
 import ChatWidget from "@/components/chat/ChatWidget";
 
@@ -21,6 +23,18 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Display face for game-menu-scale headlines. Self-hosted (ITF free license) —
+// subset woff2s, ~15KB per weight.
+const clash = localFont({
+  src: [
+    { path: "../../public/fonts/ClashDisplay-500.woff2", weight: "500" },
+    { path: "../../public/fonts/ClashDisplay-600.woff2", weight: "600" },
+    { path: "../../public/fonts/ClashDisplay-700.woff2", weight: "700" },
+  ],
+  variable: "--font-clash",
+  display: "swap",
 });
 
 const SITE_DESCRIPTION =
@@ -92,17 +106,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${clash.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--text)]">
         <SmoothScrollProvider>
           <IntroLoader />
           <CustomCursor />
+          <HudFrame />
           <NavBar />
           {children}
           <Footer />
           <ChatWidget />
         </SmoothScrollProvider>
+        <div className="film-grain" aria-hidden />
         <Analytics />
         <SpeedInsights />
         {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}

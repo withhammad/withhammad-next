@@ -83,6 +83,7 @@ export default function SelectedWork({
     <section
       ref={sectionRef}
       id="selected-work"
+      data-hud-section="03 / MISSIONS"
       className="relative scroll-mt-24 py-24 sm:py-32"
     >
       <div className="mx-auto mb-10 max-w-7xl px-5 sm:px-8">

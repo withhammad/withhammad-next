@@ -1,23 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+// JARVIS OS boot sequence — the site "powers on" like a machine, not a page.
+// Mono terminal lines type in, an amber hairline tracks progress, then the
+// whole overlay exits with a clip-path wipe.
+//
+// Contracts preserved from the previous loader (both load-bearing):
+//   - sessionStorage "wh:intro-seen" → boots once per session only.
+//   - dispatches "wh:intro-complete" so the hero starts its reveal.
+//   - prefers-reduced-motion: never shows. `reduced` is false during the
+//     hydration pass and flips true one render later — without the explicit
+//     setShow(false) the overlay would mount, lose its dismiss timer to the
+//     effect cleanup, and lock reduced-motion users out of the entire site
+//     (this happened in production once; do not regress it).
+
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { EASE_OUT } from "@/lib/easing";
+import { EASE } from "@/lib/motion";
 
 const STORAGE_KEY = "wh:intro-seen";
 
+const BOOT_LINES = [
+  "JARVIS OS — SYSTEM CHECK",
+  "NEURAL FIELD ............. ONLINE",
+  "AGENTS ................... 8/8 READY",
+  "LOCATION ................. DUBAI, UAE",
+  "SYSTEMS ONLINE",
+];
+
+const LINE_INTERVAL = 340; // ms between lines
+const HOLD_AFTER = 500; // ms after last line before wipe
+
 export default function IntroLoader() {
   const [show, setShow] = useState(false);
+  const [lineCount, setLineCount] = useState(0);
   const reduced = useReducedMotion();
+  const timersRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    // `reduced` is false on the hydration pass (useSyncExternalStore returns the
-    // server snapshot) and only flips true on the following render. Without
-    // clearing `show` here, that first pass opens the overlay, this re-run
-    // cancels its dismiss timer, and the full-screen intro stays up forever —
-    // locking reduced-motion users out of the whole site.
     if (reduced) {
       setShow(false);
       return;
@@ -25,65 +46,102 @@ export default function IntroLoader() {
     try {
       if (sessionStorage.getItem(STORAGE_KEY)) return;
     } catch {
-      // sessionStorage may be unavailable (private mode, etc.) — just show once.
+      /* private mode etc. — just boot once */
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time first-load intro
     setShow(true);
-    const t = window.setTimeout(() => {
-      setShow(false);
-      try {
-        sessionStorage.setItem(STORAGE_KEY, "1");
-      } catch {
-        /* noop */
-      }
-      // Signal the hero (and any other first-load animations) to begin.
-      window.dispatchEvent(new Event("wh:intro-complete"));
-    }, 1600);
-    return () => window.clearTimeout(t);
+
+    const timers: number[] = [];
+    BOOT_LINES.forEach((_, i) => {
+      timers.push(
+        window.setTimeout(() => setLineCount(i + 1), (i + 1) * LINE_INTERVAL),
+      );
+    });
+    timers.push(
+      window.setTimeout(
+        () => {
+          setShow(false);
+          try {
+            sessionStorage.setItem(STORAGE_KEY, "1");
+          } catch {
+            /* noop */
+          }
+          window.dispatchEvent(new Event("wh:intro-complete"));
+        },
+        BOOT_LINES.length * LINE_INTERVAL + HOLD_AFTER,
+      ),
+    );
+    timersRef.current = timers;
+    return () => timers.forEach((t) => window.clearTimeout(t));
   }, [reduced]);
+
+  const progress = show ? lineCount / BOOT_LINES.length : 1;
 
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          key="intro"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
-          className="fixed inset-0 z-[9990] flex items-center justify-center bg-[var(--bg)]"
+          key="boot"
+          initial={{ clipPath: "inset(0% 0% 0% 0%)" }}
+          exit={{
+            clipPath: "inset(0% 0% 100% 0%)",
+            transition: { duration: 0.7, ease: EASE },
+          }}
+          className="fixed inset-0 z-[9990] flex items-center justify-center bg-[var(--bg-deep)]"
           aria-hidden
         >
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            animate={{
-              y: 0,
-              opacity: 1,
-              transition: { duration: 0.6, ease: EASE_OUT },
-            }}
-            exit={{
-              y: -10,
-              opacity: 0,
-              transition: { duration: 0.35, ease: "easeIn" },
-            }}
-            className="flex flex-col items-center gap-3"
-          >
-            <span className="text-xs uppercase tracking-[0.4em] text-[var(--muted)]">
-              With Hammad
-            </span>
-            <span
-              className="font-semibold tracking-tight text-[var(--text)]"
-              style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)" }}
-            >
-              Hammad Yousuf
-            </span>
-            <motion.span
-              initial={{ scaleX: 0 }}
-              animate={{
-                scaleX: 1,
-                transition: { duration: 1, ease: EASE_OUT },
-              }}
-              className="mt-1 h-px w-32 origin-left bg-[var(--accent-2)]"
-            />
-          </motion.div>
+          {/* corner ticks — the HUD frame is present from the first frame */}
+          <div className="pointer-events-none absolute inset-6 border border-[var(--line)]" />
+          <div className="pointer-events-none absolute left-6 top-6 h-3 w-3 border-l-2 border-t-2 border-[var(--accent)]" />
+          <div className="pointer-events-none absolute right-6 top-6 h-3 w-3 border-r-2 border-t-2 border-[var(--accent)]" />
+          <div className="pointer-events-none absolute bottom-6 left-6 h-3 w-3 border-b-2 border-l-2 border-[var(--accent)]" />
+          <div className="pointer-events-none absolute bottom-6 right-6 h-3 w-3 border-b-2 border-r-2 border-[var(--accent)]" />
+
+          <div className="w-[min(88vw,480px)] font-mono text-[13px] leading-7 tracking-wide">
+            <div className="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              <span>With Hammad</span>
+              <span className="text-[var(--accent)]">
+                {Math.round(progress * 100)}%
+              </span>
+            </div>
+
+            {/* amber hairline progress */}
+            <div className="mb-6 h-px w-full bg-white/10">
+              <motion.div
+                className="h-px bg-[var(--accent)]"
+                animate={{ scaleX: progress }}
+                initial={{ scaleX: 0 }}
+                style={{ transformOrigin: "left" }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              />
+            </div>
+
+            <div className="min-h-[10.5rem] text-[var(--muted)]">
+              {BOOT_LINES.slice(0, lineCount).map((line, i) => (
+                <motion.div
+                  key={line}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.18 }}
+                  className={
+                    i === BOOT_LINES.length - 1
+                      ? "text-[var(--accent)]"
+                      : undefined
+                  }
+                >
+                  <span className="mr-2 text-[var(--accent)]/60">&gt;</span>
+                  {line}
+                  {i === lineCount - 1 && (
+                    <motion.span
+                      aria-hidden
+                      className="ml-1 inline-block h-[1em] w-[7px] translate-y-[2px] bg-[var(--accent)]"
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                    />
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

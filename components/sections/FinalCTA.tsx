@@ -148,6 +148,7 @@ export default function FinalCTA() {
     <section
       ref={ref}
       id="contact"
+      data-hud-section="05 / EXTRACTION"
       className="relative scroll-mt-24 py-24 sm:py-32"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">

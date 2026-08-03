@@ -108,7 +108,8 @@ export default function About() {
   );
 
   return (
-    <section ref={ref} id="about" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section ref={ref} id="about"
+      data-hud-section="04 / MISSION LOG" className="relative scroll-mt-24 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr]">
           <div data-reveal>
