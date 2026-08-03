@@ -87,12 +87,12 @@ export default async function BlogPage() {
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-72 opacity-60"
           style={{
             background:
-              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 22%, transparent), transparent 70%)",
+              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
           }}
         />
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--muted)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
             Blog
           </span>
           <h1

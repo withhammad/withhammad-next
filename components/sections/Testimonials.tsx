@@ -44,7 +44,7 @@ export default function Testimonials({
                 href={f.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent-indigo)] hover:underline"
+                className="text-[var(--accent)] hover:underline"
               >
                 LinkedIn
               </a>
@@ -62,7 +62,7 @@ export default function Testimonials({
     >
       <div className="mx-auto max-w-4xl px-5 sm:px-8">
         <span className="mb-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
           In their words
         </span>
 
@@ -119,7 +119,7 @@ export default function Testimonials({
                   className={
                     "h-1.5 rounded-full transition-all " +
                     (i === active
-                      ? "w-6 bg-[var(--accent-amber)]"
+                      ? "w-6 bg-[var(--accent-2)]"
                       : "w-1.5 bg-white/20 hover:bg-white/40")
                   }
                 />

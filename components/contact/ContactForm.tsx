@@ -5,7 +5,7 @@ import { useState } from "react";
 type Status = "idle" | "sending" | "ok" | "error";
 
 const FIELD =
-  "w-full rounded-xl border border-white/12 bg-[var(--bg)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)]/70 outline-none transition-colors focus:border-[var(--accent-indigo)]";
+  "w-full rounded-xl border border-white/12 bg-[var(--bg)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--muted)]/70 outline-none transition-colors focus:border-[var(--accent)]";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -50,8 +50,8 @@ export default function ContactForm() {
 
   if (status === "ok") {
     return (
-      <div className="rounded-3xl border border-[var(--accent-indigo)]/40 bg-[var(--panel)] p-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-indigo)]/15 text-2xl text-[var(--accent-indigo)]">
+      <div className="rounded-3xl border border-[var(--accent)]/40 bg-[var(--panel)] p-8 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent)]/15 text-2xl text-[var(--accent)]">
           ✓
         </div>
         <h3 className="text-xl font-semibold tracking-tight text-[var(--text)]">
@@ -64,7 +64,7 @@ export default function ContactForm() {
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="mt-6 text-sm font-medium text-[var(--accent-indigo)] hover:underline"
+          className="mt-6 text-sm font-medium text-[var(--accent)] hover:underline"
         >
           Send another message
         </button>
@@ -134,7 +134,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "sending" ? "Sending…" : "Send message"}
       </button>

@@ -61,12 +61,12 @@ export default async function ProductsPage() {
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-72 opacity-60"
           style={{
             background:
-              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 22%, transparent), transparent 70%)",
+              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
           }}
         />
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--muted)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
             Products
           </span>
           <h1
@@ -100,7 +100,7 @@ export default async function ProductsPage() {
             </p>
             <Link
               href="/#contact"
-              className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+              className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
             >
               Book a Call
             </Link>

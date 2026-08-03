@@ -19,13 +19,13 @@ function StatusPill({ status }: { status: AISystem["status"] }) {
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
         production
-          ? "border-[var(--accent-amber)]/40 text-[var(--accent-amber)]"
-          : "border-[var(--accent-indigo)]/50 text-[var(--accent-indigo)]"
+          ? "border-[var(--accent-2)]/40 text-[var(--accent-2)]"
+          : "border-[var(--accent)]/50 text-[var(--accent)]"
       }`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${
-          production ? "bg-[var(--accent-amber)]" : "bg-[var(--accent-indigo)]"
+          production ? "bg-[var(--accent-2)]" : "bg-[var(--accent)]"
         }`}
       />
       {production ? "In production" : "In development"}
@@ -44,7 +44,7 @@ export default function AISystemsSection() {
       className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24"
     >
       <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
         AI Systems &amp; Agents
       </span>
       <h2
@@ -79,7 +79,7 @@ export default function AISystemsSection() {
           {selected.metric ? (
             <div className="mt-6">
               <div
-                className="font-semibold tracking-tight text-[var(--accent-amber)]"
+                className="font-semibold tracking-tight text-[var(--accent-2)]"
                 style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}
               >
                 {selected.metric}
@@ -120,7 +120,7 @@ export default function AISystemsSection() {
                 aria-pressed={active}
                 className={`flex h-full w-full cursor-pointer flex-col rounded-2xl border p-5 text-left transition-[transform,border-color,background-color] duration-300 hover:-translate-y-0.5 ${
                   active
-                    ? "border-[var(--accent-indigo)]/60 bg-[var(--accent-indigo)]/5"
+                    ? "border-[var(--accent)]/60 bg-[var(--accent)]/5"
                     : "border-white/10 bg-[var(--panel)] hover:border-white/25"
                 }`}
               >
@@ -133,7 +133,7 @@ export default function AISystemsSection() {
                 </span>
                 {s.metric ? (
                   <span className="mt-4 text-sm">
-                    <span className="font-semibold text-[var(--accent-amber)]">
+                    <span className="font-semibold text-[var(--accent-2)]">
                       {s.metric}
                     </span>{" "}
                     <span className="text-[var(--muted)]">{s.metricLabel}</span>

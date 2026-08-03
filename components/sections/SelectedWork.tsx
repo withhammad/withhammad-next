@@ -90,7 +90,7 @@ export default function SelectedWork({
           data-reveal
           className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
           Selected Work
         </span>
         <h2
@@ -126,7 +126,7 @@ export default function SelectedWork({
                     className={
                       "rounded-full border px-4 py-1.5 text-sm transition-colors " +
                       (active
-                        ? "border-[var(--accent-indigo)] bg-[var(--accent-indigo)] text-white"
+                        ? "border-[var(--accent)] bg-[var(--accent)] text-white"
                         : "border-white/15 text-[var(--muted)] hover:border-white/40 hover:text-[var(--text)]")
                     }
                   >
@@ -319,7 +319,7 @@ function CaseCard({
             ))}
           </div>
           {isSample ? (
-            <span className="shrink-0 rounded-full border border-dashed border-[var(--accent-amber)]/50 bg-[color-mix(in_oklab,var(--accent-amber)_8%,transparent)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--accent-amber)]">
+            <span className="shrink-0 rounded-full border border-dashed border-[var(--accent-2)]/50 bg-[color-mix(in_oklab,var(--accent-2)_8%,transparent)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--accent-2)]">
               Sample · illustrative
             </span>
           ) : logoUrl ? (
@@ -337,7 +337,7 @@ function CaseCard({
 
         <div>
           <div
-            className="font-semibold tracking-tight text-[var(--accent-amber)]"
+            className="font-semibold tracking-tight text-[var(--accent-2)]"
             style={{ fontSize: hero ? "clamp(2.4rem, 5vw, 3.6rem)" : "clamp(2rem, 4vw, 2.8rem)" }}
           >
             {f?.heroMetric ?? "—"}
@@ -367,7 +367,7 @@ function CaseCard({
       </div>
 
       {/* Hover overlay: title reveal + CTA */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-[color-mix(in_oklab,var(--accent-indigo)_92%,black)] px-6 py-4 transition-transform duration-300 ease-out group-hover:translate-y-0">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-[color-mix(in_oklab,var(--accent)_92%,black)] px-6 py-4 transition-transform duration-300 ease-out group-hover:translate-y-0">
         <div className="flex items-center justify-between gap-3 text-white">
           <span className="line-clamp-1 text-sm font-medium">
             {cs.title ?? f?.clientName ?? "View case study"}

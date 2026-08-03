@@ -13,7 +13,7 @@ export default function AISystemsTeaser() {
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             AI Systems &amp; Agents
           </span>
           <h2
@@ -46,15 +46,15 @@ export default function AISystemsTeaser() {
               <span
                 className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
                   s.status === "production"
-                    ? "border-[var(--accent-amber)]/40 text-[var(--accent-amber)]"
-                    : "border-[var(--accent-indigo)]/50 text-[var(--accent-indigo)]"
+                    ? "border-[var(--accent-2)]/40 text-[var(--accent-2)]"
+                    : "border-[var(--accent)]/50 text-[var(--accent)]"
                 }`}
               >
                 {s.status === "production" ? "In production" : "In development"}
               </span>
               {s.metric ? (
                 <span
-                  className="mt-5 font-semibold tracking-tight text-[var(--accent-amber)]"
+                  className="mt-5 font-semibold tracking-tight text-[var(--accent-2)]"
                   style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)" }}
                 >
                   {s.metric}

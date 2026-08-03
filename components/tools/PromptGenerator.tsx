@@ -132,7 +132,7 @@ Tone: ${ph(i.tone, "confident and benefit-led")}. Be specific.`,
 ];
 
 const FIELD =
-  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
 export default function PromptGenerator() {
   const [activeId, setActiveId] = useState(CATEGORIES[0].id);
@@ -163,7 +163,7 @@ export default function PromptGenerator() {
               className={
                 "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                 (c.id === activeId
-                  ? "bg-[var(--accent-indigo)] text-white"
+                  ? "bg-[var(--accent)] text-white"
                   : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
               }
             >
@@ -216,7 +216,7 @@ export default function PromptGenerator() {
                   className={
                     "rounded-full border px-2.5 py-1 text-xs transition-colors " +
                     (inputs.goal === g
-                      ? "border-[var(--accent-amber)] bg-[var(--accent-amber)]/10 text-[var(--accent-amber)]"
+                      ? "border-[var(--accent-2)] bg-[var(--accent-2)]/10 text-[var(--accent-2)]"
                       : "border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
                   }
                 >

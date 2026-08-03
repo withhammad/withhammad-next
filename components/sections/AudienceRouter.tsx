@@ -101,7 +101,7 @@ export default function AudienceRouter() {
             data-reveal
             className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             Who I work with
           </span>
           <h2
@@ -154,7 +154,7 @@ function AudienceCard({
           className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-70"
           style={{
             background:
-              "radial-gradient(circle at center, var(--accent-indigo), transparent 65%)",
+              "radial-gradient(circle at center, var(--accent), transparent 65%)",
           }}
         />
       ) : null}
@@ -163,13 +163,13 @@ function AudienceCard({
         <span
           className={
             "inline-grid place-items-center rounded-xl border border-white/10 transition-colors group-hover:border-white/25 " +
-            (primary ? "h-12 w-12 text-[var(--accent-indigo)]" : "h-10 w-10 text-[var(--muted)] group-hover:text-[var(--text)]")
+            (primary ? "h-12 w-12 text-[var(--accent)]" : "h-10 w-10 text-[var(--muted)] group-hover:text-[var(--text)]")
           }
         >
           <AudienceIcon kind={audience.key} />
         </span>
         {audience.eyebrow ? (
-          <span className="rounded-full border border-[var(--accent-indigo)]/40 bg-[var(--accent-indigo)]/10 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-[var(--accent-indigo)]">
+          <span className="rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-[var(--accent)]">
             {audience.eyebrow}
           </span>
         ) : null}
@@ -199,7 +199,7 @@ function AudienceCard({
               key={p}
               className="flex items-center gap-3 text-sm text-[var(--text)]"
             >
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent-amber)]" />
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent-2)]" />
               {p}
             </li>
           ))}

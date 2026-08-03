@@ -96,7 +96,7 @@ export default function YouTubeCredibility() {
             data-reveal
             className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             Distribution as a skill
           </span>
           <h2
@@ -105,7 +105,7 @@ export default function YouTubeCredibility() {
             style={{ fontSize: "clamp(1.9rem, 4vw, 3.2rem)", lineHeight: 1.08 }}
           >
             I don&apos;t just run ads —{" "}
-            <span className="text-[var(--accent-amber)]">
+            <span className="text-[var(--accent-2)]">
               I built a 540K audience from scratch.
             </span>
           </h2>
@@ -140,7 +140,7 @@ export default function YouTubeCredibility() {
             className="pointer-events-none absolute -inset-6 -z-10 rounded-full opacity-40 blur-3xl"
             style={{
               background:
-                "radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--accent-amber) 55%, transparent), transparent 65%)",
+                "radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 65%)",
             }}
           />
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[var(--panel)] p-8 text-center sm:p-10">
@@ -148,7 +148,7 @@ export default function YouTubeCredibility() {
               <SilverPlayButton />
             </div>
             <div
-              className="font-semibold leading-none tracking-tight text-[var(--accent-amber)]"
+              className="font-semibold leading-none tracking-tight text-[var(--accent-2)]"
               style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
             >
               <MetricNumber raw="540K" play={play} />

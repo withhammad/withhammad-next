@@ -63,7 +63,7 @@ function WorkCard({ cs, sample }: { cs: CaseStudyCard; sample?: boolean }) {
           />
         </div>
         {sample ? (
-          <span className="absolute left-3 top-3 rounded-full border border-dashed border-[var(--accent-amber)]/50 bg-black/40 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--accent-amber)] backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full border border-dashed border-[var(--accent-2)]/50 bg-black/40 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[var(--accent-2)] backdrop-blur">
             Sample · illustrative
           </span>
         ) : null}
@@ -71,7 +71,7 @@ function WorkCard({ cs, sample }: { cs: CaseStudyCard; sample?: boolean }) {
       <div className="flex flex-1 flex-col p-6">
         {f?.heroMetric ? (
           <div
-            className="font-semibold tracking-tight text-[var(--accent-amber)]"
+            className="font-semibold tracking-tight text-[var(--accent-2)]"
             style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
           >
             {f.heroMetric}
@@ -86,7 +86,7 @@ function WorkCard({ cs, sample }: { cs: CaseStudyCard; sample?: boolean }) {
         {f?.industry && f?.showLogo !== false ? (
           <div className="text-sm text-[var(--muted)]">{f.industry}</div>
         ) : null}
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-2.5">
           Read case study <span aria-hidden>→</span>
         </span>
       </div>
@@ -134,7 +134,7 @@ export default async function WorkIndexPage() {
 
       <section className="mx-auto max-w-6xl px-5 pb-8 pt-28 sm:px-8 sm:pt-32">
         <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
           Case Studies
         </span>
         <h1

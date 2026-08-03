@@ -44,7 +44,7 @@ function RelatedLinks({ product }: { product: Product }) {
         href={post.href}
         className="inline-flex items-center gap-1.5 text-[var(--muted)] transition-colors hover:text-[var(--text)]"
       >
-        <span aria-hidden className="text-[var(--accent-amber)]">
+        <span aria-hidden className="text-[var(--accent-2)]">
           →
         </span>
         {post.label}
@@ -54,7 +54,7 @@ function RelatedLinks({ product }: { product: Product }) {
         aria-label={`See the marketing services behind ${product.name}`}
         className="inline-flex items-center gap-1.5 text-[var(--muted)] transition-colors hover:text-[var(--text)]"
       >
-        <span aria-hidden className="text-[var(--accent-amber)]">
+        <span aria-hidden className="text-[var(--accent-2)]">
           →
         </span>
         Work with me — done-for-you services
@@ -85,7 +85,7 @@ function InsideRow() {
             strokeWidth="1.6"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-3.5 w-3.5 text-[var(--accent-amber)]"
+            className="h-3.5 w-3.5 text-[var(--accent-2)]"
             aria-hidden
           >
             <path d={it.d} />
@@ -106,7 +106,7 @@ function CheckIcon() {
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-amber)]"
+      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-2)]"
       aria-hidden
     >
       <path d="M20 6 9 17l-5-5" />
@@ -126,7 +126,7 @@ function BuyButton({
     "inline-flex h-12 w-full items-center justify-center rounded-full text-sm font-medium transition-[transform,background-color,border-color] duration-300 hover:-translate-y-0.5";
   const cls =
     variant === "solid"
-      ? `${base} bg-[var(--accent-indigo)] text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] hover:bg-[#7C7DF3]`
+      ? `${base} bg-[var(--accent)] text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] hover:bg-[#7C7DF3]`
       : `${base} border border-white/15 text-[var(--text)] hover:border-white/40 hover:bg-white/5`;
   return (
     <a
@@ -145,7 +145,7 @@ function DetailsLink({ product }: { product: Product }) {
     <Link
       href={`/products/${product.slug}`}
       aria-label={`View details for ${product.name}`}
-      className="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 hover:gap-2.5"
+      className="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 hover:gap-2.5"
     >
       View details <span aria-hidden>→</span>
     </Link>
@@ -159,7 +159,7 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
         className={
           "relative flex h-full flex-col overflow-hidden rounded-3xl border p-7 transition-[transform,border-color] duration-300 hover:-translate-y-1 " +
           (product.highlighted
-            ? "border-[var(--accent-indigo)]/50 bg-[var(--panel)] lg:scale-[1.03]"
+            ? "border-[var(--accent)]/50 bg-[var(--panel)] lg:scale-[1.03]"
             : "border-white/10 bg-[var(--panel)] hover:border-white/25")
         }
       >
@@ -167,7 +167,7 @@ function PricingCard({ product, index }: { product: Product; index: number }) {
           <span
             aria-hidden
             className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-30 blur-3xl"
-            style={{ background: "var(--accent-indigo)" }}
+            style={{ background: "var(--accent)" }}
           />
         ) : null}
 
@@ -250,7 +250,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
         <Reveal>
           <div className="flex flex-col gap-6 overflow-hidden rounded-3xl border border-dashed border-white/15 bg-[var(--panel)] p-7 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-2.5 py-1 text-[11px] uppercase tracking-wide text-[var(--accent-amber)]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-2.5 py-1 text-[11px] uppercase tracking-wide text-[var(--accent-2)]">
                 Free
               </span>
               <h3 className="mt-3 text-xl font-semibold tracking-tight text-[var(--text)]">

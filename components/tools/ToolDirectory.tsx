@@ -57,7 +57,7 @@ export default function ToolDirectory({ tools }: { tools: DirectoryTool[] }) {
               className={
                 "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                 (filter === t.id
-                  ? "bg-[var(--accent-indigo)] text-white"
+                  ? "bg-[var(--accent)] text-white"
                   : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
               }
             >
@@ -92,7 +92,7 @@ export default function ToolDirectory({ tools }: { tools: DirectoryTool[] }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search tools…"
-            className="h-11 w-full rounded-full border border-white/10 bg-[var(--bg)] pl-9 pr-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none"
+            className="h-11 w-full rounded-full border border-white/10 bg-[var(--bg)] pl-9 pr-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none"
           />
         </label>
       </div>
@@ -114,7 +114,7 @@ export default function ToolDirectory({ tools }: { tools: DirectoryTool[] }) {
                 </span>
                 <span
                   aria-hidden
-                  className="text-[var(--muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent-indigo)]"
+                  className="text-[var(--muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]"
                 >
                   ↗
                 </span>

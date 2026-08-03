@@ -67,7 +67,7 @@ export default function MobileMenu({
             <Link
               href={link.href}
               onClick={onClose}
-              className="block py-4 text-4xl font-semibold tracking-tight text-[var(--text)] border-b border-white/5 hover:text-[var(--accent-amber)] transition-colors"
+              className="block py-4 text-4xl font-semibold tracking-tight text-[var(--text)] border-b border-white/5 hover:text-[var(--accent-2)] transition-colors"
             >
               {link.label}
             </Link>
@@ -84,7 +84,7 @@ export default function MobileMenu({
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-6 text-base font-medium text-white"
+          className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-base font-medium text-white"
         >
           Book a Call
         </a>

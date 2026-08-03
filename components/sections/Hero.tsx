@@ -144,7 +144,7 @@ export default function Hero() {
               backgroundColor: "color-mix(in oklab, var(--panel) 60%, transparent)",
             }}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
             Dubai, UAE · Open to roles &amp; founder projects
           </div>
 
@@ -161,7 +161,7 @@ export default function Hero() {
                   data-word-inner
                   className={
                     "inline-block will-change-transform " +
-                    (ACCENT_WORDS.has(word) ? "text-[var(--accent-amber)]" : "")
+                    (ACCENT_WORDS.has(word) ? "text-[var(--accent-2)]" : "")
                   }
                 >
                   {word}
@@ -192,7 +192,7 @@ export default function Hero() {
               href={CALENDLY_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
             >
               Book a Call
             </a>
@@ -227,7 +227,7 @@ export default function Hero() {
             }}
           >
             <div
-              className="font-semibold tracking-tight text-[var(--accent-amber)]"
+              className="font-semibold tracking-tight text-[var(--accent-2)]"
               style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)" }}
             >
               <CountUp
@@ -258,7 +258,7 @@ function Headshot() {
         className="absolute -inset-6 -z-10 rounded-full opacity-50 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle at 50% 30%, var(--accent-indigo), transparent 60%)",
+            "radial-gradient(circle at 50% 30%, var(--accent), transparent 60%)",
         }}
       />
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-white/10 bg-[var(--panel)]">

@@ -162,7 +162,7 @@ export default function Services({
             data-reveal
             className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             Services
           </span>
           <h2
@@ -190,18 +190,18 @@ export default function Services({
               className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-70"
               style={{
                 background:
-                  "radial-gradient(circle at center, var(--accent-indigo), transparent 65%)",
+                  "radial-gradient(circle at center, var(--accent), transparent 65%)",
               }}
             />
             <div className="relative flex items-center gap-2">
-              <span className="rounded-full border border-[var(--accent-indigo)]/40 bg-[var(--accent-indigo)]/10 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-[var(--accent-indigo)]">
+              <span className="rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-3 py-1 text-[11px] uppercase tracking-[0.15em] text-[var(--accent)]">
                 Productized · Monthly
               </span>
             </div>
 
             <div className="relative mt-6 flex items-end gap-2">
               <span
-                className="font-semibold tracking-tight text-[var(--accent-amber)]"
+                className="font-semibold tracking-tight text-[var(--accent-2)]"
                 style={{ fontSize: "clamp(2.6rem, 5vw, 4rem)", lineHeight: 1 }}
               >
                 $999
@@ -233,7 +233,7 @@ export default function Services({
                 href={CALENDLY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-5 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
               >
                 Book a Call
               </a>
@@ -332,7 +332,7 @@ function CheckIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      className="h-4 w-4 shrink-0 text-[var(--accent-amber)]"
+      className="h-4 w-4 shrink-0 text-[var(--accent-2)]"
     >
       <path d="M20 6 9 17l-5-5" />
     </svg>

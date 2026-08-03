@@ -200,7 +200,7 @@ export default async function PostPage({
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-64 opacity-50"
           style={{
             background:
-              "radial-gradient(60% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 20%, transparent), transparent 70%)",
+              "radial-gradient(60% 100% at 50% 0%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%)",
           }}
         />
 
@@ -215,7 +215,7 @@ export default async function PostPage({
           {post.categories[0] ? (
             <Link
               href="/blog"
-              className="rounded-full border border-white/10 px-2.5 py-1 text-[var(--accent-indigo)]"
+              className="rounded-full border border-white/10 px-2.5 py-1 text-[var(--accent)]"
             >
               {post.categories[0].name}
             </Link>
@@ -234,7 +234,7 @@ export default async function PostPage({
         {/* AEO short-answer callout */}
         {shortAnswer ? (
           <div className="mt-7 rounded-2xl border border-white/10 bg-[var(--panel)] p-5">
-            <div className="mb-1.5 text-xs font-medium uppercase tracking-[0.15em] text-[var(--accent-amber)]">
+            <div className="mb-1.5 text-xs font-medium uppercase tracking-[0.15em] text-[var(--accent-2)]">
               Short answer
             </div>
             <p className="text-[var(--text)]">{shortAnswer}</p>
@@ -289,10 +289,10 @@ export default async function PostPage({
             className="pointer-events-none absolute inset-0 -z-10 opacity-70"
             style={{
               background:
-                "radial-gradient(80% 120% at 0% 0%, color-mix(in oklab, var(--accent-indigo) 26%, transparent), transparent 60%), radial-gradient(80% 120% at 100% 100%, color-mix(in oklab, var(--accent-amber) 18%, transparent), transparent 60%)",
+                "radial-gradient(80% 120% at 0% 0%, color-mix(in oklab, var(--accent) 26%, transparent), transparent 60%), radial-gradient(80% 120% at 100% 100%, color-mix(in oklab, var(--accent-2) 18%, transparent), transparent 60%)",
             }}
           />
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--accent-amber)] backdrop-blur">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/30 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--accent-2)] backdrop-blur">
             Free strategy session
           </span>
           <h2
@@ -309,7 +309,7 @@ export default async function PostPage({
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/contact"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
             >
               Book a free call →
             </Link>
@@ -324,7 +324,7 @@ export default async function PostPage({
             Prefer proof first?{" "}
             <Link
               href={ctxLink.href}
-              className="font-medium text-[var(--accent-indigo)] underline-offset-4 transition-colors hover:text-[#7C7DF3] hover:underline"
+              className="font-medium text-[var(--accent)] underline-offset-4 transition-colors hover:text-[#7C7DF3] hover:underline"
             >
               {ctxLink.label}
             </Link>
@@ -373,7 +373,7 @@ export default async function PostPage({
                   <h3 className="text-base font-semibold leading-snug tracking-tight text-[var(--text)]">
                     {p.title}
                   </h3>
-                  <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-2.5">
                     Read <span aria-hidden>→</span>
                   </span>
                 </div>

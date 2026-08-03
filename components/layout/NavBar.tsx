@@ -76,7 +76,7 @@ export default function NavBar() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link
             href="/"
-            className="text-sm font-semibold tracking-tight text-[var(--text)] hover:text-[var(--accent-amber)] transition-colors"
+            className="text-sm font-semibold tracking-tight text-[var(--text)] hover:text-[var(--accent-2)] transition-colors"
             aria-label="Hammad Yousuf — home"
           >
             Hammad Yousuf
@@ -200,7 +200,7 @@ function MagneticCTA({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-10 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-5 text-sm font-medium text-white shadow-[0_8px_24px_-12px_rgba(99,102,241,0.6)] transition-[transform,background-color] duration-300 hover:bg-[#7C7DF3] will-change-transform"
+      className="inline-flex h-10 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-sm font-medium text-white shadow-[0_8px_24px_-12px_rgba(99,102,241,0.6)] transition-[transform,background-color] duration-300 hover:bg-[#7C7DF3] will-change-transform"
     >
       {children}
     </a>

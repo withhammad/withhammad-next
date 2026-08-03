@@ -102,7 +102,7 @@ export default function CalendlyInline({
             <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
               <span
                 className={
-                  "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+                  "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent)] " +
                   (reduced ? "" : "animate-spin")
                 }
               />
@@ -117,7 +117,7 @@ export default function CalendlyInline({
           href={CALENDLY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[var(--accent-indigo)] hover:underline"
+          className="text-[var(--accent)] hover:underline"
         >
           Open the scheduler in a new tab ↗
         </a>
@@ -129,7 +129,7 @@ export default function CalendlyInline({
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--accent-indigo)] hover:underline"
+            className="text-[var(--accent)] hover:underline"
           >
             Book a free 30-minute call with Hammad Yousuf ↗
           </a>

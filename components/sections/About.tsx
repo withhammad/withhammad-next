@@ -28,7 +28,7 @@ function VerifiedIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      className="h-4 w-4 text-[var(--accent-amber)]"
+      className="h-4 w-4 text-[var(--accent-2)]"
     >
       <path d="M20 6 9 17l-5-5" />
     </svg>
@@ -44,7 +44,7 @@ function AboutPhoto() {
         className="pointer-events-none absolute -inset-6 -z-10 rounded-full opacity-40 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle at 50% 30%, var(--accent-indigo), transparent 62%)",
+            "radial-gradient(circle at 50% 30%, var(--accent), transparent 62%)",
         }}
       />
       <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-[var(--panel)]">
@@ -120,7 +120,7 @@ export default function About() {
               data-reveal
               className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
               About
             </span>
             <h2
@@ -156,7 +156,7 @@ export default function About() {
               <a
                 href={CV_URL}
                 download
-                className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
               >
                 Download CV
               </a>

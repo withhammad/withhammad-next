@@ -156,7 +156,7 @@ export default function FinalCTA() {
             data-reveal
             className="mb-4 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
             Let&apos;s talk
           </span>
           <h2
@@ -185,7 +185,7 @@ export default function FinalCTA() {
               </h3>
               <a
                 href={`mailto:${EMAIL}`}
-                className="mt-4 block text-2xl font-semibold tracking-tight text-[var(--text)] transition-colors hover:text-[var(--accent-amber)] sm:text-3xl"
+                className="mt-4 block text-2xl font-semibold tracking-tight text-[var(--text)] transition-colors hover:text-[var(--accent-2)] sm:text-3xl"
               >
                 {EMAIL}
               </a>
@@ -204,15 +204,15 @@ export default function FinalCTA() {
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 text-[var(--text)] transition-colors hover:text-[var(--accent-amber)]"
+                        className="group inline-flex items-center gap-2 text-[var(--text)] transition-colors hover:text-[var(--accent-2)]"
                       >
                         <span className="text-sm font-medium">{s.label}</span>
-                        <span className="text-sm text-[var(--muted)] transition-colors group-hover:text-[var(--accent-amber)]">
+                        <span className="text-sm text-[var(--muted)] transition-colors group-hover:text-[var(--accent-2)]">
                           {s.handle}
                         </span>
                         <span
                           aria-hidden
-                          className="text-[var(--muted)] transition-colors group-hover:text-[var(--accent-amber)]"
+                          className="text-[var(--muted)] transition-colors group-hover:text-[var(--accent-2)]"
                         >
                           ↗
                         </span>
@@ -233,7 +233,7 @@ export default function FinalCTA() {
                   <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
                     <span
                       className={
-                        "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+                        "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent)] " +
                         (reduced ? "" : "animate-spin")
                       }
                     />
@@ -248,7 +248,7 @@ export default function FinalCTA() {
                 href={CALENDLY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent-indigo)] hover:underline"
+                className="text-[var(--accent)] hover:underline"
               >
                 Open the scheduler in a new tab ↗
               </a>

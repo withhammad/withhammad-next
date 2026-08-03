@@ -58,7 +58,7 @@ export default function Footer() {
           </p>
           <a
             href="mailto:marketing@withhammad.com"
-            className="mt-4 inline-block text-sm text-[var(--text)] hover:text-[var(--accent-amber)] transition-colors"
+            className="mt-4 inline-block text-sm text-[var(--text)] hover:text-[var(--accent-2)] transition-colors"
           >
             marketing@withhammad.com
           </a>
@@ -73,7 +73,7 @@ export default function Footer() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="text-[var(--text)] hover:text-[var(--accent-amber)] transition-colors"
+                  className="text-[var(--text)] hover:text-[var(--accent-2)] transition-colors"
                 >
                   {l.label}
                 </Link>
@@ -95,7 +95,7 @@ export default function Footer() {
                   rel={
                     s.href.startsWith("/") ? undefined : "noopener noreferrer"
                   }
-                  className="text-[var(--text)] hover:text-[var(--accent-amber)] transition-colors"
+                  className="text-[var(--text)] hover:text-[var(--accent-2)] transition-colors"
                 >
                   {s.label}
                 </a>
@@ -122,11 +122,11 @@ export default function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
-              className="h-10 flex-1 rounded-full border border-white/10 bg-[var(--bg)] px-4 text-sm text-[var(--text)] placeholder:text-white/30 focus:outline-none focus:border-[var(--accent-indigo)]"
+              className="h-10 flex-1 rounded-full border border-white/10 bg-[var(--bg)] px-4 text-sm text-[var(--text)] placeholder:text-white/30 focus:outline-none focus:border-[var(--accent)]"
             />
             <button
               type="submit"
-              className="h-10 rounded-full bg-[var(--text)] px-4 text-sm font-medium text-[var(--bg)] transition-colors hover:bg-[var(--accent-amber)]"
+              className="h-10 rounded-full bg-[var(--text)] px-4 text-sm font-medium text-[var(--bg)] transition-colors hover:bg-[var(--accent-2)]"
             >
               {submitted ? "Thanks" : "Subscribe"}
             </button>

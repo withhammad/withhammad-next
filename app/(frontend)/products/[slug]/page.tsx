@@ -112,7 +112,7 @@ function CheckIcon() {
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-amber)]"
+      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-2)]"
       aria-hidden
     >
       <path d="M20 6 9 17l-5-5" />
@@ -180,7 +180,7 @@ export default async function ProductPage({
   };
 
   const buyCls =
-    "inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent-indigo)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]";
+    "inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]";
 
   return (
     <main className="relative">
@@ -199,7 +199,7 @@ export default async function ProductPage({
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-72 opacity-60"
           style={{
             background:
-              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 22%, transparent), transparent 70%)",
+              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
           }}
         />
 
@@ -215,12 +215,12 @@ export default async function ProductPage({
           <div className="min-w-0">
             <Reveal>
               {product.badge ? (
-                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[var(--accent-indigo)] px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-white">
+                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[var(--accent)] px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-white">
                   {product.badge}
                 </span>
               ) : (
                 <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--muted)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
                   {product.free ? "Free resource" : "Digital product"}
                 </span>
               )}
@@ -296,7 +296,7 @@ export default async function ProductPage({
                       <li key={o} className="flex gap-2.5 text-[var(--muted)]">
                         <span
                           aria-hidden
-                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent-indigo)]"
+                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]"
                         />
                         <span>{o}</span>
                       </li>
@@ -403,7 +403,7 @@ export default async function ProductPage({
                 </p>
                 <Link
                   href="/#contact"
-                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 hover:gap-2.5"
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 hover:gap-2.5"
                 >
                   Book a free call <span aria-hidden>→</span>
                 </Link>
@@ -435,7 +435,7 @@ export default async function ProductPage({
                 <p className="mt-2 line-clamp-2 text-sm text-[var(--muted)]">
                   {p.tagline}
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
+                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-2.5">
                   View <span aria-hidden>→</span>
                 </span>
               </Link>

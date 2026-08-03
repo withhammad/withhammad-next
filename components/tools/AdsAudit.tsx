@@ -7,10 +7,10 @@ import CopyButton from "@/components/tools/CopyButton";
 const PLATFORMS = ["Google Ads", "Meta Ads", "Both"] as const;
 
 const FIELD =
-  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
 const TEXTAREA =
-  "min-h-[180px] w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 py-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+  "min-h-[180px] w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 py-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
 type Status = "idle" | "streaming" | "done" | "error";
 
@@ -86,7 +86,7 @@ export default function AdsAudit() {
                 className={
                   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                   (platform === p
-                    ? "bg-[var(--accent-indigo)] text-white"
+                    ? "bg-[var(--accent)] text-white"
                     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
                 }
               >
@@ -151,7 +151,7 @@ The model audits whatever you give it. Don't paste anything confidential.`}
             "mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors " +
             (busy
               ? "bg-white/10 text-white/60"
-              : "bg-[var(--accent-indigo)] text-white hover:opacity-90 disabled:opacity-40")
+              : "bg-[var(--accent)] text-white hover:opacity-90 disabled:opacity-40")
           }
         >
           {busy ? "Auditing…" : "Run audit"}

@@ -98,7 +98,7 @@ export default function MethodologyFlow({
         data-flow-reveal
         className="mb-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
         How it worked
       </span>
 
@@ -107,7 +107,7 @@ export default function MethodologyFlow({
           data-flow-reveal
           className="mb-12 overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)] p-6 sm:p-8"
         >
-          <div className="mb-2 text-xs uppercase tracking-[0.15em] text-[var(--accent-indigo)]">
+          <div className="mb-2 text-xs uppercase tracking-[0.15em] text-[var(--accent)]">
             The Strategy
           </div>
           <p className="max-w-3xl text-lg leading-relaxed text-[var(--text)]">
@@ -130,12 +130,12 @@ export default function MethodologyFlow({
               className="absolute bottom-4 left-[19px] top-4 w-px"
               style={{
                 background:
-                  "linear-gradient(to bottom, color-mix(in oklab, var(--accent-amber) 40%, transparent), rgba(255,255,255,0.08) 30%, transparent)",
+                  "linear-gradient(to bottom, color-mix(in oklab, var(--accent-2) 40%, transparent), rgba(255,255,255,0.08) 30%, transparent)",
               }}
             />
             {steps.map((step, i) => (
               <li key={i} data-flow-reveal className="relative flex gap-4">
-                <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-[var(--bg)] text-[var(--accent-amber)]">
+                <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-[var(--bg)] text-[var(--accent-2)]">
                   <StepIcon index={i} />
                 </span>
                 <div className="pt-1">

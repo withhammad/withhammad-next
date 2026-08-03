@@ -42,7 +42,7 @@ export default function GradientMesh() {
         className="absolute left-[-10%] top-[-15%] h-[55vmax] w-[55vmax] rounded-full opacity-40 blur-[110px] will-change-transform"
         style={{
           background:
-            "radial-gradient(circle at center, var(--accent-indigo), transparent 65%)",
+            "radial-gradient(circle at center, var(--accent), transparent 65%)",
         }}
       />
       <div
@@ -50,7 +50,7 @@ export default function GradientMesh() {
         className="absolute right-[-15%] top-[5%] h-[50vmax] w-[50vmax] rounded-full opacity-30 blur-[120px] will-change-transform"
         style={{
           background:
-            "radial-gradient(circle at center, var(--accent-amber), transparent 65%)",
+            "radial-gradient(circle at center, var(--accent-2), transparent 65%)",
         }}
       />
       <div
@@ -58,7 +58,7 @@ export default function GradientMesh() {
         className="absolute bottom-[-25%] left-[25%] h-[45vmax] w-[45vmax] rounded-full opacity-25 blur-[120px] will-change-transform"
         style={{
           background:
-            "radial-gradient(circle at center, var(--accent-indigo), transparent 70%)",
+            "radial-gradient(circle at center, var(--accent), transparent 70%)",
         }}
       />
       {/* Vignette: fade mesh edges back into the page background */}

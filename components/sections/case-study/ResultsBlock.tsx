@@ -96,7 +96,7 @@ export default function ResultsBlock({
               {beforeAfter.label}
             </span>
             <span
-              className="font-semibold tracking-tight text-[var(--accent-amber)]"
+              className="font-semibold tracking-tight text-[var(--accent-2)]"
               style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)" }}
             >
               <MetricNumber raw={beforeAfter.delta} play={baPlay} />
@@ -141,13 +141,13 @@ export default function ResultsBlock({
                     <MetricNumber
                       raw={r.metric}
                       play={gridPlay}
-                      className="text-xl font-semibold tracking-tight text-[var(--accent-amber)]"
+                      className="text-xl font-semibold tracking-tight text-[var(--accent-2)]"
                     />
                   </Donut>
                 ) : (
                   <div className="w-full">
                     <div
-                      className="font-semibold tracking-tight text-[var(--accent-amber)]"
+                      className="font-semibold tracking-tight text-[var(--accent-2)]"
                       style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
                     >
                       <MetricNumber raw={r.metric} play={gridPlay} />

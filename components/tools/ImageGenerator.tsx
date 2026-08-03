@@ -73,12 +73,12 @@ const STORAGE_KEY = "wh:img-email";
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
 const FIELD =
-  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
 const chip = (active: boolean) =>
   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
   (active
-    ? "bg-[var(--accent-indigo)] text-white"
+    ? "bg-[var(--accent)] text-white"
     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]");
 
 interface CaptionData {
@@ -147,7 +147,7 @@ function RichText({ text }: { text: string }) {
         );
         return bullet ? (
           <div key={i} className="flex gap-2">
-            <span className="mt-0.5 text-[var(--accent-indigo)]">•</span>
+            <span className="mt-0.5 text-[var(--accent)]">•</span>
             <p>{nodes}</p>
           </div>
         ) : (
@@ -163,7 +163,7 @@ function Spinner({ msg, reduced }: { msg: string; reduced: boolean }) {
     <div className="flex flex-col items-center gap-3 text-[var(--muted)]">
       <span
         className={
-          "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+          "h-8 w-8 rounded-full border-2 border-white/15 border-t-[var(--accent)] " +
           (reduced ? "" : "animate-spin")
         }
       />
@@ -186,7 +186,7 @@ function CopyBtn({ text }: { text: string }) {
           /* clipboard blocked */
         }
       }}
-      className="shrink-0 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent-indigo)] hover:text-[var(--text)]"
+      className="shrink-0 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--text)]"
     >
       {done ? "Copied ✓" : "Copy"}
     </button>
@@ -245,7 +245,7 @@ function ResultImage({
         <div className="absolute inset-0 grid place-items-center">
           <span
             className={
-              "h-7 w-7 rounded-full border-2 border-white/15 border-t-[var(--accent-indigo)] " +
+              "h-7 w-7 rounded-full border-2 border-white/15 border-t-[var(--accent)] " +
               (reduced ? "" : "animate-spin")
             }
           />
@@ -259,7 +259,7 @@ function ResultImage({
               href={src}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--accent-indigo)] underline"
+              className="text-[var(--accent)] underline"
             >
               Open directly ↗
             </a>
@@ -508,7 +508,7 @@ export default function ImageGenerator() {
             className="mx-auto grid h-12 w-12 place-items-center rounded-full text-white"
             style={{
               background:
-                "linear-gradient(135deg, var(--accent-indigo), var(--accent-amber))",
+                "linear-gradient(135deg, var(--accent), var(--accent-2))",
             }}
           >
             <svg
@@ -546,7 +546,7 @@ export default function ImageGenerator() {
           ) : null}
           <button
             type="submit"
-            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent-indigo)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3]"
+            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3]"
           >
             Unlock studio
           </button>
@@ -588,7 +588,7 @@ export default function ImageGenerator() {
             className={
               "rounded-xl px-3 py-2.5 text-center transition-colors " +
               (mode === m.id
-                ? "bg-[var(--accent-indigo)] text-white"
+                ? "bg-[var(--accent)] text-white"
                 : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]")
             }
           >
@@ -622,7 +622,7 @@ export default function ImageGenerator() {
                   e.preventDefault();
                   onFile(e.dataTransfer.files?.[0]);
                 }}
-                className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/20 bg-[var(--bg)] text-center transition-colors hover:border-[var(--accent-indigo)]"
+                className="relative flex h-44 w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/20 bg-[var(--bg)] text-center transition-colors hover:border-[var(--accent)]"
               >
                 {preview ? (
                   <>
@@ -675,7 +675,7 @@ export default function ImageGenerator() {
               type="button"
               onClick={enhance}
               disabled={enhancing || !prompt.trim()}
-              className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent-indigo)] hover:text-[var(--text)] disabled:opacity-40"
+              className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/12 px-3 py-1.5 text-xs font-medium text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--text)] disabled:opacity-40"
             >
               {enhancing ? "Enhancing…" : "✨ Enhance prompt"}
             </button>
@@ -803,7 +803,7 @@ export default function ImageGenerator() {
             type="button"
             onClick={run}
             disabled={status === "loading" || !canRun}
-            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent-indigo)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
           >
             {runLabel}
           </button>
@@ -877,7 +877,7 @@ export default function ImageGenerator() {
                       {captionData.hashtags.map((h) => (
                         <span
                           key={h}
-                          className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-[var(--accent-indigo)]"
+                          className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-[var(--accent)]"
                         >
                           #{h}
                         </span>

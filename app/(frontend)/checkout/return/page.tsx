@@ -78,13 +78,13 @@ export default async function CheckoutReturnPage({
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 opacity-60"
         style={{
           background:
-            "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 22%, transparent), transparent 70%)",
+            "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
         }}
       />
 
       {result.ok ? (
         <>
-          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent-indigo)]/15 text-3xl text-[var(--accent-indigo)]">
+          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--accent)]/15 text-3xl text-[var(--accent)]">
             ✓
           </div>
           <h1
@@ -102,7 +102,7 @@ export default async function CheckoutReturnPage({
           </p>
           <a
             href={`/api/download/${result.token}`}
-            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-8 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-8 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
           >
             Download now ↓
           </a>

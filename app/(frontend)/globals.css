@@ -5,8 +5,8 @@
   --panel: #141417;
   --text: #F5F5F7;
   --muted: #9CA3AF;
-  --accent-indigo: #6366F1;
-  --accent-amber: #F59E0B;
+  --accent: #6366F1;
+  --accent-2: #F59E0B;
 }
 
 @theme inline {
@@ -14,8 +14,8 @@
   --color-panel: var(--panel);
   --color-text: var(--text);
   --color-muted: var(--muted);
-  --color-accent-indigo: var(--accent-indigo);
-  --color-accent-amber: var(--accent-amber);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-background: var(--bg);
   --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);
@@ -36,7 +36,7 @@ body {
 }
 
 ::selection {
-  background: var(--accent-indigo);
+  background: var(--accent);
   color: var(--text);
 }
 
@@ -83,12 +83,12 @@ body {
   font-weight: 600;
 }
 .post-content a {
-  color: var(--accent-indigo);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .post-content a:hover {
-  color: var(--accent-amber);
+  color: var(--accent-2);
 }
 .post-content ul,
 .post-content ol {
@@ -104,10 +104,10 @@ body {
   margin-top: 0.5rem;
 }
 .post-content li::marker {
-  color: var(--accent-indigo);
+  color: var(--accent);
 }
 .post-content blockquote {
-  border-left: 3px solid var(--accent-indigo);
+  border-left: 3px solid var(--accent);
   padding-left: 1rem;
   color: var(--text);
   font-style: italic;
@@ -188,8 +188,8 @@ body {
     --panel: #ffffff;
     --text: #0a0a0b;
     --muted: #2f2f36;
-    --accent-indigo: #3730a3;
-    --accent-amber: #92400e;
+    --accent: #3730a3;
+    --accent-2: #92400e;
   }
 
   html,

@@ -359,7 +359,7 @@ export default function GradientCover({
       {/* badge (top-right) */}
       {badge ? (
         <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium tracking-wide text-[var(--text)] backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
           {badge}
         </span>
       ) : null}
@@ -368,7 +368,7 @@ export default function GradientCover({
       {label || eyebrow ? (
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
           {eyebrow ? (
-            <div className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--accent-amber)]">
+            <div className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--accent-2)]">
               {eyebrow}
             </div>
           ) : null}

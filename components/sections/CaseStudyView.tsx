@@ -123,7 +123,7 @@ export default function CaseStudyView({
 
           {isSample ? (
             <div className="mt-5">
-              <span className="inline-flex items-center gap-2 rounded-full border border-dashed border-[var(--accent-amber)]/50 bg-[color-mix(in_oklab,var(--accent-amber)_8%,transparent)] px-3 py-1 text-xs font-medium uppercase tracking-[0.15em] text-[var(--accent-amber)]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-dashed border-[var(--accent-2)]/50 bg-[color-mix(in_oklab,var(--accent-2)_8%,transparent)] px-3 py-1 text-xs font-medium uppercase tracking-[0.15em] text-[var(--accent-2)]">
                 Sample project — illustrative
               </span>
               <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
@@ -142,7 +142,7 @@ export default function CaseStudyView({
                   key={c}
                   className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-[color-mix(in_oklab,var(--panel)_70%,transparent)] px-3 py-1 text-xs text-[var(--text)] backdrop-blur"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
                   {c}
                 </span>
               ))}
@@ -183,7 +183,7 @@ export default function CaseStudyView({
             {f?.heroMetric ? (
               <div className="lg:text-right">
                 <div
-                  className="font-semibold leading-none tracking-tight text-[var(--accent-amber)]"
+                  className="font-semibold leading-none tracking-tight text-[var(--accent-2)]"
                   style={{ fontSize: "clamp(3.5rem, 11vw, 8rem)" }}
                 >
                   <MetricNumber raw={f.heroMetric} play={heroPlay} />
@@ -210,7 +210,7 @@ export default function CaseStudyView({
             className="grid gap-6 border-t border-white/10 py-12 sm:py-16 lg:grid-cols-[300px_1fr]"
           >
             <div className="self-start lg:sticky lg:top-24">
-              <span className="font-mono text-sm text-[var(--accent-indigo)]">
+              <span className="font-mono text-sm text-[var(--accent)]">
                 01
               </span>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text)]">
@@ -238,7 +238,7 @@ export default function CaseStudyView({
             className="border-t border-white/10 py-12 sm:py-16"
           >
             <div className="mb-6">
-              <span className="font-mono text-sm text-[var(--accent-indigo)]">
+              <span className="font-mono text-sm text-[var(--accent)]">
                 02
               </span>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text)]">
@@ -289,7 +289,7 @@ export default function CaseStudyView({
                     href={f.testimonialLinkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[var(--accent-indigo)] hover:underline"
+                    className="text-[var(--accent)] hover:underline"
                   >
                     LinkedIn
                   </a>
@@ -314,7 +314,7 @@ export default function CaseStudyView({
               href={CALENDLY_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-indigo)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
             >
               Book a call
             </a>

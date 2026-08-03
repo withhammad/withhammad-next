@@ -81,7 +81,7 @@ export default function IntroLoader() {
                 scaleX: 1,
                 transition: { duration: 1, ease: EASE_OUT },
               }}
-              className="mt-1 h-px w-32 origin-left bg-[var(--accent-amber)]"
+              className="mt-1 h-px w-32 origin-left bg-[var(--accent-2)]"
             />
           </motion.div>
         </motion.div>

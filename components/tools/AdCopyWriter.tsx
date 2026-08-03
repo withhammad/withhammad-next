@@ -7,7 +7,7 @@ import CopyButton from "@/components/tools/CopyButton";
 const PLATFORMS = ["Google Ads", "Meta", "LinkedIn", "TikTok"] as const;
 
 const FIELD =
-  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+  "h-11 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3.5 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
 type Status = "idle" | "streaming" | "done" | "error";
 
@@ -79,7 +79,7 @@ export default function AdCopyWriter() {
                 className={
                   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                   (platform === p
-                    ? "bg-[var(--accent-indigo)] text-white"
+                    ? "bg-[var(--accent)] text-white"
                     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
                 }
               >
@@ -141,7 +141,7 @@ export default function AdCopyWriter() {
           type="button"
           onClick={generate}
           disabled={busy || !product.trim()}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent-indigo)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
         >
           {busy ? "Writing…" : "Generate ad copy"}
         </button>
@@ -167,7 +167,7 @@ export default function AdCopyWriter() {
               <pre className="font-mono text-[13px] leading-relaxed whitespace-pre-wrap text-[var(--text)]">
                 {output}
                 {busy ? (
-                  <span className="text-[var(--accent-indigo)]">▍</span>
+                  <span className="text-[var(--accent)]">▍</span>
                 ) : null}
               </pre>
             ) : busy ? (

@@ -56,12 +56,12 @@ export default function ContactPage() {
           className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-72 opacity-60"
           style={{
             background:
-              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent-indigo) 22%, transparent), transparent 70%)",
+              "radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
           }}
         />
         <Reveal>
           <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.15em] text-[var(--muted)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
             Let&apos;s talk
           </span>
           <h1
@@ -88,7 +88,7 @@ export default function ContactPage() {
               </h2>
               <a
                 href={`mailto:${EMAIL}`}
-                className="mt-3 block text-xl font-semibold tracking-tight text-[var(--text)] transition-colors hover:text-[var(--accent-amber)] sm:text-2xl"
+                className="mt-3 block text-xl font-semibold tracking-tight text-[var(--text)] transition-colors hover:text-[var(--accent-2)] sm:text-2xl"
               >
                 {EMAIL}
               </a>
@@ -106,10 +106,10 @@ export default function ContactPage() {
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 text-[var(--text)] transition-colors hover:text-[var(--accent-amber)]"
+                        className="group inline-flex items-center gap-2 text-[var(--text)] transition-colors hover:text-[var(--accent-2)]"
                       >
                         <span className="text-sm font-medium">{s.label}</span>
-                        <span className="text-sm text-[var(--muted)] transition-colors group-hover:text-[var(--accent-amber)]">
+                        <span className="text-sm text-[var(--muted)] transition-colors group-hover:text-[var(--accent-2)]">
                           {s.handle}
                         </span>
                         <span aria-hidden>↗</span>

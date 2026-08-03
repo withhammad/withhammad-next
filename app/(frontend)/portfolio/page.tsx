@@ -38,7 +38,7 @@ const HEADLINE_METRICS = [
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="print-heading mb-5 border-b border-white/10 pb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-indigo)]">
+    <h2 className="print-heading mb-5 border-b border-white/10 pb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
       {children}
     </h2>
   );
@@ -79,7 +79,7 @@ export default function PortfolioPage() {
         {/* Header */}
         <header>
           <span className="print-hide inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
             Portfolio
           </span>
           <h1
@@ -97,20 +97,20 @@ export default function PortfolioPage() {
           </p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
             <a
-              className="hover:text-[var(--accent-indigo)]"
+              className="hover:text-[var(--accent)]"
               href="mailto:marketing@withhammad.com"
             >
               marketing@withhammad.com
             </a>
             <a
-              className="hover:text-[var(--accent-indigo)]"
+              className="hover:text-[var(--accent)]"
               href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
             >
               linkedin.com/in/withhammad
             </a>
-            <a className="hover:text-[var(--accent-indigo)]" href={SITE}>
+            <a className="hover:text-[var(--accent)]" href={SITE}>
               withhammad.com
             </a>
           </p>
@@ -139,7 +139,7 @@ export default function PortfolioPage() {
               key={m.label}
               className="print-card rounded-2xl border border-white/10 bg-[var(--panel)] p-5"
             >
-              <div className="text-2xl font-semibold tracking-tight text-[var(--accent-amber)]">
+              <div className="text-2xl font-semibold tracking-tight text-[var(--accent-2)]">
                 {m.value}
               </div>
               <div className="mt-1 text-xs leading-snug text-[var(--muted)]">
@@ -192,7 +192,7 @@ export default function PortfolioPage() {
                 </p>
                 {s.metric ? (
                   <p className="mt-3 text-sm">
-                    <span className="font-semibold text-[var(--accent-amber)]">
+                    <span className="font-semibold text-[var(--accent-2)]">
                       {s.metric}
                     </span>{" "}
                     <span className="text-[var(--muted)]">{s.metricLabel}</span>
@@ -228,7 +228,7 @@ export default function PortfolioPage() {
                     >
                       <span
                         aria-hidden
-                        className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-[var(--accent-indigo)]"
+                        className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
                       />
                       {b}
                     </li>
@@ -311,7 +311,7 @@ export default function PortfolioPage() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href="mailto:marketing@withhammad.com"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-indigo)] px-5 py-2.5 text-sm font-medium text-white transition-transform duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-white transition-transform duration-300 hover:-translate-y-0.5"
             >
               Email me
             </a>

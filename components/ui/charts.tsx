@@ -69,8 +69,8 @@ export function MetricBar({
         style={{
           background:
             tone === "amber"
-              ? "linear-gradient(90deg, var(--accent-amber), color-mix(in oklab, var(--accent-amber) 55%, var(--accent-indigo)))"
-              : "linear-gradient(90deg, var(--accent-indigo), color-mix(in oklab, var(--accent-indigo) 60%, var(--accent-amber)))",
+              ? "linear-gradient(90deg, var(--accent-2), color-mix(in oklab, var(--accent-2) 55%, var(--accent)))"
+              : "linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 60%, var(--accent-2)))",
         }}
       />
     </div>
@@ -143,7 +143,7 @@ export function Donut({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--accent-amber)"
+          stroke="var(--accent-2)"
           strokeWidth={stroke}
           strokeLinecap="round"
         />

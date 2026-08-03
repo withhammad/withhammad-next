@@ -55,7 +55,7 @@ function CategoryChip({ post }: { post: PostCard }) {
   const cat = post.categories[0];
   if (!cat) return null;
   return (
-    <span className="rounded-full border border-white/10 bg-black/30 px-2.5 py-0.5 text-[var(--accent-indigo)] backdrop-blur">
+    <span className="rounded-full border border-white/10 bg-black/30 px-2.5 py-0.5 text-[var(--accent)] backdrop-blur">
       {cat.name}
     </span>
   );
@@ -95,7 +95,7 @@ export default function BlogIndex({ posts }: { posts: PostCard[] }) {
               className={
                 "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
                 (active === t.slug
-                  ? "bg-[var(--accent-indigo)] text-white"
+                  ? "bg-[var(--accent)] text-white"
                   : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
               }
             >
@@ -123,7 +123,7 @@ export default function BlogIndex({ posts }: { posts: PostCard[] }) {
                 <Cover post={featured} variant="hero" />
               </div>
               <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-xs font-medium tracking-wide text-[var(--text)] backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
                 Featured
               </span>
             </div>
@@ -141,7 +141,7 @@ export default function BlogIndex({ posts }: { posts: PostCard[] }) {
               <p className="mt-4 line-clamp-3 text-[var(--muted)] sm:text-lg">
                 {stripHtml(featured.excerpt)}
               </p>
-              <span className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-3">
+              <span className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-3">
                 Read article <span aria-hidden>→</span>
               </span>
             </div>
@@ -179,7 +179,7 @@ export default function BlogIndex({ posts }: { posts: PostCard[] }) {
                   <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--muted)]">
                     {stripHtml(post.excerpt)}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-indigo)] transition-all duration-300 group-hover:gap-2.5">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-2.5">
                     Read article <span aria-hidden>→</span>
                   </span>
                 </div>

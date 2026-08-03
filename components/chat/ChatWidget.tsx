@@ -38,7 +38,7 @@ function Linkified({ text }: { text: string }) {
             href={p.replace(/[.,)]+$/, "")}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-[var(--accent-indigo)] underline underline-offset-2 hover:text-[var(--accent-amber)]"
+            className="font-medium text-[var(--accent)] underline underline-offset-2 hover:text-[var(--accent-2)]"
           >
             book a call
           </a>
@@ -111,7 +111,7 @@ function LeadForm({
   };
 
   const field =
-    "h-10 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none";
+    "h-10 w-full rounded-xl border border-white/10 bg-[var(--bg)] px-3 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none";
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2.5 p-4">
@@ -165,7 +165,7 @@ function LeadForm({
         <button
           type="submit"
           disabled={status === "sending"}
-          className="h-10 flex-1 rounded-xl bg-[var(--accent-indigo)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-60"
+          className="h-10 flex-1 rounded-xl bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-60"
         >
           {status === "sending" ? "Sending…" : "Send to Hammad"}
         </button>
@@ -287,7 +287,7 @@ export default function ChatWidget() {
                 className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-semibold text-white"
                 style={{
                   background:
-                    "linear-gradient(135deg, var(--accent-indigo), #9b8bff)",
+                    "linear-gradient(135deg, var(--accent), #9b8bff)",
                 }}
               >
                 HY
@@ -338,7 +338,7 @@ export default function ChatWidget() {
                     key={i}
                     className={
                       m.role === "user"
-                        ? "ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[var(--accent-indigo)] px-3.5 py-2.5 text-sm text-white"
+                        ? "ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-[var(--accent)] px-3.5 py-2.5 text-sm text-white"
                         : "max-w-[85%] rounded-2xl rounded-tl-sm bg-white/[0.04] px-3.5 py-2.5 text-sm text-[var(--text)]"
                     }
                   >
@@ -362,7 +362,7 @@ export default function ChatWidget() {
                         key={q}
                         type="button"
                         onClick={() => send(q)}
-                        className="rounded-full border border-white/15 px-3 py-1.5 text-xs text-[var(--text)] transition-colors hover:border-[var(--accent-indigo)] hover:bg-[var(--accent-indigo)]/10"
+                        className="rounded-full border border-white/15 px-3 py-1.5 text-xs text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent)]/10"
                       >
                         {q}
                       </button>
@@ -399,7 +399,7 @@ export default function ChatWidget() {
                     href={CALENDLY_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-medium text-[var(--accent-amber)] hover:underline"
+                    className="inline-flex items-center gap-1.5 font-medium text-[var(--accent-2)] hover:underline"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -435,13 +435,13 @@ export default function ChatWidget() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Ask me anything…"
-                    className="h-11 flex-1 rounded-full border border-white/10 bg-[var(--bg)] px-4 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent-indigo)] focus:outline-none"
+                    className="h-11 flex-1 rounded-full border border-white/10 bg-[var(--bg)] px-4 text-sm text-[var(--text)] placeholder:text-white/30 focus:border-[var(--accent)] focus:outline-none"
                   />
                   <button
                     type="submit"
                     disabled={!input.trim() || streaming}
                     aria-label="Send message"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--accent-indigo)] text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -474,7 +474,7 @@ export default function ChatWidget() {
         transition={{ duration: 0.4, ease: EASE_OUT, delay: reduced ? 0 : 0.6 }}
         whileHover={reduced ? undefined : { scale: 1.06 }}
         whileTap={reduced ? undefined : { scale: 0.94 }}
-        className="grid h-14 w-14 place-items-center rounded-full bg-[var(--accent-indigo)] text-white shadow-[0_14px_40px_-10px_rgba(99,102,241,0.8)] transition-colors hover:bg-[#7C7DF3]"
+        className="grid h-14 w-14 place-items-center rounded-full bg-[var(--accent)] text-white shadow-[0_14px_40px_-10px_rgba(99,102,241,0.8)] transition-colors hover:bg-[#7C7DF3]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
