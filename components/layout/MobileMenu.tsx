@@ -84,7 +84,7 @@ export default function MobileMenu({
           target="_blank"
           rel="noopener noreferrer"
           onClick={onClose}
-          className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-base font-medium text-white"
+          className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-6 text-base font-medium text-[var(--accent-ink)]"
         >
           Book a Call
         </a>

@@ -126,7 +126,7 @@ export default function SelectedWork({
                     className={
                       "rounded-full border px-4 py-1.5 text-sm transition-colors " +
                       (active
-                        ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+                        ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)]"
                         : "border-white/15 text-[var(--muted)] hover:border-white/40 hover:text-[var(--text)]")
                     }
                   >

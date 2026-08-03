@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
+/* Cinematic sci-fi palette: charcoal + amber.
+   --accent-ink exists because white on amber is ~2:1 and fails WCAG — every
+   filled-amber control uses it for its label instead of white.
+   --accent-cool is the counterpoint for charts and two-tone gradients: amber
+   against a second amber collapses into mush, so data series and dual-token
+   gradients reach for this rather than --accent-2. */
 :root {
-  --bg: #0A0A0B;
-  --panel: #141417;
+  --bg: #121212;
+  --bg-deep: #0A0A0B;
+  --panel: #1A1A1D;
   --text: #F5F5F7;
-  --muted: #9CA3AF;
-  --accent: #6366F1;
-  --accent-2: #F59E0B;
+  --muted: #A1A1AA;
+  --accent: #FF8C00;
+  --accent-2: #FFC24D;
+  --accent-ink: #0A0A0B;
+  --accent-glow: rgba(255, 140, 0, 0.45);
+  --accent-cool: #38BDF8;
 }
 
 @theme inline {
@@ -16,6 +26,8 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-cool: var(--accent-cool);
   --color-background: var(--bg);
   --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);

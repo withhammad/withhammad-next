@@ -68,9 +68,12 @@ export function MetricBar({
         className="h-full w-full rounded-full will-change-transform"
         style={{
           background:
+            // The two tones must stay tellable apart. Before the theme switch
+            // they were amber vs indigo; with an all-amber palette the second
+            // tone reaches for --accent-cool instead of a second amber.
             tone === "amber"
-              ? "linear-gradient(90deg, var(--accent-2), color-mix(in oklab, var(--accent-2) 55%, var(--accent)))"
-              : "linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 60%, var(--accent-2)))",
+              ? "linear-gradient(90deg, var(--accent-2), var(--accent))"
+              : "linear-gradient(90deg, var(--accent-cool), color-mix(in oklab, var(--accent-cool) 60%, var(--accent)))",
         }}
       />
     </div>

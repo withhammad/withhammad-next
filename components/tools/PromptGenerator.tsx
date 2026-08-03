@@ -163,7 +163,7 @@ export default function PromptGenerator() {
               className={
                 "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                 (c.id === activeId
-                  ? "bg-[var(--accent)] text-white"
+                  ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                   : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
               }
             >

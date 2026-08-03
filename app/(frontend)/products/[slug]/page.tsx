@@ -180,7 +180,7 @@ export default async function ProductPage({
   };
 
   const buyCls =
-    "inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-white shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]";
+    "inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-[var(--accent-ink)] shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]";
 
   return (
     <main className="relative">
@@ -215,7 +215,7 @@ export default async function ProductPage({
           <div className="min-w-0">
             <Reveal>
               {product.badge ? (
-                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[var(--accent)] px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-white">
+                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[var(--accent)] px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-[var(--accent-ink)]">
                   {product.badge}
                 </span>
               ) : (

@@ -79,7 +79,7 @@ export default function AdCopyWriter() {
                 className={
                   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                   (platform === p
-                    ? "bg-[var(--accent)] text-white"
+                    ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
                 }
               >
@@ -141,7 +141,7 @@ export default function AdCopyWriter() {
           type="button"
           onClick={generate}
           disabled={busy || !product.trim()}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
         >
           {busy ? "Writing…" : "Generate ad copy"}
         </button>

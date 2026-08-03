@@ -311,7 +311,7 @@ export default function PortfolioPage() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href="mailto:marketing@withhammad.com"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-white transition-transform duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-[var(--accent-ink)] transition-transform duration-300 hover:-translate-y-0.5"
             >
               Email me
             </a>

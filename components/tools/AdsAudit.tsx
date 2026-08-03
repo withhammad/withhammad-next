@@ -86,7 +86,7 @@ export default function AdsAudit() {
                 className={
                   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
                   (platform === p
-                    ? "bg-[var(--accent)] text-white"
+                    ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
                 }
               >
@@ -151,7 +151,7 @@ The model audits whatever you give it. Don't paste anything confidential.`}
             "mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-medium transition-colors " +
             (busy
               ? "bg-white/10 text-white/60"
-              : "bg-[var(--accent)] text-white hover:opacity-90 disabled:opacity-40")
+              : "bg-[var(--accent)] text-[var(--accent-ink)] hover:opacity-90 disabled:opacity-40")
           }
         >
           {busy ? "Auditing…" : "Run audit"}

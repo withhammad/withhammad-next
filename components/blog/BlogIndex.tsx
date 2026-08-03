@@ -95,7 +95,7 @@ export default function BlogIndex({ posts }: { posts: PostCard[] }) {
               className={
                 "rounded-full px-4 py-1.5 text-sm font-medium transition-colors " +
                 (active === t.slug
-                  ? "bg-[var(--accent)] text-white"
+                  ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                   : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]")
               }
             >

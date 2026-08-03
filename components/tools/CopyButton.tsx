@@ -33,7 +33,7 @@ export default function CopyButton({
         "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors disabled:opacity-40 " +
         (copied
           ? "bg-emerald-500/15 text-emerald-300"
-          : "bg-[var(--accent)] text-white hover:bg-[#7C7DF3]") +
+          : "bg-[var(--accent)] text-[var(--accent-ink)] hover:bg-[#7C7DF3]") +
         " " +
         className
       }

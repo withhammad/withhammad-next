@@ -78,7 +78,7 @@ const FIELD =
 const chip = (active: boolean) =>
   "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors " +
   (active
-    ? "bg-[var(--accent)] text-white"
+    ? "bg-[var(--accent)] text-[var(--accent-ink)]"
     : "border border-white/12 text-[var(--muted)] hover:border-white/30 hover:text-[var(--text)]");
 
 interface CaptionData {
@@ -546,7 +546,7 @@ export default function ImageGenerator() {
           ) : null}
           <button
             type="submit"
-            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3]"
+            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3]"
           >
             Unlock studio
           </button>
@@ -588,7 +588,7 @@ export default function ImageGenerator() {
             className={
               "rounded-xl px-3 py-2.5 text-center transition-colors " +
               (mode === m.id
-                ? "bg-[var(--accent)] text-white"
+                ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                 : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--text)]")
             }
           >
@@ -803,7 +803,7 @@ export default function ImageGenerator() {
             type="button"
             onClick={run}
             disabled={status === "loading" || !canRun}
-            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-white transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
           >
             {runLabel}
           </button>
