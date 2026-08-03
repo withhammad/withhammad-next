@@ -31,10 +31,20 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 // the fresh Neon Postgres in prod and the local SQLite file). This stands in for
 // the migration CLI — like WordPress creating its tables on install. Schema
 // changes here are additive, so push stays safe.
-const db = process.env.DATABASE_URI
+// Accept the Neon/Vercel-integration variable names too. The Neon↔Vercel
+// integration injects DATABASE_URL (and Vercel Postgres injects POSTGRES_URL)
+// automatically, so honouring those means the connection string never has to be
+// copied by hand — which is how the credential got lost when the old Vercel
+// project was purged.
+const connectionString =
+  process.env.DATABASE_URI ??
+  process.env.DATABASE_URL ??
+  process.env.POSTGRES_URL;
+
+const db = connectionString
   ? postgresAdapter({
       push: true,
-      pool: { connectionString: process.env.DATABASE_URI },
+      pool: { connectionString },
     })
   : sqliteAdapter({
       push: true,
