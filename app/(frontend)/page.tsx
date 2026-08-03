@@ -10,6 +10,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import FinalCTA from "@/components/sections/FinalCTA";
 import { getServices, getTestimonials } from "@/lib/wp-queries";
 import { getCaseStudies, pageMetadata } from "@/lib/content";
+import { PERSON_SAME_AS } from "@/lib/person";
 
 // ISR: re-fetch case studies periodically so the section lights up once the
 // CMS has data (on-demand revalidation is wired in Prompt 15).
@@ -33,12 +34,7 @@ const PERSON_LD = {
   jobTitle: "AI Marketing Automation Engineer",
   url: "https://withhammad.com",
   image: "https://withhammad.com/hammad-headshot.jpg",
-  sameAs: [
-    "https://www.youtube.com/@with.hammad",
-    "https://www.linkedin.com/in/hammadyousuf",
-    "https://www.instagram.com/withhammad",
-    "https://github.com/withhammad",
-  ],
+  sameAs: [...PERSON_SAME_AS],
   knowsAbout: [
     "AI agents",
     "Multi-agent systems",

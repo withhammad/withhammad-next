@@ -9,6 +9,7 @@ import {
   SKILL_GROUPS,
 } from "@/lib/ai-systems";
 import PrintButton from "@/components/portfolio/PrintButton";
+import { LINKEDIN_URL, PERSON_SAME_AS } from "@/lib/person";
 
 const SITE = "https://withhammad.com";
 
@@ -56,7 +57,7 @@ export default function PortfolioPage() {
       addressLocality: "Dubai",
       addressCountry: "AE",
     },
-    sameAs: ["https://www.linkedin.com/in/withhammad"],
+    sameAs: [...PERSON_SAME_AS],
     knowsAbout: [
       "AI agents",
       "Multi-agent systems",
@@ -103,7 +104,7 @@ export default function PortfolioPage() {
             </a>
             <a
               className="hover:text-[var(--accent-indigo)]"
-              href="https://www.linkedin.com/in/withhammad"
+              href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -3,6 +3,7 @@ import ContactForm from "@/components/contact/ContactForm";
 import CalendlyInline from "@/components/contact/CalendlyInline";
 import Reveal from "@/components/tools/Reveal";
 import { pageMetadata } from "@/lib/content";
+import { LINKEDIN_HANDLE, LINKEDIN_URL } from "@/lib/person";
 
 export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -18,7 +19,7 @@ const EMAIL = "marketing@withhammad.com";
 
 const SOCIALS = [
   { label: "YouTube", handle: "@with.hammad", href: "https://www.youtube.com/@with.hammad" },
-  { label: "LinkedIn", handle: "in/hammadyousuf", href: "https://www.linkedin.com/in/hammadyousuf" },
+  { label: "LinkedIn", handle: LINKEDIN_HANDLE, href: LINKEDIN_URL },
 ] as const;
 
 const CONTACT_LD = {

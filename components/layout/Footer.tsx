@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LINKEDIN_URL } from "@/lib/person";
 
 const SOCIAL = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/hammadyousuf",
+    href: LINKEDIN_URL,
   },
   {
     label: "YouTube",

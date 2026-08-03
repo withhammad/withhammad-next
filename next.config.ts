@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cms.withhammad.com" },
       { protocol: "https", hostname: "withhammad.com" },
       { protocol: "https", hostname: "replicate.delivery" },
+      // Payload uploads land in Vercel Blob. Without this, every CMS-uploaded
+      // image (media + product covers) 400s through next/image in production.
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
   },
 };

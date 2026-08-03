@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { LINKEDIN_HANDLE, LINKEDIN_URL } from "@/lib/person";
 
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ??
@@ -19,8 +20,8 @@ const SOCIALS = [
   },
   {
     label: "LinkedIn",
-    handle: "in/hammadyousuf",
-    href: "https://www.linkedin.com/in/hammadyousuf",
+    handle: LINKEDIN_HANDLE,
+    href: LINKEDIN_URL,
   },
 ] as const;
 
