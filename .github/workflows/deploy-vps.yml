@@ -1,0 +1,68 @@
+# Build on the runner, rsync the standalone bundle to the VPS, zero-downtime
+# pm2 reload. NEVER builds on the VPS (KVM-2 RAM would choke on next build).
+#
+# DISABLED until the VPS exists: flip `if: false` → `if: true` (or delete the
+# line) once DEPLOY.md §1–§6 are done and the three secrets are set:
+#   VPS_HOST  → server IP or hostname
+#   VPS_USER  → the non-root deploy user
+#   VPS_SSH_KEY → private key for that user (ed25519)
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: false # ← enable after VPS provisioning (DEPLOY.md)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate narration (skips without keys; cache keeps TTS calls rare)
+        env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+        run: npm run narration
+
+      - name: Build
+        env:
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+        run: npm run build
+
+      - name: Assemble standalone bundle
+        run: |
+          cp -r public .next/standalone/public
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Ship to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+          rsync -az --delete .next/standalone/ \
+            "$VPS_USER@$VPS_HOST:/var/www/withhammad/incoming/"
+          ssh "$VPS_USER@$VPS_HOST" '
+            rsync -a --delete /var/www/withhammad/incoming/ /var/www/withhammad/current/ &&
+            pm2 reload withhammad --update-env
+          '

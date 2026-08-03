@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  // Self-contained server build for the Hostinger VPS (pm2 runs
+  // .next/standalone/server.js). Vercel understands standalone natively, so
+  // this is safe on both targets during the migration window.
+  output: "standalone",
   turbopack: {
     root: path.join(__dirname),
   },
