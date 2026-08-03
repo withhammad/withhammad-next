@@ -30,10 +30,10 @@ export default function AISystemsTeaser() {
           </p>
         </div>
         <Link
-          href="/work#ai-systems"
+          href="/projects"
           className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 px-6 text-sm font-medium text-[var(--text)] transition-colors hover:border-white/40 hover:bg-white/5"
         >
-          Explore in 3D →
+          All 8 missions →
         </Link>
       </div>
 
@@ -41,7 +41,7 @@ export default function AISystemsTeaser() {
         {AI_SYSTEMS.map((s) => (
           <li key={s.id}>
             <Link
-              href="/work#ai-systems"
+              href="/projects"
               className="group flex h-full flex-col rounded-2xl border border-white/10 bg-[var(--panel)] p-6 transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-white/25"
             >
               <span

@@ -1,103 +1,39 @@
 // ---------------------------------------------------------------------------
-// Production AI agents & multi-agent systems.
-// Source of truth: Hammad's AI Marketing Automation Engineer CV.
-// Rendered on /work (AI Systems section + 3D agent network) and /portfolio.
-//
-// `status` is deliberate: shipped systems and in-development systems must stay
-// visually distinguishable so nothing reads as a live client result when it is
-// still being built.
+// AI systems, DERIVED from lib/projects.ts — one source of truth for the 8
+// missions. This module keeps its old shape so the 3D agent network and the
+// /portfolio page don't need rewriting: `shortName` (<=18 chars) labels the
+// sprites, and `status` stays load-bearing so in-development work can never
+// read as a shipped client result.
 // ---------------------------------------------------------------------------
+
+import { PROJECTS } from "@/lib/projects";
 
 export type SystemStatus = "production" | "building";
 
 export type AISystem = {
   id: string;
   name: string;
-  /** Short label used for the 3D node sprite — keep under ~18 chars. */
   shortName: string;
   role: string;
   summary: string;
-  /** Headline outcome. Null when the system has no measured result yet. */
   metric: string | null;
   metricLabel: string | null;
   stack: string[];
   status: SystemStatus;
 };
 
-export const AI_SYSTEMS: AISystem[] = [
-  {
-    id: "printo-lead-engine",
-    name: "Printo Lead Engine",
-    shortName: "Lead Engine",
-    role: "Autonomous multi-agent sales operating system",
-    summary:
-      "A full autonomous AI operating system built from 11 specialised agents that discover prospects, generate professional AI mockups and brochures, send personalised outreach, classify replies, escalate hot leads, track competitor ads in real time, and self-optimise. Fronted by a cinematic dashboard and “Ibrahim” — a voice-first bilingual AI assistant that drives the entire engine through natural conversation.",
-    metric: "11",
-    metricLabel: "Specialised agents orchestrated",
-    stack: ["Claude Code", "n8n + MCP", "RAG", "Voice AI", "Python"],
-    status: "building",
-  },
-  {
-    id: "google-ads-agent",
-    name: "Autonomous Google Ads Optimization Agent",
-    shortName: "Ads Agent",
-    role: "Always-on campaign optimisation",
-    summary:
-      "A production agent that autonomously monitors campaigns, applies bid, keyword and negative-keyword rules against live GA4 signals, and ships daily optimisation actions without manual review cycles.",
-    metric: "+18%",
-    metricLabel: "ROAS improvement, quarter over quarter",
-    stack: ["Claude Code", "GA4", "Google Ads API", "MCP"],
-    status: "production",
-  },
-  {
-    id: "adam-rag",
-    name: "“Adam” — RAG Quote & Lead Response Agent",
-    shortName: "Adam (RAG)",
-    role: "Instant quoting & inbound response",
-    summary:
-      "A generative AI agent with retrieval over the product knowledge base. It handles web and WhatsApp enquiries, returns instant accurate quotes, and logs conversions automatically — cutting lead response time from hours to seconds.",
-    metric: "24/7",
-    metricLabel: "Inbound quote coverage",
-    stack: ["RAG", "LLM APIs", "WhatsApp Business API", "n8n"],
-    status: "production",
-  },
-  {
-    id: "whatsapp-automation",
-    name: "WhatsApp Lead-to-Quote Automation",
-    shortName: "Lead-to-Quote",
-    role: "End-to-end funnel automation",
-    summary:
-      "Click-to-WhatsApp automation combining n8n + MCP, the WhatsApp Business API and AI to qualify leads, generate quotes and maintain closed-loop attribution back into ad platforms.",
-    metric: "Closed-loop",
-    metricLabel: "Attribution from click to quote",
-    stack: ["n8n + MCP", "WhatsApp Business API", "GA4", "Server-side GTM"],
-    status: "production",
-  },
-  {
-    id: "tubepilot",
-    name: "TubePilot — YouTube SEO Optimisation Agent",
-    shortName: "TubePilot",
-    role: "Catalogue-scale content optimisation",
-    summary:
-      "An autonomous agent that optimises large YouTube catalogues (780+ videos). In a single run it automatically optimised 194 videos across multiple languages, lifting channel SEO health to 59/100.",
-    metric: "194",
-    metricLabel: "Videos optimised in one autonomous run",
-    stack: ["Claude Code", "YouTube Data API", "Multi-language NLP"],
-    status: "production",
-  },
-  {
-    id: "aeo-tracker",
-    name: "AEO Visibility Tracker",
-    shortName: "AEO Tracker",
-    role: "Answer-engine brand monitoring",
-    summary:
-      "Real-time monitoring of brand citations across ChatGPT, Claude, Gemini and Perplexity — measuring visibility in answer engines the way rank tracking measures visibility in search.",
-    metric: "4",
-    metricLabel: "Answer engines monitored in real time",
-    stack: ["Python", "LLM APIs", "Scheduled agents"],
-    status: "production",
-  },
-];
+export const AI_SYSTEMS: AISystem[] = PROJECTS.map((p) => ({
+  id: p.slug,
+  name: p.name,
+  shortName: p.shortName,
+  role: p.oneLiner.split("—")[0].trim(),
+  summary: p.oneLiner,
+  metric: p.metric,
+  metricLabel: p.metricLabel,
+  stack: p.stack,
+  // "deployed" is a shipped state for display purposes
+  status: p.status === "building" ? "building" : "production",
+}));
 
 /** Systems currently on the bench — shown as a short "in progress" line. */
 export const IN_PROGRESS: string[] = [

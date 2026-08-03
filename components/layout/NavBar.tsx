@@ -8,6 +8,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { EASE_OUT } from "@/lib/easing";
 
 const NAV_LINKS = [
+  { label: "Missions", href: "/projects" },
   { label: "Work", href: "/work" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Services", href: "/#services" },

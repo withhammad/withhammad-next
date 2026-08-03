@@ -237,10 +237,10 @@ export default function Hero() {
               Book a Call
             </a>
             <Link
-              href="/work#ai-systems"
+              href="/projects"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 px-6 text-sm font-medium text-[var(--text)] transition-colors hover:border-white/40 hover:bg-white/5"
             >
-              Explore the AI systems
+              View the missions
             </Link>
           </div>
         </div>

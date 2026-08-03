@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPosts, getCaseStudyIndex, getProductSlugs } from "@/lib/content";
+import { PROJECTS } from "@/lib/projects";
 
 const BASE = "https://withhammad.com";
 
@@ -24,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/tools/image-generator",
     "/tools/ai-ads-audit",
     "/work",
+    "/projects",
     "/portfolio",
     "/products",
     "/blog",
@@ -56,5 +58,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...postRoutes, ...workRoutes, ...productRoutes];
+  const projectRoutes: MetadataRoute.Sitemap = PROJECTS.map((p) => ({
+    url: `${BASE}/projects/${p.slug}`,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...postRoutes,
+    ...workRoutes,
+    ...productRoutes,
+    ...projectRoutes,
+  ];
 }
