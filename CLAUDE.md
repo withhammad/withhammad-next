@@ -64,3 +64,20 @@ Confident, punchy, sales-y. Must nail: "are you available for hire", "what resul
 
 ## Build order
 Backend live → Prompt 1 (scaffold) → 2 (layout) → 3-10 (sections) → 11 (case pages) → 12 (chatbot) → 13 (products) → 14 (blog) → 15 (ISR) → 16 (audit) → deploy. Run one prompt at a time; user reviews in browser between each.
+
+## Deployment (read before shipping)
+
+- **Git identity must be a real GitHub email.** Vercel *blocks* any deployment
+  whose commit author email isn't valid for the GitHub account — the build
+  never starts and the deployment sits in state `Blocked` with duration `—`.
+  This machine had no `user.email` set, so commits were authored as
+  `hammad@Hammads-MacBook-Pro.local` and every deploy silently failed.
+  Correct value: `hammadbhat126@gmail.com` (now set globally).
+- **Vercel project is `withhammad-site`**, not `withhammad-next`. The original
+  project broke (deployments purged, env vars wiped) and was replaced.
+- Deploy with `npx vercel@latest deploy --prod --archive=tgz --yes`. Don't fire
+  a `git push` and a CLI deploy at the same time — one production build slot.
+- Never commit `app/(payload)/admin/importMap.js` with the
+  `VercelBlobClientUploadHandler` line missing. Running `npm run dev` without
+  `BLOB_READ_WRITE_TOKEN` strips it, and committing that breaks `/admin` in
+  production. Stop the dev server and `git checkout` the file before committing.
