@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -9,11 +10,17 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import CountUp from "@/components/ui/CountUp";
 import GradientMesh from "@/components/ui/GradientMesh";
 
+// WebGL backdrop — client-only, and never part of the initial bundle so it
+// can't delay the headline (the LCP element).
+const NeuralField = dynamic(() => import("@/components/three/NeuralField"), {
+  ssr: false,
+});
+
 const CALENDLY_URL =
   process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
 
-const HEADLINE = "AI-driven growth for founders who want results, not reports.";
-const ACCENT_WORDS = new Set(["results,"]);
+const HEADLINE = "I build AI agents that run marketing operations.";
+const ACCENT_WORDS = new Set(["agents"]);
 
 type Stat = {
   value: number;
@@ -25,8 +32,8 @@ type Stat = {
 
 const STATS: Stat[] = [
   { value: 3750, group: true, label: "Conversions driven" },
-  { value: 76, prefix: "AED ", group: false, label: "Cost per lead · 80 leads" },
-  { value: 28, prefix: "−", suffix: "%", group: false, label: "Lower CPA" },
+  { value: 18, prefix: "+", suffix: "%", group: false, label: "ROAS from autonomous agents" },
+  { value: 75, prefix: "−", suffix: "%", group: false, label: "Manual optimisation time" },
   { value: 540, suffix: "K", group: false, label: "YouTube subscribers" },
 ];
 
@@ -105,20 +112,13 @@ export default function Hero() {
     >
       <GradientMesh />
 
-      {/* AI-generated ambient hero backdrop (real image), with a brand-dark
-          gradient overlay so the headline + stats stay fully legible. */}
+      {/* Live 3D neural field, with brand-dark gradients over it so the
+          headline + stats stay fully legible at every viewport. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-[6] overflow-hidden"
       >
-        <Image
-          src="/ai/hero.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-60"
-        />
+        <NeuralField className="absolute inset-0 opacity-70" density={1} />
         <div
           className="absolute inset-0"
           style={{
@@ -145,12 +145,12 @@ export default function Hero() {
             }}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-amber)]" />
-            Dubai, UAE · Available for founders
+            Dubai, UAE · Open to roles &amp; founder projects
           </div>
 
           <h1
             className="font-semibold tracking-tight text-[var(--text)]"
-            style={{ fontSize: "clamp(2.6rem, 7vw, 6rem)", lineHeight: 1.04 }}
+            style={{ fontSize: "clamp(2.3rem, 5vw, 4.4rem)", lineHeight: 1.05 }}
           >
             {HEADLINE.split(" ").map((word, i) => (
               <span
@@ -175,16 +175,16 @@ export default function Hero() {
             data-rise
             className="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg"
           >
-            I&apos;m Hammad — a blended{" "}
+            I&apos;m Hammad — an{" "}
             <span className="text-[var(--text)]">
-              AI Marketing Growth Strategist
+              AI Marketing Automation Engineer
             </span>{" "}
-            and{" "}
+            in Dubai. I design production AI agents and multi-agent systems with
+            Claude Code, n8n + MCP and RAG — backed by{" "}
             <span className="text-[var(--text)]">
-              Performance Marketing Specialist
+              6+ years of performance marketing
             </span>{" "}
-            helping founders in Dubai/UAE and beyond turn ad spend into
-            predictable growth.
+            across the GCC.
           </p>
 
           <div data-rise className="mt-8 flex flex-wrap items-center gap-3">
@@ -197,10 +197,10 @@ export default function Hero() {
               Book a Call
             </a>
             <Link
-              href="/#selected-work"
+              href="/work#ai-systems"
               className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 px-6 text-sm font-medium text-[var(--text)] transition-colors hover:border-white/40 hover:bg-white/5"
             >
-              See My Work
+              Explore the AI systems
             </Link>
           </div>
         </div>

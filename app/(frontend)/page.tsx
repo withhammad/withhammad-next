@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
+import AISystemsTeaser from "@/components/sections/AISystemsTeaser";
 import SelectedWork from "@/components/sections/SelectedWork";
 import AudienceRouter from "@/components/sections/AudienceRouter";
 import Services from "@/components/sections/Services";
@@ -18,9 +19,10 @@ export function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
     path: "/",
     pageKey: "home",
-    fallbackTitle: "Hammad Yousuf — AI Marketing Growth Strategist",
+    fallbackTitle:
+      "Hammad Yousuf — AI Marketing Automation Engineer | Dubai",
     fallbackDescription:
-      "AI-driven growth for founders who want results, not reports. Performance marketing, paid media, and AI-powered creative for Dubai/UAE and global brands.",
+      "I build production AI agents and multi-agent systems that run marketing operations — Claude Code, n8n + MCP and RAG, backed by 6+ years of performance marketing across the GCC.",
   });
 }
 
@@ -28,8 +30,7 @@ const PERSON_LD = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Hammad Yousuf",
-  jobTitle:
-    "AI Marketing Growth Strategist & Performance Marketing Specialist",
+  jobTitle: "AI Marketing Automation Engineer",
   url: "https://withhammad.com",
   image: "https://withhammad.com/hammad-headshot.jpg",
   sameAs: [
@@ -39,6 +40,10 @@ const PERSON_LD = {
     "https://github.com/withhammad",
   ],
   knowsAbout: [
+    "AI agents",
+    "Multi-agent systems",
+    "Model Context Protocol (MCP)",
+    "Retrieval-augmented generation (RAG)",
     "Google Ads",
     "Meta Ads",
     "SEO",
@@ -117,6 +122,7 @@ export default async function Home() {
         }}
       />
       <Hero />
+      <AISystemsTeaser />
       <SelectedWork caseStudies={caseStudies} />
       <AudienceRouter />
       <Services services={services} />

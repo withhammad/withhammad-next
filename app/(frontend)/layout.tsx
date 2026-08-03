@@ -24,9 +24,9 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_DESCRIPTION =
-  "AI-driven growth for founders who want results, not reports. Performance marketing, paid media, and AI-powered creative for Dubai/UAE and global brands.";
+  "I build production AI agents and multi-agent systems that run marketing operations — Claude Code, n8n + MCP and RAG, backed by 6+ years of performance marketing across the GCC.";
 
-const SITE_TITLE = "Hammad Yousuf — AI Marketing Growth Strategist";
+const SITE_TITLE = "Hammad Yousuf — AI Marketing Automation Engineer";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Site-wide SEO defaults are editable in /admin → Site Settings. Relative OG

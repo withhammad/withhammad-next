@@ -13,7 +13,15 @@ export default function IntroLoader() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (reduced) return;
+    // `reduced` is false on the hydration pass (useSyncExternalStore returns the
+    // server snapshot) and only flips true on the following render. Without
+    // clearing `show` here, that first pass opens the overlay, this re-run
+    // cancels its dismiss timer, and the full-screen intro stays up forever —
+    // locking reduced-motion users out of the whole site.
+    if (reduced) {
+      setShow(false);
+      return;
+    }
     try {
       if (sessionStorage.getItem(STORAGE_KEY)) return;
     } catch {

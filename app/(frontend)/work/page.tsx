@@ -3,14 +3,15 @@ import Link from "next/link";
 import { getCaseStudies } from "@/lib/content";
 import type { CaseStudyCard } from "@/lib/wp-queries";
 import GradientCover from "@/components/ui/GradientCover";
+import AISystemsSection from "@/components/work/AISystemsSection";
 
 export const revalidate = 300;
 const SITE = "https://withhammad.com";
 
 export const metadata: Metadata = {
-  title: "Case Studies — Real Campaigns, Real Numbers | With Hammad",
+  title: "Work — Case Studies & Production AI Systems | With Hammad",
   description:
-    "Performance-marketing case studies across Google Ads, Meta, SEO, CRO, and multi-market growth — real campaigns, real numbers, real results.",
+    "Performance-marketing case studies across Google Ads, Meta, SEO, CRO and multi-market growth — plus the production AI agents and multi-agent systems behind them.",
   alternates: { canonical: "/work" },
   openGraph: {
     title: "Case Studies — Real Campaigns, Real Numbers",
@@ -172,6 +173,10 @@ export default async function WorkIndexPage() {
           </div>
         ) : null}
       </section>
+
+      <div className="border-t border-white/8">
+        <AISystemsSection />
+      </div>
     </main>
   );
 }

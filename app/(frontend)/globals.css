@@ -175,3 +175,60 @@ body {
     opacity: 0.9;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Print / "Save as PDF" — used by /portfolio so recruiters get a clean
+   document instead of the dark UI. Browser print engines drop background
+   colours by default, so the dark theme would otherwise print as light-grey
+   text on white. Re-point the tokens instead of overriding every rule.
+   --------------------------------------------------------------------------- */
+@media print {
+  .print-doc {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --text: #0a0a0b;
+    --muted: #2f2f36;
+    --accent-indigo: #3730a3;
+    --accent-amber: #92400e;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0a0a0b !important;
+  }
+
+  /* Every fixed-position overlay (nav bar, chat widget, custom cursor) plus
+     anything explicitly opted out. */
+  .fixed,
+  footer,
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-doc {
+    padding-top: 0 !important;
+  }
+
+  .print-card {
+    border-color: rgba(0, 0, 0, 0.18) !important;
+  }
+
+  .print-heading {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Keep a role or project from splitting across a page break. */
+  .print-doc article,
+  .print-doc section > div > div {
+    break-inside: avoid;
+  }
+
+  .print-doc a {
+    text-decoration: none;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}

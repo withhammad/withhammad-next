@@ -9,6 +9,7 @@ import { EASE_OUT } from "@/lib/easing";
 
 const NAV_LINKS = [
   { label: "Work", href: "/work" },
+  { label: "Portfolio", href: "/portfolio" },
   { label: "Services", href: "/#services" },
   { label: "Tools", href: "/tools" },
   { label: "Products", href: "/products" },
