@@ -11,7 +11,7 @@ const SEP = CALENDLY_URL.includes("?") ? "&" : "?";
 const EMBED_URL =
   CALENDLY_URL +
   SEP +
-  "hide_gdpr_banner=1&background_color=141417&text_color=f5f5f7&primary_color=6366f1";
+  "hide_gdpr_banner=1&background_color=1a1a1d&text_color=f5f5f7&primary_color=ff8c00";
 
 const CALENDLY_CSS = "https://assets.calendly.com/assets/external/widget.css";
 const CALENDLY_JS = "https://assets.calendly.com/assets/external/widget.js";

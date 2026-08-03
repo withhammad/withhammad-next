@@ -27,7 +27,7 @@ export default async function Og({
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 80,
-          background: "#0A0A0B",
+          background: "#121212",
           color: "#F5F5F7",
         }}
       >
@@ -57,7 +57,7 @@ export default async function Og({
                 display: "flex",
                 fontSize: 30,
                 fontWeight: 600,
-                color: "#6366F1",
+                color: "#FF8C00",
               }}
             >
               {category}

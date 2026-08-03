@@ -309,7 +309,7 @@ export default async function PostPage({
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/contact"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-[var(--accent-ink)] shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#7C7DF3]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent)] px-7 text-sm font-medium text-[var(--accent-ink)] shadow-[0_12px_32px_-12px_rgba(255,140,0,0.45)] transition-[transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-[#FFA31A]"
             >
               Book a free call →
             </Link>
@@ -324,7 +324,7 @@ export default async function PostPage({
             Prefer proof first?{" "}
             <Link
               href={ctxLink.href}
-              className="font-medium text-[var(--accent)] underline-offset-4 transition-colors hover:text-[#7C7DF3] hover:underline"
+              className="font-medium text-[var(--accent)] underline-offset-4 transition-colors hover:text-[#FFA31A] hover:underline"
             >
               {ctxLink.label}
             </Link>

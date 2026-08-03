@@ -30,7 +30,7 @@ export default async function Og({
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 80,
-          background: "#0A0A0B",
+          background: "#121212",
           color: "#F5F5F7",
         }}
       >

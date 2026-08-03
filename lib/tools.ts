@@ -17,7 +17,7 @@ export interface ToolCard {
   external?: boolean;
   badge?: string;
   duration?: string;
-  accent?: "indigo" | "amber";
+  accent?: "cool" | "amber";
   icon?: ToolIconName;
 }
 
@@ -73,7 +73,7 @@ export const AI_TOOLS: ToolCard[] = [
       "Build high-converting prompts for Google Ads, Meta, SEO, email and CRO. Pick a goal, fill the blanks, copy.",
     href: "/tools/prompt-generator",
     badge: "Free · No login",
-    accent: "indigo",
+    accent: "cool",
     icon: "prompt",
   },
   {
@@ -82,7 +82,7 @@ export const AI_TOOLS: ToolCard[] = [
       "A curated, filterable directory of the AI tools I actually recommend — by category, with a one-line use case for each.",
     href: "/tools/tool-directory",
     badge: "Free · No login",
-    accent: "indigo",
+    accent: "cool",
     icon: "directory",
   },
   {

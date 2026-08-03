@@ -21,8 +21,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { AISystem } from "@/lib/ai-systems";
 
-const INDIGO = "#6366F1";
-const AMBER = "#F59E0B";
+// Warm = shipped, cool = still being built; two hues so status is readable
+// without relying on the label alone.
+const ACCENT = "#FF8C00";
+const ACCENT_WARM = "#FFC24D";
+const ACCENT_COOL = "#38BDF8";
 const NODE_RADIUS = 3.4;
 
 /** Even point distribution on a sphere — avoids the clumping of random polar angles. */
@@ -113,7 +116,7 @@ function AgentNode({
   const haloRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  const accent = system.status === "production" ? AMBER : INDIGO;
+  const accent = system.status === "production" ? ACCENT_WARM : ACCENT_COOL;
   const label = useMemo(
     () => makeLabelTexture(system.shortName, accent),
     [system.shortName, accent],
@@ -293,7 +296,7 @@ function Scene({
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
     const mat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(INDIGO),
+      color: new THREE.Color(ACCENT),
       transparent: true,
       opacity: 0.28,
     });
@@ -324,8 +327,8 @@ function Scene({
   return (
     <>
       <ambientLight intensity={0.7} />
-      <pointLight position={[6, 6, 6]} intensity={70} color={INDIGO} />
-      <pointLight position={[-6, -3, 4]} intensity={45} color={AMBER} />
+      <pointLight position={[6, 6, 6]} intensity={70} color={ACCENT} />
+      <pointLight position={[-6, -3, 4]} intensity={45} color={ACCENT_WARM} />
 
       <group ref={groupRef}>
         <primitive object={lines} />
@@ -334,8 +337,8 @@ function Scene({
         <mesh ref={coreRef}>
           <icosahedronGeometry args={[0.62, 1]} />
           <meshStandardMaterial
-            color={INDIGO}
-            emissive={INDIGO}
+            color={ACCENT}
+            emissive={ACCENT}
             emissiveIntensity={1.1}
             roughness={0.2}
             metalness={0.3}
@@ -345,7 +348,7 @@ function Scene({
         <mesh scale={1.9}>
           <icosahedronGeometry args={[0.62, 1]} />
           <meshBasicMaterial
-            color={INDIGO}
+            color={ACCENT}
             wireframe
             transparent
             opacity={0.18}
@@ -357,7 +360,7 @@ function Scene({
         <mesh>
           <icosahedronGeometry args={[NODE_RADIUS + 1.1, 1]} />
           <meshBasicMaterial
-            color={INDIGO}
+            color={ACCENT}
             wireframe
             transparent
             opacity={0.05}
@@ -371,7 +374,7 @@ function Scene({
               key={`pulse-${i}`}
               target={p}
               offset={i / positions.length}
-              color={systems[i].status === "production" ? AMBER : INDIGO}
+              color={systems[i].status === "production" ? ACCENT_WARM : ACCENT_COOL}
             />
           ))}
 

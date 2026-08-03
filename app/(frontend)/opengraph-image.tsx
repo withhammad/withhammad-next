@@ -20,7 +20,7 @@ export default function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#0A0A0B",
+          background: "#121212",
         }}
       >
         {/* AI-generated brand backdrop */}

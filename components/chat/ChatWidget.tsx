@@ -165,7 +165,7 @@ function LeadForm({
         <button
           type="submit"
           disabled={status === "sending"}
-          className="h-10 flex-1 rounded-xl bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3] disabled:opacity-60"
+          className="h-10 flex-1 rounded-xl bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#FFA31A] disabled:opacity-60"
         >
           {status === "sending" ? "Sending…" : "Send to Hammad"}
         </button>
@@ -441,7 +441,7 @@ export default function ChatWidget() {
                     type="submit"
                     disabled={!input.trim() || streaming}
                     aria-label="Send message"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--accent)] text-[var(--accent-ink)] transition-colors hover:bg-[#FFA31A] disabled:opacity-40"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -474,7 +474,7 @@ export default function ChatWidget() {
         transition={{ duration: 0.4, ease: EASE_OUT, delay: reduced ? 0 : 0.6 }}
         whileHover={reduced ? undefined : { scale: 1.06 }}
         whileTap={reduced ? undefined : { scale: 0.94 }}
-        className="grid h-14 w-14 place-items-center rounded-full bg-[var(--accent)] text-[var(--accent-ink)] shadow-[0_14px_40px_-10px_rgba(99,102,241,0.8)] transition-colors hover:bg-[#7C7DF3]"
+        className="grid h-14 w-14 place-items-center rounded-full bg-[var(--accent)] text-[var(--accent-ink)] shadow-[0_14px_40px_-10px_rgba(255,140,0,0.5)] transition-colors hover:bg-[#FFA31A]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (

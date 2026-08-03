@@ -126,7 +126,7 @@ function BuyButton({
     "inline-flex h-12 w-full items-center justify-center rounded-full text-sm font-medium transition-[transform,background-color,border-color] duration-300 hover:-translate-y-0.5";
   const cls =
     variant === "solid"
-      ? `${base} bg-[var(--accent)] text-[var(--accent-ink)] shadow-[0_12px_32px_-12px_rgba(99,102,241,0.7)] hover:bg-[#7C7DF3]`
+      ? `${base} bg-[var(--accent)] text-[var(--accent-ink)] shadow-[0_12px_32px_-12px_rgba(255,140,0,0.45)] hover:bg-[#FFA31A]`
       : `${base} border border-white/15 text-[var(--text)] hover:border-white/40 hover:bg-white/5`;
   return (
     <a

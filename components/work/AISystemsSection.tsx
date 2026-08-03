@@ -20,12 +20,12 @@ function StatusPill({ status }: { status: AISystem["status"] }) {
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
         production
           ? "border-[var(--accent-2)]/40 text-[var(--accent-2)]"
-          : "border-[var(--accent)]/50 text-[var(--accent)]"
+          : "border-[var(--accent-cool)]/50 text-[var(--accent-cool)]"
       }`}
     >
       <span
         className={`h-1.5 w-1.5 rounded-full ${
-          production ? "bg-[var(--accent-2)]" : "bg-[var(--accent)]"
+          production ? "bg-[var(--accent-2)]" : "bg-[var(--accent-cool)]"
         }`}
       />
       {production ? "In production" : "In development"}

@@ -200,8 +200,12 @@ body {
     --panel: #ffffff;
     --text: #0a0a0b;
     --muted: #2f2f36;
-    --accent: #3730a3;
-    --accent-2: #92400e;
+    /* Amber on white is ~1.9:1 and unreadable in print, so the paper document
+       uses dark warm tones that stay on-brand and pass contrast. */
+    --accent: #8a4b00;
+    --accent-2: #6b3a00;
+    --accent-ink: #ffffff;
+    --accent-cool: #0f5c78;
   }
 
   html,

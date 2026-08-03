@@ -47,7 +47,7 @@ export default function AISystemsTeaser() {
                 className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
                   s.status === "production"
                     ? "border-[var(--accent-2)]/40 text-[var(--accent-2)]"
-                    : "border-[var(--accent)]/50 text-[var(--accent)]"
+                    : "border-[var(--accent-cool)]/50 text-[var(--accent-cool)]"
                 }`}
               >
                 {s.status === "production" ? "In production" : "In development"}

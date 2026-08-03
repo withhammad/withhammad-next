@@ -106,7 +106,7 @@ export default function ResultsBlock({
             <BarRow
               label="Before"
               frac={beforeAfter.beforeFrac}
-              tone="indigo"
+              tone="cool"
               play={baPlay}
             />
             <BarRow
@@ -178,7 +178,7 @@ function BarRow({
 }: {
   label: string;
   frac: number;
-  tone: "amber" | "indigo";
+  tone: "amber" | "cool";
   play: boolean;
   highlight?: boolean;
 }) {

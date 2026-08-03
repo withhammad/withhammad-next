@@ -258,7 +258,7 @@ async function sendDownloadEmail(email: string, productName: string, token: stri
     html: `<div style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.6">
       <h2 style="margin:0 0 12px">Thanks for your purchase 🎉</h2>
       <p>Your download for <strong>${productName.replace(/[<>&]/g, "")}</strong> is ready:</p>
-      <p><a href="${url}" style="display:inline-block;background:#6366F1;color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px">Download now</a></p>
+      <p><a href="${url}" style="display:inline-block;background:#FF8C00;color:#0A0A0B;text-decoration:none;padding:12px 22px;border-radius:999px">Download now</a></p>
       <p style="color:#888;font-size:13px">This link works for ${DOWNLOAD_TTL_HOURS} hours and up to ${MAX_DOWNLOADS} downloads.</p>
     </div>`,
   });

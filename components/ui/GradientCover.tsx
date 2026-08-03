@@ -18,24 +18,26 @@ interface Theme {
   c3: string;
 }
 
-// Brand stays indigo + amber; the third accent shifts by category/topic.
+// Brand is amber-anchored; the cool accent shifts by category/topic. Every
+// palette keeps one amber so covers read as one family against the charcoal
+// theme — the previous indigo/violet set now clashes with it.
 const THEMES: Record<string, Theme> = {
   // Blog categories
-  "ai & automation": { c1: "#6366F1", c2: "#8B5CF6", c3: "#38BDF8" },
-  "paid ads": { c1: "#F59E0B", c2: "#FB7185", c3: "#6366F1" },
-  "seo & aeo": { c1: "#6366F1", c2: "#2DD4BF", c3: "#F59E0B" },
+  "ai & automation": { c1: "#FF8C00", c2: "#38BDF8", c3: "#FFC24D" },
+  "paid ads": { c1: "#FF8C00", c2: "#FB7185", c3: "#FFC24D" },
+  "seo & aeo": { c1: "#FF8C00", c2: "#2DD4BF", c3: "#FFC24D" },
   // Case-study service types
-  ppc: { c1: "#F59E0B", c2: "#FB7185", c3: "#6366F1" },
-  seo: { c1: "#6366F1", c2: "#2DD4BF", c3: "#F59E0B" },
-  "paid social": { c1: "#8B5CF6", c2: "#6366F1", c3: "#38BDF8" },
-  cro: { c1: "#10B981", c2: "#F59E0B", c3: "#6366F1" },
-  "multi-market": { c1: "#6366F1", c2: "#F59E0B", c3: "#38BDF8" },
+  ppc: { c1: "#FF8C00", c2: "#FB7185", c3: "#38BDF8" },
+  seo: { c1: "#FFC24D", c2: "#2DD4BF", c3: "#FF8C00" },
+  "paid social": { c1: "#FF8C00", c2: "#F472B6", c3: "#38BDF8" },
+  cro: { c1: "#FFC24D", c2: "#10B981", c3: "#FF8C00" },
+  "multi-market": { c1: "#FF8C00", c2: "#38BDF8", c3: "#2DD4BF" },
   // Product tiers
-  free: { c1: "#2DD4BF", c2: "#6366F1", c3: "#F59E0B" },
-  paid: { c1: "#F59E0B", c2: "#6366F1", c3: "#8B5CF6" },
-  premium: { c1: "#8B5CF6", c2: "#F59E0B", c3: "#6366F1" },
+  free: { c1: "#2DD4BF", c2: "#FFC24D", c3: "#FF8C00" },
+  paid: { c1: "#FF8C00", c2: "#38BDF8", c3: "#FFC24D" },
+  premium: { c1: "#FFC24D", c2: "#FF8C00", c3: "#FB7185" },
 };
-const FALLBACK: Theme = { c1: "#6366F1", c2: "#F59E0B", c3: "#8B5CF6" };
+const FALLBACK: Theme = { c1: "#FF8C00", c2: "#FFC24D", c3: "#38BDF8" };
 
 function hashStr(s: string): number {
   let h = 2166136261;
@@ -114,7 +116,7 @@ export default function GradientCover({
   return (
     <div
       aria-hidden
-      className={`relative h-full w-full overflow-hidden bg-[#0A0A0B] ${className}`}
+      className={`relative h-full w-full overflow-hidden bg-[var(--bg)] ${className}`}
     >
       {imageSrc ? (
         /* Real AI-generated cover image (replaces the procedural art). */

@@ -17,8 +17,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-const INDIGO = new THREE.Color("#6366F1");
-const AMBER = new THREE.Color("#F59E0B");
+const ACCENT = new THREE.Color("#FF8C00");
+const ACCENT_COOL = new THREE.Color("#38BDF8");
 
 function Field({
   count,
@@ -53,7 +53,7 @@ function Field({
       verts.push(new THREE.Vector3(x, y, z));
 
       // A minority of amber nodes keeps the brand accent present.
-      const c = Math.random() > 0.86 ? AMBER : INDIGO;
+      const c = Math.random() > 0.86 ? ACCENT_COOL : ACCENT;
       col.set([c.r, c.g, c.b], i * 3);
 
       drift.set(
@@ -93,7 +93,7 @@ function Field({
     const lGeo = new THREE.BufferGeometry();
     lGeo.setAttribute("position", new THREE.Float32BufferAttribute(lineVerts, 3));
     const lMat = new THREE.LineBasicMaterial({
-      color: INDIGO,
+      color: ACCENT,
       transparent: true,
       opacity: 0.16,
       depthWrite: false,
@@ -168,7 +168,7 @@ function Field({
       <mesh scale={coreScale}>
         <icosahedronGeometry args={[1.15, 1]} />
         <meshBasicMaterial
-          color={INDIGO}
+          color={ACCENT}
           wireframe
           transparent
           opacity={0.22}
@@ -178,7 +178,7 @@ function Field({
       <mesh scale={coreScale * 0.45}>
         <icosahedronGeometry args={[1.15, 0]} />
         <meshBasicMaterial
-          color={INDIGO}
+          color={ACCENT}
           transparent
           opacity={0.12}
           depthWrite={false}

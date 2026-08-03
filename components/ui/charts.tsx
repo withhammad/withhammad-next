@@ -40,7 +40,7 @@ export function MetricBar({
 }: {
   fraction: number;
   play: boolean;
-  tone?: "amber" | "indigo";
+  tone?: "amber" | "cool";
 }) {
   const fillRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();

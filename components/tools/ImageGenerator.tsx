@@ -546,7 +546,7 @@ export default function ImageGenerator() {
           ) : null}
           <button
             type="submit"
-            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3]"
+            className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#FFA31A]"
           >
             Unlock studio
           </button>
@@ -803,7 +803,7 @@ export default function ImageGenerator() {
             type="button"
             onClick={run}
             disabled={status === "loading" || !canRun}
-            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#7C7DF3] disabled:opacity-40"
+            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] text-sm font-medium text-[var(--accent-ink)] transition-colors hover:bg-[#FFA31A] disabled:opacity-40"
           >
             {runLabel}
           </button>
