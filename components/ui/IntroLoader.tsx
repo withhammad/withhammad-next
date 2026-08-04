@@ -28,8 +28,12 @@ const BOOT_LINES = [
   "SYSTEMS ONLINE",
 ];
 
-const LINE_INTERVAL = 340; // ms between lines
-const HOLD_AFTER = 500; // ms after last line before wipe
+// Tuned against measured LCP: the hero's GSAP reveal is gated on this
+// sequence, so every millisecond here is a millisecond before text can paint.
+// 5 lines x 170ms + 200ms hold = ~1.05s, and the 0.7s exit wipe then overlaps
+// the reveal rather than delaying it.
+const LINE_INTERVAL = 170;
+const HOLD_AFTER = 200;
 
 export default function IntroLoader() {
   const [show, setShow] = useState(false);

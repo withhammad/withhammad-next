@@ -118,7 +118,11 @@ export default function Hero() {
       gsap.set(words, { yPercent: 118 });
       gsap.set(rises, { y: 26, autoAlpha: 0 });
 
-      if (!play) return; // stay hidden (behind the intro loader) until cued
+      // Wait for the cue only on the very first load, where the boot overlay
+      // is covering the viewport anyway. Gating the reveal on it pushed LCP
+      // past 2.5s, because the h1 is clipped and the headshot hidden until
+      // this timeline runs.
+      if (!play) return;
 
       const tl = gsap.timeline();
       tl.to(words, {
