@@ -21,6 +21,14 @@ import type { PostCard, PostDetail } from "@/lib/blog";
 import type { Product } from "@/lib/products";
 import type { DirectoryTool, DirectoryCategory } from "@/lib/tool-directory";
 import { DIRECTORY_TOOLS } from "@/lib/tool-directory";
+import {
+  fallbackCaseStudyBySlug,
+  fallbackCaseStudyCards,
+  fallbackCaseStudyIndex,
+  fallbackPostBySlug,
+  fallbackPostSlugs,
+  fallbackPosts,
+} from "@/lib/seed-fallback";
 
 export async function getCaseStudies(): Promise<CaseStudyCard[]> {
   try {
@@ -30,19 +38,22 @@ export async function getCaseStudies(): Promise<CaseStudyCard[]> {
       depth: 1,
       limit: 100,
     });
-    return (res.docs as unknown as PayloadCaseStudy[])
+    const mapped = (res.docs as unknown as PayloadCaseStudy[])
       .map(mapCaseStudy)
       .sort((a, b) => {
         const ah = a.caseStudyFields?.isHero ? 1 : 0;
         const bh = b.caseStudyFields?.isHero ? 1 : 0;
         return bh - ah;
       });
+    // An empty collection means the DB is reachable but unseeded — same user
+    // impact as no DB at all, so fall back either way.
+    return mapped.length ? mapped : fallbackCaseStudyCards();
   } catch (err) {
     console.warn(
       "[payload] case studies fetch failed — Selected Work renders empty:",
       err instanceof Error ? err.message : String(err),
     );
-    return [];
+    return fallbackCaseStudyCards();
   }
 }
 
@@ -58,13 +69,13 @@ export async function getCaseStudyBySlug(
       limit: 1,
     });
     const doc = res.docs[0] as unknown as PayloadCaseStudy | undefined;
-    return doc ? mapCaseStudy(doc) : null;
+    return doc ? mapCaseStudy(doc) : fallbackCaseStudyBySlug(slug);
   } catch (err) {
     console.warn(
       `[payload] caseStudy(${slug}) fetch failed:`,
       err instanceof Error ? err.message : String(err),
     );
-    return null;
+    return fallbackCaseStudyBySlug(slug);
   }
 }
 
@@ -89,7 +100,7 @@ export async function getCaseStudyIndex(): Promise<CaseStudyIndexItem[]> {
       "[payload] caseStudy index fetch failed:",
       err instanceof Error ? err.message : String(err),
     );
-    return [];
+    return fallbackCaseStudyIndex();
   }
 }
 
@@ -110,13 +121,14 @@ export async function getPosts(): Promise<PostCard[]> {
       limit: 100,
       sort: "-publishedDate",
     });
-    return (res.docs as unknown as PayloadPost[]).map(mapPost);
+    const mapped = (res.docs as unknown as PayloadPost[]).map(mapPost);
+    return mapped.length ? mapped : fallbackPosts();
   } catch (err) {
     console.warn(
       "[payload] posts fetch failed — blog renders empty state:",
       err instanceof Error ? err.message : String(err),
     );
-    return [];
+    return fallbackPosts();
   }
 }
 
@@ -132,13 +144,13 @@ export async function getPostBySlug(slug: string): Promise<PostDetail | null> {
       limit: 1,
     });
     const doc = res.docs[0] as unknown as PayloadPost | undefined;
-    return doc ? mapPost(doc) : null;
+    return doc ? mapPost(doc) : fallbackPostBySlug(slug);
   } catch (err) {
     console.warn(
       `[payload] post(${slug}) fetch failed:`,
       err instanceof Error ? err.message : String(err),
     );
-    return null;
+    return fallbackPostBySlug(slug);
   }
 }
 
@@ -151,13 +163,14 @@ export async function getPostSlugs(): Promise<string[]> {
       depth: 0,
       limit: 200,
     });
-    return (res.docs as unknown as PayloadPost[]).map((d) => d.slug);
+    const slugs = (res.docs as unknown as PayloadPost[]).map((d) => d.slug);
+    return slugs.length ? slugs : fallbackPostSlugs();
   } catch (err) {
     console.warn(
       "[payload] post slugs fetch failed:",
       err instanceof Error ? err.message : String(err),
     );
-    return [];
+    return fallbackPostSlugs();
   }
 }
 
