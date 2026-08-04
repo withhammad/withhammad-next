@@ -16,7 +16,9 @@ import { narrationScripts } from "../lib/narration-scripts";
 
 const OUT_DIR = path.join(process.cwd(), "public", "audio", "narration");
 const FISH_URL = "https://api.fish.audio/v1/tts";
-const MODEL = process.env.FISH_MODEL ?? "s2.1-pro";
+// Default to the free tier: s2.1-pro returns 402 without purchased API
+// credit, which Fish bills separately from platform credit.
+const MODEL = process.env.FISH_MODEL ?? "s2.1-pro-free";
 
 // Minimal .env.local loader — no dotenv dependency needed for a script.
 function loadEnvLocal() {
