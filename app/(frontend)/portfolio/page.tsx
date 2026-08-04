@@ -9,6 +9,7 @@ import {
   SKILL_GROUPS,
 } from "@/lib/ai-systems";
 import PrintButton from "@/components/portfolio/PrintButton";
+import Narratable from "@/components/hud/Narratable";
 import { LINKEDIN_URL, PERSON_SAME_AS } from "@/lib/person";
 
 const SITE = "https://withhammad.com";
@@ -77,6 +78,7 @@ export default function PortfolioPage() {
 
       <div className="mx-auto max-w-4xl px-5 pb-20 pt-28 sm:px-8 sm:pt-32">
         {/* Header */}
+        <Narratable id="resume">
         <header>
           <span className="print-hide inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" />
@@ -131,6 +133,7 @@ export default function PortfolioPage() {
             </Link>
           </div>
         </header>
+        </Narratable>
 
         {/* Headline metrics */}
         <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">

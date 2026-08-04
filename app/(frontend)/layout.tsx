@@ -12,6 +12,8 @@ import NavBar from "@/components/layout/NavBar";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/ui/CustomCursor";
 import HudFrame from "@/components/hud/HudFrame";
+import NarratorProvider from "@/components/providers/NarratorProvider";
+import VoiceHud from "@/components/hud/VoiceHud";
 import IntroLoader from "@/components/ui/IntroLoader";
 import ChatWidget from "@/components/chat/ChatWidget";
 
@@ -109,6 +111,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${clash.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--bg)] text-[var(--text)]">
+        <NarratorProvider>
         <SmoothScrollProvider>
           <IntroLoader />
           <CustomCursor />
@@ -118,6 +121,8 @@ export default function RootLayout({
           <Footer />
           <ChatWidget />
         </SmoothScrollProvider>
+        <VoiceHud />
+        </NarratorProvider>
         <div className="film-grain" aria-hidden />
         <Analytics />
         <SpeedInsights />

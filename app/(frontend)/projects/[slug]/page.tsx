@@ -11,10 +11,24 @@ import { SITE_URL } from "@/lib/person";
 import CaseLinks from "@/components/hud/CaseLinks";
 import Terminal from "@/components/missions/Terminal";
 import JarvisStory from "@/components/missions/JarvisStory";
+import Narratable from "@/components/hud/Narratable";
 
 // Unfilled proof lines are working notes — visible while developing, never
 // shipped to a visitor. They are tracked in LINKS-TODO.md.
 const DEV = process.env.NODE_ENV === "development";
+
+// Slug → narration clip key (lib/narration-scripts.ts). Slugs and script keys
+// were authored separately, so the mapping is explicit rather than guessed.
+const NARRATION_KEY: Record<string, string> = {
+  jarvis: "project-jarvis",
+  ibrahim: "project-ibrahim",
+  adam: "project-adam",
+  atlas: "project-atlas",
+  "google-ads-agent": "project-googleads",
+  "linkedin-automation": "project-linkedin",
+  mediaforge: "project-mediaforge",
+  "claude-seo-squad": "project-seosquad",
+};
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -87,6 +101,7 @@ export default async function ProjectPage({
       />
 
       {/* Hero */}
+      <Narratable id={NARRATION_KEY[p.slug] ?? `project-${p.slug}`}>
       <section className="mx-auto max-w-6xl px-5 pb-12 pt-28 sm:px-8 sm:pt-36">
         <Link
           href="/projects"
@@ -123,6 +138,7 @@ export default async function ProjectPage({
 
         <CaseLinks linkKey={p.linkKey} hideWriteup className="mt-8" />
       </section>
+      </Narratable>
 
       {/* Body + sticky meta sidebar */}
       <section className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">

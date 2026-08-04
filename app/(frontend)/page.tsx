@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
+import Narratable from "@/components/hud/Narratable";
 import AISystemsTeaser from "@/components/sections/AISystemsTeaser";
 import SelectedWork from "@/components/sections/SelectedWork";
 import AudienceRouter from "@/components/sections/AudienceRouter";
@@ -117,15 +118,23 @@ export default async function Home() {
           __html: JSON.stringify(PROFESSIONAL_SERVICE_LD),
         }}
       />
-      <Hero />
-      <AISystemsTeaser />
+      <Narratable id="hero">
+        <Hero />
+      </Narratable>
+      <Narratable id="proof">
+        <AISystemsTeaser />
+      </Narratable>
       <SelectedWork caseStudies={caseStudies} />
       <AudienceRouter />
       <Services services={services} />
       <YouTubeCredibility />
-      <About />
+      <Narratable id="about">
+        <About />
+      </Narratable>
       <Testimonials testimonials={testimonials} />
-      <FinalCTA />
+      <Narratable id="contact">
+        <FinalCTA />
+      </Narratable>
     </>
   );
 }

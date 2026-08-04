@@ -291,3 +291,14 @@ body {
     margin: 14mm;
   }
 }
+
+/* Narration equaliser bars (Narratable / VoiceHud). The global
+   prefers-reduced-motion block above clamps this to a no-op. */
+@keyframes wh-eq {
+  from {
+    height: 3px;
+  }
+  to {
+    height: 11px;
+  }
+}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useNarrator } from "@/components/providers/NarratorProvider";
 import { EASE_OUT } from "@/lib/easing";
 
 const CALENDLY_URL =
@@ -180,6 +181,7 @@ export default function ChatWidget() {
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
+  const { speak } = useNarrator();
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [leadOpen, setLeadOpen] = useState(false);
@@ -224,6 +226,7 @@ export default function ChatWidget() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
+      let full = "";
       while (!done) {
         const chunk = await reader.read();
         done = chunk.done;
@@ -231,6 +234,7 @@ export default function ChatWidget() {
           ? decoder.decode(chunk.value, { stream: true })
           : "";
         if (text) {
+          full += text;
           setMessages((prev) => {
             const copy = prev.slice();
             const last = copy[copy.length - 1];
@@ -242,6 +246,8 @@ export default function ChatWidget() {
           });
         }
       }
+      // JARVIS speaks the finished reply (no-ops when muted or unconfigured).
+      void speak(full);
     } catch {
       setMessages((prev) => {
         const copy = prev.slice();
