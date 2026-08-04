@@ -17,7 +17,7 @@ const NeuralField = dynamic(() => import("@/components/three/NeuralField"), {
 });
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
+  process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/withhammad-marketing/30min";
 
 // Stacked game-menu headline. Each line reveals from its own mask via the
 // existing [data-word-inner] GSAP timeline (gated on the boot sequence).

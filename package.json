@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "NODE_OPTIONS=--max-old-space-size=512 next start",
     "lint": "eslint",
-    "narration": "npx tsx scripts/generate-narration.ts"
+    "narration": "npx tsx scripts/generate-narration.ts",
+    "draft": "node scripts/draft.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",

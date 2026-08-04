@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 // Provider is configurable. Default: Flux Schnell on Replicate (fast + cheap).
 // Swap by setting REPLICATE_MODEL to any Replicate model "owner/name".
-const MODEL = process.env.REPLICATE_MODEL ?? "black-forest-labs/flux-schnell";
+const MODEL = process.env.REPLICATE_MODEL || "black-forest-labs/flux-schnell";
 
 const DIMS: Record<string, [number, number]> = {
   "1:1": [1024, 1024],

@@ -102,6 +102,10 @@ export async function getPosts(): Promise<PostCard[]> {
     const payload = await payloadClient();
     const res = await payload.find({
       collection: "posts",
+      // Drafts are enabled on this collection for the AI pipeline, so every
+      // public read must exclude them explicitly — otherwise an unreviewed
+      // generated post appears on the live blog.
+      where: { _status: { equals: "published" } },
       depth: 1,
       limit: 100,
       sort: "-publishedDate",
@@ -121,7 +125,9 @@ export async function getPostBySlug(slug: string): Promise<PostDetail | null> {
     const payload = await payloadClient();
     const res = await payload.find({
       collection: "posts",
-      where: { slug: { equals: slug } },
+      where: {
+        and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }],
+      },
       depth: 1,
       limit: 1,
     });
@@ -141,6 +147,7 @@ export async function getPostSlugs(): Promise<string[]> {
     const payload = await payloadClient();
     const res = await payload.find({
       collection: "posts",
+      where: { _status: { equals: "published" } },
       depth: 0,
       limit: 200,
     });

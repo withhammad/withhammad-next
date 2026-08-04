@@ -16,7 +16,7 @@ const UA =
 const CF_ACCOUNT = process.env.CF_ACCOUNT_ID;
 const CF_TOKEN = process.env.CF_AI_TOKEN;
 const CF_MODEL =
-  process.env.CF_AI_MODEL ?? "@cf/bytedance/stable-diffusion-xl-lightning";
+  process.env.CF_AI_MODEL || "@cf/bytedance/stable-diffusion-xl-lightning";
 
 async function cloudflareImage(
   prompt: string,

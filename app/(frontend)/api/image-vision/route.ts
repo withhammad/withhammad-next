@@ -17,7 +17,7 @@ export const maxDuration = 30; // headroom for retry-with-backoff on free-tier 4
 
 // gemini-2.5-flash-lite: vision-capable with a much larger free daily quota
 // (~1000/day) than gemini-flash-latest (→ gemini-3.5-flash, only 20/day).
-const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL ?? "gemini-2.5-flash-lite";
+const GEMINI_MODEL = process.env.GEMINI_VISION_MODEL || "gemini-2.5-flash-lite";
 
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 

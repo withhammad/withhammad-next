@@ -8,7 +8,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import type { ServiceItem } from "@/lib/wp-queries";
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
+  process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/withhammad-marketing/30min";
 
 const INCLUSIONS = [
   "Paid media — PPC & paid social",

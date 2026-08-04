@@ -7,7 +7,7 @@ import { useNarrator } from "@/components/providers/NarratorProvider";
 import { EASE_OUT } from "@/lib/easing";
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ??
+  process.env.NEXT_PUBLIC_CALENDLY_URL ||
   "https://calendly.com/withhammad-marketing/30min";
 
 const GREETING =

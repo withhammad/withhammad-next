@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
-        model: process.env.FISH_MODEL ?? "s2.1-pro-free",
+        model: process.env.FISH_MODEL || "s2.1-pro-free",
       },
       body: JSON.stringify({
         text,

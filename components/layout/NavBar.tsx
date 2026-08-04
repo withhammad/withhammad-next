@@ -20,7 +20,7 @@ const NAV_LINKS = [
 ] as const;
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
+  process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/withhammad-marketing/30min";
 const CV_URL = "/Hammad-Yousuf-CV.pdf";
 
 export default function NavBar() {

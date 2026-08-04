@@ -18,7 +18,7 @@ import {
 import type { CaseStudyDetail, CaseStudyIndexItem } from "@/lib/wp-queries";
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/withhammad-marketing/30min";
+  process.env.NEXT_PUBLIC_CALENDLY_URL || "https://calendly.com/withhammad-marketing/30min";
 const PORTFOLIO_PDF = "/Hammad-Yousuf-Portfolio.pdf";
 
 export default function CaseStudyView({

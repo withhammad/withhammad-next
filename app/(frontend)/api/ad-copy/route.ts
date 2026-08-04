@@ -3,9 +3,9 @@ import Anthropic from "@anthropic-ai/sdk";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-3-5-haiku-latest";
+const MODEL = process.env.ANTHROPIC_CHAT_MODEL || "claude-3-5-haiku-latest";
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ??
+  process.env.NEXT_PUBLIC_CALENDLY_URL ||
   "https://calendly.com/withhammad-marketing/30min";
 
 /* ---------------------------------------------------------------------------

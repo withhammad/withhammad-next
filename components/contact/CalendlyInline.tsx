@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const CALENDLY_URL =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ??
+  process.env.NEXT_PUBLIC_CALENDLY_URL ||
   "https://calendly.com/withhammad-marketing/30min";
 
 const SEP = CALENDLY_URL.includes("?") ? "&" : "?";

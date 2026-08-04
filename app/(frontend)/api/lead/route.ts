@@ -7,7 +7,7 @@ const TO = process.env.LEAD_EMAIL_TO;
 // Must be on a domain you've verified in Resend. For first tests you can use
 // "onboarding@resend.dev" (Resend's sandbox sender, which only delivers to the
 // email on your Resend account).
-const FROM = process.env.LEAD_EMAIL_FROM ?? "onboarding@resend.dev";
+const FROM = process.env.LEAD_EMAIL_FROM || "onboarding@resend.dev";
 
 interface LeadBody {
   name?: string;

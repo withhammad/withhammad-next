@@ -7,10 +7,10 @@ import { Resend } from "resend";
 import { payloadClient } from "@/lib/payload";
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://withhammad.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://withhammad.com";
 
-const DOWNLOAD_TTL_HOURS = Number(process.env.DOWNLOAD_TOKEN_TTL_HOURS ?? 72);
-export const MAX_DOWNLOADS = Number(process.env.DOWNLOAD_MAX ?? 5);
+const DOWNLOAD_TTL_HOURS = Number(process.env.DOWNLOAD_TOKEN_TTL_HOURS || 72);
+export const MAX_DOWNLOADS = Number(process.env.DOWNLOAD_MAX || 5);
 
 /* ---- Payment configuration (admin "Payments" global → env fallback) ---- */
 
@@ -248,7 +248,7 @@ export async function finalizeOrder(input: {
 
 async function sendDownloadEmail(email: string, productName: string, token: string) {
   if (!process.env.RESEND_API_KEY) return;
-  const from = process.env.LEAD_EMAIL_FROM ?? "onboarding@resend.dev";
+  const from = process.env.LEAD_EMAIL_FROM || "onboarding@resend.dev";
   const url = `${SITE_URL}/api/download/${token}`;
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({

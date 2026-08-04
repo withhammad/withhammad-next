@@ -81,3 +81,35 @@ Backend live → Prompt 1 (scaffold) → 2 (layout) → 3-10 (sections) → 11 (
   `VercelBlobClientUploadHandler` line missing. Running `npm run dev` without
   `BLOB_READ_WRITE_TOKEN` strips it, and committing that breaks `/admin` in
   production. Stop the dev server and `git checkout` the file before committing.
+
+## Blog + AI draft pipeline
+
+- `npm run draft -- --list` · `--brief=<id>` · `"free-form topic"`.
+  Needs the dev server running (`npm run dev`), or `DRAFT_BASE=https://withhammad.com`.
+- Generation + the Payload write both happen in `app/(frontend)/api/blog/draft/route.ts`,
+  NOT in a standalone script: Payload's Local API is already wired inside Next,
+  whereas `payload run` can't resolve `payload.config.ts`'s extensionless imports
+  and strips argv. The npm script is a thin authenticated client.
+- Auth: `Authorization: Bearer $REVALIDATE_SECRET`. Without that env var the
+  endpoint returns 503 and stays closed.
+- **Drafts never publish.** `_status` is hard-coded `"draft"`, the collection has
+  `versions: { drafts: true }`, and all three public fetchers in `lib/content.ts`
+  filter `_status = published`. Verified: draft absent from /blog, direct URL 404s,
+  absent from sitemap.
+
+### ⚠️ Production schema migration (do this once)
+
+`versions: { drafts: true }` plus the new `targetKeyword` / `aiDraft` /
+`sourceBrief` fields need columns that do not exist in the Neon database yet.
+`push: true` only applies in development — `next start`/production skips it, which
+is why a production insert failed with "Failed query: select count(*) from posts".
+
+When `DATABASE_URI` is first set, verify `/blog` and `/admin` still work. If the
+schema is missing, run Payload's migration flow against Neon (`payload migrate:create`
+then `payload migrate`) rather than relying on push.
+
+### Env gotcha
+
+Use `||` not `??` for env defaults. A blank line in `.env` yields `""`, which is
+present-but-empty — `??` passes it straight through. `PAYLOAD_SECRET=` (blank)
+defeated its own fallback this way and crashed Payload boot.
