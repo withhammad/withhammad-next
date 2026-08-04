@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
@@ -19,6 +20,7 @@ export default function ContactForm() {
     // Honeypot: bots fill hidden fields.
     if ((data.get("website") as string)?.trim()) {
       setStatus("ok");
+      trackEvent("contact_form_submit", { location: window.location.pathname });
       return;
     }
     setStatus("sending");
@@ -37,6 +39,7 @@ export default function ContactForm() {
       const json = (await res.json()) as { ok: boolean; error?: string };
       if (res.ok && json.ok) {
         setStatus("ok");
+        trackEvent("contact_form_submit", { location: window.location.pathname });
         form.reset();
       } else {
         setStatus("error");

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getPostSlugs, getPosts } from "@/lib/content";
+import RelatedContent from "@/components/blog/RelatedContent";
 import { stripHtml, extractFaqs } from "@/lib/blog";
 import PostArtwork from "@/components/blog/PostArtwork";
 import { blogCoverFor } from "@/lib/ai-images";
@@ -333,55 +334,18 @@ export default async function PostPage({
         </aside>
       </article>
 
-      {/* Related */}
-      {related.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-5 pb-24 sm:px-8">
-          <h2 className="mb-6 text-lg font-semibold tracking-tight text-[var(--text)]">
-            Keep reading
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((p) => (
-              <Link
-                key={p.id}
-                href={`/blog/${p.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[var(--panel)] transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-white/25"
-              >
-                <div className="relative aspect-[16/9] overflow-hidden">
-                  <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-                    {p.featuredImage ? (
-                      <Image
-                        src={p.featuredImage.sourceUrl}
-                        alt={p.featuredImage.altText ?? p.title}
-                        fill
-                        sizes="(max-width: 1024px) 50vw, 33vw"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <PostArtwork
-                        seed={p.slug}
-                        category={p.categories[0]?.name}
-                        imageSrc={blogCoverFor(p.categories[0]?.name)}
-                        variant="mini"
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="mb-2 text-xs text-[var(--muted)]">
-                    {p.categories[0]?.name ?? "Article"} · {formatDate(p.date)}
-                  </div>
-                  <h3 className="text-base font-semibold leading-snug tracking-tight text-[var(--text)]">
-                    {p.title}
-                  </h3>
-                  <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] transition-all duration-300 group-hover:gap-2.5">
-                    Read <span aria-hidden>→</span>
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      {/* Internal linking: related missions + posts, then the CTA. Drives
+          readers toward the conversion pages and gives the crawler a real
+          link graph instead of isolated leaves. */}
+      <div className="px-5 pb-24 sm:px-8">
+        <RelatedContent
+          title={post.title}
+          category={post.categories[0]?.name}
+          tags={post.tags}
+          slug={post.slug}
+          allPosts={all}
+        />
+      </div>
     </main>
   );
 }

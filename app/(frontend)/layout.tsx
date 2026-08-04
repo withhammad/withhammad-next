@@ -15,6 +15,7 @@ import HudFrame from "@/components/hud/HudFrame";
 import NarratorProvider from "@/components/providers/NarratorProvider";
 import SoundProvider from "@/components/providers/SoundProvider";
 import VoiceHud from "@/components/hud/VoiceHud";
+import ConversionTracking from "@/components/hud/ConversionTracking";
 import IntroLoader from "@/components/ui/IntroLoader";
 import ChatWidget from "@/components/chat/ChatWidget";
 
@@ -124,6 +125,7 @@ export default function RootLayout({
           <ChatWidget />
         </SmoothScrollProvider>
         <VoiceHud />
+        <ConversionTracking />
         </NarratorProvider>
         </SoundProvider>
         <div className="film-grain" aria-hidden />

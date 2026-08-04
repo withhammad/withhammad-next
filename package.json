@@ -8,7 +8,8 @@
     "start": "NODE_OPTIONS=--max-old-space-size=512 next start",
     "lint": "eslint",
     "narration": "npx tsx scripts/generate-narration.ts",
-    "draft": "node scripts/draft.mjs"
+    "draft": "node scripts/draft.mjs",
+    "calendar": "node scripts/calendar.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",

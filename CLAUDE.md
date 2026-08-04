@@ -113,3 +113,21 @@ then `payload migrate`) rather than relying on push.
 Use `||` not `??` for env defaults. A blank line in `.env` yields `""`, which is
 present-but-empty — `??` passes it straight through. `PAYLOAD_SECRET=` (blank)
 defeated its own fallback this way and crashed Payload boot.
+
+## Content + SEO loop (Phase 8)
+
+- `npm run calendar` regenerates `content-calendar.md` from `lib/content-briefs.ts`.
+  The briefs are the source of truth (the draft pipeline reads them); the doc is
+  the human view. Never hand-edit the .md.
+- 12 briefs across the keyword clusters. `npm run draft -- --brief=<id>` turns any
+  calendar entry into an unpublished Payload draft in one command.
+- `content-calendar.md` also carries the rank-tracking table (keyword, target URL,
+  position + date) and the money-page tracker.
+- Internal linking: `components/blog/RelatedContent.tsx` ends every post with
+  related missions + related posts + a booking CTA, scored by keyword/tag overlap.
+  This is what turns blog traffic into project-page views.
+- GA4 conversion events fire from `components/hud/ConversionTracking.tsx`, one
+  delegated listener at the document level — so a new CTA anywhere is tracked
+  without being wired up: `book_call_click`, `whatsapp_click`, `email_click`,
+  `cv_download`. Plus `case_link_click` (CaseLinks) and `contact_form_submit`.
+  **Mark these as key events in GA4 → Admin → Events once NEXT_PUBLIC_GA_MEASUREMENT_ID is set.**
