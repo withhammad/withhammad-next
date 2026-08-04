@@ -14,7 +14,14 @@
 // ---------------------------------------------------------------------------
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useQuality } from "@/hooks/useQuality";
+import { hasWebGL } from "@/lib/gpu-tier";
+
+// Post-processing is a separate chunk — pages that render at a low tier never
+// download it.
+const Effects = dynamic(() => import("@/components/three/Effects"), { ssr: false });
 import * as THREE from "three";
 
 const ACCENT = new THREE.Color("#FF8A00");
@@ -156,10 +163,12 @@ function Field({
   count,
   reduced,
   interactive,
+  reportFrame,
 }: {
   count: number;
   reduced: boolean;
   interactive: boolean;
+  reportFrame: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const pointsRef = useRef<THREE.Points>(null);
@@ -259,6 +268,7 @@ function Field({
   }, [interactive, reduced]);
 
   useFrame((state, delta) => {
+    reportFrame();
     const g = groupRef.current;
     if (!g) return;
 
@@ -315,7 +325,12 @@ export default function NeuralField({
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [webgl, setWebgl] = useState(true);
   const [count, setCount] = useState(0);
+
+  // Adaptive quality: device-derived starting tier, corrected from real frame
+  // times reported by <Field> each frame.
+  const q = useQuality(inView);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -325,12 +340,15 @@ export default function NeuralField({
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Particle budget by viewport — phones get roughly a third of desktop.
+  useEffect(() => setWebgl(hasWebGL()), []);
+
+  // Particle budget: viewport baseline scaled by the live quality tier, so a
+  // struggling device sheds particles rather than frames.
   useEffect(() => {
     const w = window.innerWidth;
-    const base = w < 640 ? 260 : w < 1024 ? 480 : 760;
-    setCount(Math.round(base * density));
-  }, [density]);
+    const base = w < 640 ? 700 : w < 1024 ? 1300 : 2000;
+    setCount(Math.max(120, Math.round(base * density * q.particles)));
+  }, [density, q.particles]);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -345,17 +363,28 @@ export default function NeuralField({
     return () => io.disconnect();
   }, []);
 
-  if (!count) return <div ref={wrapRef} className={className} aria-hidden />;
+  // No WebGL at all → the gradient backdrop underneath is the poster fallback.
+  if (!webgl || !count) return <div ref={wrapRef} className={className} aria-hidden />;
 
   return (
     <div ref={wrapRef} className={className} aria-hidden>
       <Canvas
         camera={{ position: [0, 0, 11], fov: 50 }}
-        dpr={[1, 1.6]}
+        dpr={q.dpr}
         frameloop={inView ? "always" : "never"}
-        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+        gl={{
+          antialias: q.antialias,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
       >
-        <Field count={count} reduced={reduced} interactive={interactive} />
+        <Field
+          count={count}
+          reduced={reduced}
+          interactive={interactive}
+          reportFrame={q.reportFrame}
+        />
+        {q.post && !reduced ? <Effects heavy={q.postHeavy} /> : null}
       </Canvas>
     </div>
   );

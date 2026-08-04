@@ -7,11 +7,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { useNarrator } from "@/components/providers/NarratorProvider";
+import { useSound } from "@/components/providers/SoundProvider";
 import { EqualiserBars } from "@/components/hud/Narratable";
 import { EASE } from "@/lib/motion";
 
 export default function VoiceHud() {
   const { active, muted, toggleMute, stop, hintSeen, dismissHint } = useNarrator();
+  const { muted: sfxMuted, toggleMute: toggleSfx } = useSound();
 
   // Auto-dismiss the hint after a while so it never nags.
   useEffect(() => {
@@ -59,6 +61,22 @@ export default function VoiceHud() {
         )}
       </AnimatePresence>
 
+      <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={toggleSfx}
+        aria-pressed={sfxMuted}
+        aria-label={sfxMuted ? "Enable interface sound" : "Mute interface sound"}
+        data-cursor={sfxMuted ? "SOUND ON" : "SOUND OFF"}
+        title="Interface sound"
+        className={`flex h-9 w-9 items-center justify-center border backdrop-blur transition-colors ${
+          sfxMuted
+            ? "border-[var(--line)] bg-[var(--bg-deep)]/80 text-[var(--muted)] hover:text-[var(--text)]"
+            : "border-[var(--accent)]/50 bg-[var(--bg-deep)]/80 text-[var(--accent)]"
+        }`}
+      >
+        <WaveIcon on={!sfxMuted} />
+      </button>
       <button
         type="button"
         onClick={toggleMute}
@@ -73,7 +91,22 @@ export default function VoiceHud() {
       >
         {muted ? <MutedIcon /> : <SpeakerIcon />}
       </button>
+      </div>
     </div>
+  );
+}
+
+function WaveIcon({ on }: { on: boolean }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d={on ? "M3 12h3l2-5 3 10 3-8 2 3h5" : "M3 12h18"}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
